@@ -12,7 +12,7 @@ El proyecto está construido bajo el patrón de arquitectura **MVC (Model-View-C
 * **Database:** Persistencia de datos relacional utilizando MySQL.
 
 ## 💻 Tecnologías Utilizadas
-* **Frontend:** React.js, [Añadir librerías extras ej: Tailwind CSS / Material-UI, Axios]
+* **Frontend:** Angular, [Añadir librerías extras ej: Tailwind CSS / Material-UI, Axios]
 * **Backend:** Java, Spring Boot (Spring Web, Spring Data JPA, Hibernate)
 * **Base de Datos:** MySQL
 * **Herramientas:** [Maven / Gradle], Git, [Postman / Swagger para documentar API]
