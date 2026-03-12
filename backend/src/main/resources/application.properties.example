@@ -1,0 +1,35 @@
+# ===================================================================
+# ARCHIVO DE CONFIGURACIÓN DE EJEMPLO
+# Copiar este archivo como 'application.properties' y completar los datos.
+# NO subir el archivo 'application.properties' real con credenciales al repo.
+# ===================================================================
+
+spring:
+  application:
+    name: backend
+
+  # --- CONFIGURACIÓN DE BASE DE DATOS ---
+  datasource:
+    # Cambiar 'NOMBRE_DB' por el nombre de tu base de datos local, recomendable usar 'alborada_SistGestion'
+    url: jdbc:mysql://localhost:3306/NOMBRE_DB?serverTimezone=UTC&useSSL=false
+    username: TU_USUARIO
+    password: TU_PASSWORD
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # --- CONFIGURACIÓN DE JPA / HIBERNATE ---
+  jpa:
+    hibernate:
+      # update: Sincroniza el modelo Java con la DB (ideal para desarrollo)
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # Dialecto para MySQL 8+
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    
+  # --- CONFIGURACIÓN DE SERVIDOR ---
+  server:
+    port: 8080
+    servlet:
+      context-path: /api # Todos los endpoints empezarán con /api
