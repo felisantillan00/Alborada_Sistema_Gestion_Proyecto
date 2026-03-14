@@ -44,7 +44,7 @@ Requisitos Previos
 Instalación Rápida
 1. Clonar el repositorio: git clone https://github.com/felisantillan00/Alborada_Sistema_Gestion_Proyecto.git
 2. Base de Datos: Crea una DB llamada 'alborada_SistGestion' y tipo por defecto. Crea y completa los datos en el archivo src/main/resources/application.properties, tomando de ejemplo  src/main/resources/application.properties.example !!!!
-3. Ejecutar: ./mvnw spring-boot:run
+3. Ejecutar: ./mvnw spring-boot:run o vicebersa mvn spring-boot:run
 
 📝 Estándares de Código
 1. Endpoints (Naming Convention)

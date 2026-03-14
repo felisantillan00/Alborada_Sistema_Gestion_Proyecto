@@ -69,7 +69,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
+				<version>3.4.1</version> <configuration>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
