@@ -1,9 +1,21 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { Sidebar } from '../sidebar/sidebar';
+import { Header } from '../header/header';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    Sidebar,
+    Header
+  ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })
-export class MainLayout {}
+export class MainLayout {
+
+  isSidebarCollapsed = false;
+}
