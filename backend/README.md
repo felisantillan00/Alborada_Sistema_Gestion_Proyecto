@@ -55,6 +55,9 @@ Instalación Rápida
 * `@Builder`: Permite crear objetos de forma fluida: `Modelo.builder().nombre("X").build()`.
 * `@AllArgsConstructor`: Constructor con todos los campos (requerido por Builder).
 * `@NoArgsConstructor`: Constructor vacío (requerido por Hibernate).
+A nivel de Atributos:
+* @Id + @GeneratedValue(strategy = GenerationType.IDENTITY): Define la Primary Key autoincremental.
+* @Column(name = "nombre_columna"): Mapea el atributo a un nombre específico en la DB (Ej: nro_factura).
 
 🔹 **Repositories (Acceso a Datos)**
 * `@Repository`: Registra la interfaz como un componente de acceso a datos.
@@ -64,10 +67,14 @@ Instalación Rápida
 * `@Service`: Registra la clase en el contenedor de Spring.
 * `@RequiredArgsConstructor`: Crea el constructor para Inyección de Dependencias de campos `final`.
 * `@Slf4j`: Habilita el log: `log.info("Mensaje")`.
+* `@Transactional`: CRÍTICO. Garantiza que si algo falla, se haga un Rollback (Ej: Si falla el stock, que no se guarde la Venta).
 
 🔹 **DTOs (Data Transfer Objects) - Request o Response**
 * `@Data`, `@Builder`, `@AllArgsConstructor`, `@NoArgsConstructor`.
 * **Nota:** Usamos DTOs para no exponer la entidad de la base de datos directamente al exterior.
+Validaciones de Atributos:
+* @NotBlank(message = "..."): Obligatorio para texto (no nulo, no vacío).
+* @NotNull(message = "..."): Obligatorio para números o fechas.
 
 🔹 **Controllers (API Endpoints)**
 * `@RestController`: Define que esta clase es un punto de entrada de la API.
