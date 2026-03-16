@@ -46,32 +46,34 @@ Instalación Rápida
 2. Base de Datos: Crea una DB llamada 'alborada_SistGestion' y tipo por defecto. Crea y completa los datos en el archivo src/main/resources/application.properties, tomando de ejemplo  src/main/resources/application.properties.example !!!!
 3. Ejecutar: ./mvnw spring-boot:run o vicebersa mvn spring-boot:run
 
-📝 Estándares de Código
-🔹 Modelos (Entidades JPA)
-@Entity           // Indica que es una tabla de base de datos.
-@Table(name = "") // Define el nombre real de la tabla en MySQL (usar snake_case).
-@Data             // Genera automáticamente Getters, Setters, toString y equals/hashCode.
-@Builder          // Permite crear objetos de forma fluida: Modelo.builder().nombre("X").build().
-@AllArgsConstructor // Constructor con todos los campos (requerido por Builder).
-@NoArgsConstructor  // Constructor vacío (requerido por Hibernate).
+## 📝 Estándares de Código
 
-🔹 Servicios (Lógica de Negocio)
-@Service            // Registra la clase en el contenedor de Spring.
-@RequiredArgsConstructor // Crea el constructor para Inyección de Dependencias de campos 'final'.
-@Slf4j              // Habilita el log: log.info("Mensaje").
+🔹 **Modelos (Entidades JPA)**
+* `@Entity`: Indica que es una tabla de base de datos.
+* `@Table(name = "")`: Define el nombre real de la tabla en MySQL (usar snake_case).
+* `@Data`: Genera automáticamente Getters, Setters, toString y equals/hashCode.
+* `@Builder`: Permite crear objetos de forma fluida: `Modelo.builder().nombre("X").build()`.
+* `@AllArgsConstructor`: Constructor con todos los campos (requerido por Builder).
+* `@NoArgsConstructor`: Constructor vacío (requerido por Hibernate).
 
-🔹 DTOs (Data Transfer Objects) - Request o Response
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-// Nota: Usamos DTOs para no exponer la entidad de la base de datos directamente al exterior.
+🔹 **Repositories (Acceso a Datos)**
+* `@Repository`: Registra la interfaz como un componente de acceso a datos.
+* `extends JpaRepository<Entidad, TipoID>`: Otorga métodos automáticos como `.save()`, `.findAll()`, `.findById()`, etc.
 
-🔹 Controllers (API Endpoints)
-@RestController       // Define que esta clase es un punto de entrada de la API.
-@RequestMapping("")   // Define la URL base (ej: /api/v1/productos).
-@RequiredArgsConstructor // Inyecta los servicios necesarios automáticamente.
-@Slf4j                // Para registrar eventos en la consola.
+🔹 **Servicios (Lógica de Negocio)**
+* `@Service`: Registra la clase en el contenedor de Spring.
+* `@RequiredArgsConstructor`: Crea el constructor para Inyección de Dependencias de campos `final`.
+* `@Slf4j`: Habilita el log: `log.info("Mensaje")`.
+
+🔹 **DTOs (Data Transfer Objects) - Request o Response**
+* `@Data`, `@Builder`, `@AllArgsConstructor`, `@NoArgsConstructor`.
+* **Nota:** Usamos DTOs para no exponer la entidad de la base de datos directamente al exterior.
+
+🔹 **Controllers (API Endpoints)**
+* `@RestController`: Define que esta clase es un punto de entrada de la API.
+* `@RequestMapping("")`: Define la URL base (ej: `/api/v1/productos`).
+* `@RequiredArgsConstructor`: Inyecta los servicios necesarios automáticamente.
+* `@Slf4j`: Para registrar eventos en la consola.
 
 1. Endpoints (Naming Convention)
 Para mantener la consistencia, todos los controladores deben seguir este formato:
