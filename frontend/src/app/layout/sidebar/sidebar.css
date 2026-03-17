@@ -1,0 +1,69 @@
+.sidebar {
+  width: 260px;
+  background-color: #0b1f16; /* Verde oscuro del fondo */
+  transition: width 0.3s ease;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+/* Estado Colapsado */
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.logo-icon {
+  background-color: #12b745; /* Verde brillante del logo */
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-muted-custom {
+  color: #7b9487; /* Gris verdoso para los subtítulos */
+}
+
+/* Estilos de los enlaces */
+.custom-nav-link {
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.icon-size {
+  font-size: 1.2rem;
+}
+
+/* Hover de los botones */
+.custom-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Estado activo (cuando estás en esa ruta) */
+.custom-nav-link.active {
+  background-color: #12b745 !important;
+  color: white !important;
+  font-weight: 500;
+}
+
+/* Ajustes finos cuando está colapsado */
+.sidebar.collapsed .custom-nav-link {
+  justify-content: center !important;
+  padding: 10px;
+}
+
+.sidebar.collapsed .icon-size {
+  margin: 0 !important;
+}
+
+/* Ocultar scrollbar para que se vea más limpio */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 10px;
+}

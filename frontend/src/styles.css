@@ -1,1 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-sidebar-bg: #0b1f16; /* Verde muy oscuro del menú */
+  --color-primary: #12b745; /* Verde brillante del botón activo */
+  --color-bg-light: #f8f9fa; /* Fondo gris claro */
+}
+
+body {
+  background-color: var(--color-bg-light);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
