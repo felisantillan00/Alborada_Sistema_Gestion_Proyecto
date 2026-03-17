@@ -100,3 +100,35 @@ Para mantener la consistencia, todos los controladores deben seguir este formato
 📖 Documentación de API
 * Swagger UI: http://localhost:8080/swagger-ui.html (Para ver y probar la documentación técnica).
 * Postman: Se recomienda crear una "Collection" compartida para el equipo con las peticiones base de cada módulo.
+
+Como consumir la API? Base URL: http://localhost:8080/api
+📦 Módulo: Proveedores
+
+Listar todos
+GET /proveedor
+
+Obtener por ID
+GET /proveedor/{id}
+
+Crear nuevo
+POST /proveedor
+(Nota: No enviar ID en el cuerpo, se genera solo)
+
+Actualizar existente
+PUT /proveedor/{id}
+
+Eliminar
+DELETE /proveedor/{id}
+
+📝 Formato del JSON (Request Body)
+Para POST y PUT, usar esta estructura:
+
+JSON
+{
+  "nombre": "Nombre del Proveedor",
+  "cuit": "20-XXXXXXXX-X",
+  "telefono": "2302-XXXXXX",
+  "email": "ejemplo@correo.com",
+  "direccion": "Calle Falsa 123",
+  "observacion": "Opcional"
+}
