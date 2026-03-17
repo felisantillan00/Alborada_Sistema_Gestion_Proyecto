@@ -104,21 +104,12 @@ Para mantener la consistencia, todos los controladores deben seguir este formato
 Como consumir la API? Base URL: http://localhost:8080/api
 📦 Módulo: Proveedores
 
-Listar todos
-GET /proveedor
+* GET /proveedor
+* GET /proveedor/{id}
+* POST /proveedor - (Nota: No enviar ID en el cuerpo, se genera solo)
 
-Obtener por ID
-GET /proveedor/{id}
-
-Crear nuevo
-POST /proveedor
-(Nota: No enviar ID en el cuerpo, se genera solo)
-
-Actualizar existente
-PUT /proveedor/{id}
-
-Eliminar
-DELETE /proveedor/{id}
+* PUT /proveedor/{id}
+* DELETE /proveedor/{id}
 
 📝 Formato del JSON (Request Body)
 Para POST y PUT, usar esta estructura:
@@ -131,4 +122,17 @@ JSON
   "email": "ejemplo@correo.com",
   "direccion": "Calle Falsa 123",
   "observacion": "Opcional"
+}
+
+📦 Módulo: Marca
+* Listar todas GET /marca
+* Obtener por ID GET /marca/{id}
+* Crear nueva POST /marca - (Nota: No enviar ID en el cuerpo)
+* Actualizar existente PUT /marca/{id} - (Nota: El ID de la URL y el del JSON deben coincidir)
+* Eliminar DELETE /marca/{id}
+📝 Formato del JSON (Request Body)
+{
+  "id": 1, 
+  "nombre": "Shimano",
+  "descripcion": "Componentes de transmisión y frenos"
 }
