@@ -23,6 +23,18 @@
       "postId": "1"
     }
   ],
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Notebook Lenovo",
+      "precioCompra": 500,
+      "precioVenta": 750,
+      "stock": 10,
+      "nombreProveedor": "TechSupplier",
+      "nombreCategoria": "Electrónica",
+      "nombreMarca": "Lenovo"
+    }
+  ],
   "profile": {
     "name": "typicode"
   }
