@@ -26,7 +26,7 @@ public class Producto {
     private BigDecimal stockMinimo;
 
     @Column(name = "margen_ganancia")
-    private BigDecimal margenGanancia; // Sirve para calcular el precioVenta = precioCosto % margenGanancia
+    private BigDecimal margenGanancia; // Porcentaje de ganancia sobre el costo. Usado para calcular precioVenta.
 
     // Muchos Productos -> Una Categoria
     @ManyToOne(fetch = FetchType.LAZY)

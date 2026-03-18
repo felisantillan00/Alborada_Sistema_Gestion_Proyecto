@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 import com.example.backend.dto.response.ProductoResponseDTO;
 import com.example.backend.dto.request.ProductoRequestDTO;
+import com.example.backend.service.ProductoService;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -12,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductoController {
-    private final com.example.backend.service.ProductoService productoService;
+    private final ProductoService productoService;
 
     @GetMapping
     public ResponseEntity<List<ProductoResponseDTO>> listAll() {
@@ -31,7 +32,7 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<ProductoResponseDTO> create(@RequestBody ProductoRequestDTO request) {
-        log.info("Recibida solicitud de creación de producto:", request.getNombre());
+        log.info("Recibida solicitud de creación de producto: {}", request.nombre());
         return ResponseEntity.status(HttpStatus.CREATED).body(productoService.create(request));
     }
 

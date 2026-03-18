@@ -3,15 +3,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.response.*;
 import com.example.backend.exception.NegocioException;
-import com.example.backend.dto.CategoriaDTO;
-import com.example.backend.dto.MarcaDTO;
-import com.example.backend.dto.ProveedorDTO;
 import com.example.backend.dto.request.*;
 import com.example.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import com.example.backend.model.*;
 import lombok.extern.slf4j.Slf4j;
+import com.example.backend.dto.*;
 import java.util.List;
 import java.math.*;
 
@@ -27,29 +25,29 @@ public class ProductoService {
 
     public ProductoResponseDTO create(ProductoRequestDTO request) {
         // 1. Validar nombre obligatorio
-        if (request.getNombre() == null || request.getNombre().isBlank()) {
+        if (request.nombre() == null || request.nombre().isBlank()) {
             throw new IllegalArgumentException("El nombre del producto es obligatorio");
         }
         // 2. Buscar relaciones
-        Categoria categoria = categoriaRepository.findById(request.getIdCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        Categoria categoria = categoriaRepository.findById(request.idCategoria())
+                .orElseThrow(() -> new NegocioException("Categoría no encontrada"));
 
-        Marca marca = marcaRepository.findById(request.getIdMarca())
-                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+        Marca marca = marcaRepository.findById(request.idMarca())
+                .orElseThrow(() -> new NegocioException("Marca no encontrada"));
 
         Proveedor proveedor = null;
-        if (request.getIdProveedor() != null) {
-            proveedor = proveedorRepository.findById(request.getIdProveedor())
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        if (request.idProveedor() != null) {
+            proveedor = proveedorRepository.findById(request.idProveedor())
+                .orElseThrow(() -> new NegocioException("Proveedor no encontrado"));
         }
         // 4. Mapear y EMBELLECER
         Producto producto = new Producto();
         // APLICAMOS LA MAGIA ACÁ:
-        producto.setNombre(capitalizarTexto(request.getNombre())); 
-        producto.setDescripcion(request.getDescripcion());
-        producto.setStock(request.getStock());
-        producto.setStockMinimo(request.getStockMinimo());
-        producto.setMargenGanancia(request.getMargenGanancia());
+        producto.setNombre(capitalizarTexto(request.nombre())); 
+        producto.setDescripcion(request.descripcion());
+        producto.setStock(request.stock());
+        producto.setStockMinimo(request.stockMinimo());
+        producto.setMargenGanancia(request.margenGanancia());
         producto.setCategoria(categoria);
         producto.setMarca(marca);
         producto.setProveedor(proveedor);
@@ -83,44 +81,44 @@ public class ProductoService {
     // --- 4. BUSCAR POR ID ---
     public ProductoResponseDTO findById(Long id) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new NegocioException("Producto no encontrado"));
         return mapToResponse(producto);
     }
 
     // --- 5. UPDATE ---
     public ProductoResponseDTO update(Long id, ProductoRequestDTO request) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + id));
         // 1. Validar nombre y Embellecer
-        if (request.getNombre() != null && !request.getNombre().isBlank()) {
-            producto.setNombre(capitalizarTexto(request.getNombre()));
+        if (request.nombre() != null && !request.nombre().isBlank()) {
+            producto.setNombre(capitalizarTexto(request.nombre()));
         }
         // 3. Actualizar resto de campos simples
-        if (request.getDescripcion() != null) {
-            producto.setDescripcion(request.getDescripcion());
+        if (request.descripcion() != null) {
+            producto.setDescripcion(request.descripcion());
         }
 
-        if (request.getStock() != null) {
-            producto.setStock(request.getStock());
+        if (request.stock() != null) {
+            producto.setStock(request.stock());
         }
-        if (request.getStockMinimo() != null) {
-            producto.setStockMinimo(request.getStockMinimo());
+        if (request.stockMinimo() != null) {
+            producto.setStockMinimo(request.stockMinimo());
         }
         calcularPrecio(producto, request);
         // 4. Actualizar relaciones
-        if (request.getIdCategoria() != null) {
-            Categoria categoria = categoriaRepository.findById(request.getIdCategoria())
-                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        if (request.idCategoria() != null) {
+            Categoria categoria = categoriaRepository.findById(request.idCategoria())
+                    .orElseThrow(() -> new NegocioException("Categoría no encontrada"));
             producto.setCategoria(categoria);
         }
-        if (request.getIdMarca() != null) {
-            Marca marca = marcaRepository.findById(request.getIdMarca())
-                    .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+        if (request.idMarca() != null) {
+            Marca marca = marcaRepository.findById(request.idMarca())
+                    .orElseThrow(() -> new NegocioException("Marca no encontrada"));
             producto.setMarca(marca);
         }
-        if (request.getIdProveedor() != null) {
-            Proveedor proveedor = proveedorRepository.findById(request.getIdProveedor())
-                    .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        if (request.idProveedor() != null) {
+            Proveedor proveedor = proveedorRepository.findById(request.idProveedor())
+                    .orElseThrow(() -> new NegocioException("Proveedor no encontrado"));
             producto.setProveedor(proveedor);
         }
 
@@ -131,8 +129,7 @@ public class ProductoService {
     // --- 6. DELETE ---
     public ProductoResponseDTO delete(Long id) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-        
+                .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + id));
         productoRepository.delete(producto);
         return mapToResponse(producto);
     }
@@ -140,16 +137,16 @@ public class ProductoService {
     // Funcion para calcular el precio de venta
     private void calcularPrecio(Producto producto, ProductoRequestDTO request) {
         // 1. Lógica de "Fusión": Si el request trae el valor lo usamos, sino mantenemos el del producto
-        BigDecimal costoFinal = (request.getPrecioCosto() != null) 
-                                ? request.getPrecioCosto() 
+        BigDecimal costoFinal = (request.precioCosto() != null) 
+                                ? request.precioCosto() 
                                 : producto.getPrecioCosto();
                                 
-        BigDecimal margenFinal = (request.getMargenGanancia() != null) 
-                                ? request.getMargenGanancia() 
+        BigDecimal margenFinal = (request.margenGanancia() != null) 
+                                ? request.margenGanancia() 
                                 : producto.getMargenGanancia();
 
-        BigDecimal ventaFinal = (request.getPrecioVenta() != null) 
-                                ? request.getPrecioVenta() 
+        BigDecimal ventaFinal = (request.precioVenta() != null) 
+                                ? request.precioVenta() 
                                 : producto.getPrecioVenta();
 
         // Seteamos los valores base actualizados en la entidad
@@ -177,7 +174,7 @@ public class ProductoService {
             if (costoFinal != null && costoFinal.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal gananciaAbsoluta = ventaFinal.subtract(costoFinal);
                 BigDecimal margenCalculado = gananciaAbsoluta
-                        .divide(costoFinal, 4, RoundingMode.HALF_UP)
+                        .divide(costoFinal, 2, RoundingMode.HALF_UP)
                         .multiply(new BigDecimal("100"));
                 
                 producto.setMargenGanancia(margenCalculado);
