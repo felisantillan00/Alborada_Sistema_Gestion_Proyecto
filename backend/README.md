@@ -69,12 +69,29 @@ A nivel de Atributos:
 * `@Slf4j`: Habilita el log: `log.info("Mensaje")`.
 * `@Transactional`: CRÍTICO. Garantiza que si algo falla, se haga un Rollback (Ej: Si falla el stock, que no se guarde la Venta).
 
-🔹 **DTOs (Data Transfer Objects) - Request o Response**
+🔹 **DTOs (Data Transfer Objects) - Response**
 * `@Data`, `@Builder`, `@AllArgsConstructor`, `@NoArgsConstructor`.
 * **Nota:** Usamos DTOs para no exponer la entidad de la base de datos directamente al exterior.
 Validaciones de Atributos:
 * @NotBlank(message = "..."): Obligatorio para texto (no nulo, no vacío).
 * @NotNull(message = "..."): Obligatorio para números o fechas.
+
+🔹 **Request - DTOs (Data Transfer Objects)**
+* 📝 Uso de Java Records para DTOs
+* A partir de la versión actual, todos los Data Transfer Objects (DTOs) de entrada (RequestDTO) se han migrado a Java Records.
+
+* ¿Por qué usamos Records?
+* Inmutabilidad Garantizada: Al ser records, los datos que llegan desde el Frontend no pueden ser alterados accidentalmente durante su procesamiento en el Backend.
+
+* Código más Limpio: Eliminamos el "boilerplate" de Lombok (@Data, @Getter, @AllArgsConstructor). Un DTO que antes ocupaba 30 líneas ahora se define en una sola.
+
+* Nativo de Java: Aprovechamos las funcionalidades de Java 17+ (y nuestra versión actual Java 24), mejorando el rendimiento y la legibilidad.
+
+* ⚠️ Cambios en la implementación (Importante para el equipo):
+* Al trabajar con Records, ya no se utiliza el prefijo get. El acceso a los datos se realiza llamando directamente al nombre del campo como un método:
+* Antes: request.getNombre()
+* Ahora: request.nombre()
+* Nota: Las Entidades (como Producto, Marca, etc.) siguen siendo clases convencionales con @Data de Lombok, ya que Hibernate requiere que sean mutables para gestionar el ciclo de vida en la base de datos.
 
 🔹 **Controllers (API Endpoints)**
 * `@RestController`: Define que esta clase es un punto de entrada de la API.
@@ -101,38 +118,4 @@ Para mantener la consistencia, todos los controladores deben seguir este formato
 * Swagger UI: http://localhost:8080/swagger-ui.html (Para ver y probar la documentación técnica).
 * Postman: Se recomienda crear una "Collection" compartida para el equipo con las peticiones base de cada módulo.
 
-Como consumir la API? Base URL: http://localhost:8080/api
-📦 Módulo: Proveedores
-
-* GET /proveedor
-* GET /proveedor/{id}
-* POST /proveedor - (Nota: No enviar ID en el cuerpo, se genera solo)
-
-* PUT /proveedor/{id}
-* DELETE /proveedor/{id}
-
-📝 Formato del JSON (Request Body)
-Para POST y PUT, usar esta estructura:
-
-JSON
-{
-  "nombre": "Nombre del Proveedor",
-  "cuit": "20-XXXXXXXX-X",
-  "telefono": "2302-XXXXXX",
-  "email": "ejemplo@correo.com",
-  "direccion": "Calle Falsa 123",
-  "observacion": "Opcional"
-}
-
-📦 Módulo: Marca
-* Listar todas GET /marca
-* Obtener por ID GET /marca/{id}
-* Crear nueva POST /marca - (Nota: No enviar ID en el cuerpo)
-* Actualizar existente PUT /marca/{id} - (Nota: El ID de la URL y el del JSON deben coincidir)
-* Eliminar DELETE /marca/{id}
-📝 Formato del JSON (Request Body)
-{
-  "id": 1, 
-  "nombre": "Shimano",
-  "descripcion": "Componentes de transmisión y frenos"
-}
+Como consumir la API? Base URL: http://localhost:8080/api/URL
