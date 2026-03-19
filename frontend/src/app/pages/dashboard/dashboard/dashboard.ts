@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+//import { ProductoService } from '../../../core/services/producto/producto-service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
+  
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {}
+export class Dashboard {
+
+}
