@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
+//import { Page } from '../../models/page'; // (Para cuando conectemos con Spring Boot)
 
 @Injectable()
 export abstract class Api<T> {
