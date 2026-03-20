@@ -1,0 +1,36 @@
+<div class="sidebar d-flex flex-column flex-shrink-0 p-3" [class.collapsed]="isCollapsed">
+  
+  <a routerLink="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none brand-container">
+    <div class="logo-icon me-3">
+      <i class="bi bi-bicycle"></i>
+    </div>
+    <div class="brand-text" *ngIf="!isCollapsed">
+      <span class="fs-5 fw-bold d-block lh-1">Alborada</span>
+      <span class="fs-5 fw-bold d-block lh-1">Bicicletería</span>
+      <small class="text-muted-custom mt-1 d-block" style="font-size: 0.75rem;">Sistema de gestión</small>
+    </div>
+  </a>
+
+  <hr class="border-secondary my-4">
+
+  <span class="menu-label text-muted-custom small fw-bold mb-3" *ngIf="!isCollapsed">MENÚ PRINCIPAL</span>
+
+  <ul class="nav nav-pills flex-column mb-auto gap-1">
+    <li class="nav-item" *ngFor="let item of menuItems">
+      <a [routerLink]="item.route" routerLinkActive="active" class="nav-link text-white d-flex align-items-center justify-content-between custom-nav-link">
+        <div class="d-flex align-items-center">
+          <i class="bi {{ item.icon }} icon-size"></i>
+          <span class="ms-3" *ngIf="!isCollapsed">{{ item.name }}</span>
+        </div>
+        <span
+          *ngIf="item.badge != null && !isCollapsed"
+          class="badge rounded-pill"
+          [ngClass]="item.badgeColor">
+          {{ item.badge }}
+        </span>
+      </a>
+    </li>
+  </ul>
+
+  
+</div>

@@ -1,0 +1,9 @@
+<div class="d-flex vh-100 overflow-hidden">
+    <app-sidebar [class.collapsed] = "isSidebarCollapsed" class="h-100 flex-shrink-0"></app-sidebar>
+    <div class="d-flex flex-column flex-grow-1 overflow-auto">
+        <app-header></app-header>
+        <main class="container-fluid mt-3 p-4">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

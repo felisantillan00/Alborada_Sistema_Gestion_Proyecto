@@ -1,0 +1,87 @@
+<div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closed.emit()"></button>
+      </div>
+
+      <div class="modal-body">
+        @if (mode === 'delete') {
+        <p class="mb-0">
+          Are you sure you want to delete
+          <strong>{{ product?.nombre ?? 'this product' }}</strong>?
+        </p>
+        } @else {
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label">Nombre</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Stock</label>
+            <input class="form-control"
+                   type="number"
+                   [value]="mode === 'create' ? '' : (product?.stock ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Precio compra</label>
+            <input class="form-control"
+                   type="number"
+                   [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Precio venta</label>
+            <input class="form-control"
+                   type="number"
+                   [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Proveedor</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (product?.nombreProveedor ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Categoria</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (product?.nombreCategoria ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Marca</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (product?.nombreMarca ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancel</button>
+
+        @if (mode === 'create' || mode === 'edit') {
+        <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
+          {{ mode === 'create' ? 'Create' : 'Save changes' }}
+        </button>
+        }
+
+        @if (mode === 'delete') {
+        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Delete</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show"></div>
