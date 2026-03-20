@@ -1,0 +1,32 @@
+<section class="container-fluid py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">Inventario</h2>
+    <button class="btn btn-success" type="button" (click)="onNewProduct()">
+      <i class="bi bi-plus-lg me-1"></i>
+      New Product
+    </button>
+  </div>
+  <div>{{ productos.length }}</div>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <ag-grid-angular style="width: 100%; height: 540px"
+                       [rowData]="productos"
+                       [columnDefs]="columnDefs"
+                       [defaultColDef]="defaultColDef"
+                       [pagination]="true"
+                       [paginationPageSize]="10"
+                       [animateRows]="true"
+                       [suppressCellFocus]="true"
+                       (rowClicked)="onRowClicked($event)">
+      </ag-grid-angular>
+    </div>
+  </div>
+</section>
+@if (modalOpen) {
+<app-modal-view 
+                [mode]="modalMode"
+                [product]="selectedProducto"
+                (closed)="closeModal()"
+                (submitted)="onModalSubmit($event)">
+</app-modal-view>
+}

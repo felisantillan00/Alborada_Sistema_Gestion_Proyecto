@@ -2,10 +2,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
-//import { Page } from '../../models/page'; // (Para cuando conectemos con Spring Boot)
 
 @Injectable()
-export abstract class Api<T> {
+export abstract class Api<TResponse, TRequest = TResponse> {
 
   protected baseUrl: string;
 
@@ -13,7 +12,7 @@ export abstract class Api<T> {
     protected http: HttpClient,
     protected endpoint: string
   ) {
-    this.baseUrl = `${environment.apiUrl}/${this.endpoint}`;
+    this.baseUrl = `${environment.apiUrl}${this.endpoint}`;
   }
 
   // -------------------------
@@ -29,7 +28,7 @@ export abstract class Api<T> {
   // -------------------------
   // GET ALL
   // -------------------------
-  getAll(params?: any): Observable<T[]> {
+  getAll(params?: any): Observable<TResponse[]> {
     let httpParams = new HttpParams();
 
     if (params) {
@@ -38,7 +37,7 @@ export abstract class Api<T> {
       });
     }
 
-    return this.http.get<T[]>(this.baseUrl, {
+    return this.http.get<TResponse[]>(this.baseUrl, {
       headers: this.getHeaders(),
       params: httpParams
     });
@@ -47,8 +46,8 @@ export abstract class Api<T> {
   // -------------------------
   // GET BY ID
   // -------------------------
-  getById(id: number | string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${id}`, {
+  getById(id: number | string): Observable<TResponse> {
+    return this.http.get<TResponse>(`${this.baseUrl}/${id}`, {
       headers: this.getHeaders()
     });
   }
@@ -56,8 +55,8 @@ export abstract class Api<T> {
   // -------------------------
   // POST
   // -------------------------
-  create(item: T): Observable<T> {
-    return this.http.post<T>(this.baseUrl, item, {
+  create(item: TRequest): Observable<TResponse> {
+    return this.http.post<TResponse>(this.baseUrl, item, {
       headers: this.getHeaders()
     });
   }
@@ -65,8 +64,8 @@ export abstract class Api<T> {
   // -------------------------
   // PUT
   // -------------------------
-  update(id: number | string, item: T): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${id}`, item, {
+  update(id: number | string, item: TRequest): Observable<TResponse> {
+    return this.http.put<TResponse>(`${this.baseUrl}/${id}`, item, {
       headers: this.getHeaders()
     });
   }
@@ -79,5 +78,4 @@ export abstract class Api<T> {
       headers: this.getHeaders()
     });
   }
-
 }

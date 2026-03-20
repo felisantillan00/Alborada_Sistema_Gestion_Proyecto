@@ -1,0 +1,160 @@
+{
+    "productosView": [
+      {
+        "id": 1,
+        "nombre": "Notebook Lenovo",
+        "precioCompra": 500,
+        "precioVenta": 750,
+        "stock": 10,
+        "nombreProveedor": "TechSupplier",
+        "nombreCategoria": "Electrónica",
+        "nombreMarca": "Lenovo"
+      },
+      {
+        "id": 2,
+        "nombre": "Mouse Logitech",
+        "precioCompra": 10,
+        "precioVenta": 20,
+        "stock": 50,
+        "nombreProveedor": "Distribuidora Norte",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Logitech"
+      },
+      {
+        "id": 3,
+        "nombre": "Teclado Redragon",
+        "precioCompra": 25,
+        "precioVenta": 45,
+        "stock": 30,
+        "nombreProveedor": "GamingStore",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Redragon"
+      },
+      {
+        "id": 4,
+        "nombre": "Monitor Samsung 24\"",
+        "precioCompra": 120,
+        "precioVenta": 180,
+        "stock": 15,
+        "nombreProveedor": "TechSupplier",
+        "nombreCategoria": "Electrónica",
+        "nombreMarca": "Samsung"
+      },
+      {
+        "id": 5,
+        "nombre": "Auriculares Sony",
+        "precioCompra": 40,
+        "precioVenta": 70,
+        "stock": 25,
+        "nombreProveedor": "AudioTech",
+        "nombreCategoria": "Audio",
+        "nombreMarca": "Sony"
+      },
+      {
+        "id": 6,
+        "nombre": "Celular Xiaomi Redmi",
+        "precioCompra": 150,
+        "precioVenta": 230,
+        "stock": 20,
+        "nombreProveedor": "MobileWorld",
+        "nombreCategoria": "Electrónica",
+        "nombreMarca": "Xiaomi"
+      },
+      {
+        "id": 7,
+        "nombre": "Tablet Samsung Galaxy Tab",
+        "precioCompra": 200,
+        "precioVenta": 300,
+        "stock": 12,
+        "nombreProveedor": "TechSupplier",
+        "nombreCategoria": "Electrónica",
+        "nombreMarca": "Samsung"
+      },
+      {
+        "id": 8,
+        "nombre": "Disco SSD Kingston 480GB",
+        "precioCompra": 35,
+        "precioVenta": 60,
+        "stock": 40,
+        "nombreProveedor": "StoragePlus",
+        "nombreCategoria": "Componentes",
+        "nombreMarca": "Kingston"
+      },
+      {
+        "id": 9,
+        "nombre": "Memoria RAM Corsair 8GB",
+        "precioCompra": 30,
+        "precioVenta": 55,
+        "stock": 35,
+        "nombreProveedor": "StoragePlus",
+        "nombreCategoria": "Componentes",
+        "nombreMarca": "Corsair"
+      },
+      {
+        "id": 10,
+        "nombre": "Placa de Video NVIDIA RTX 3060",
+        "precioCompra": 300,
+        "precioVenta": 450,
+        "stock": 8,
+        "nombreProveedor": "GamingStore",
+        "nombreCategoria": "Componentes",
+        "nombreMarca": "NVIDIA"
+      },
+      {
+        "id": 11,
+        "nombre": "Impresora HP DeskJet",
+        "precioCompra": 80,
+        "precioVenta": 130,
+        "stock": 18,
+        "nombreProveedor": "OfficeTech",
+        "nombreCategoria": "Oficina",
+        "nombreMarca": "HP"
+      },
+      {
+        "id": 12,
+        "nombre": "Router TP-Link",
+        "precioCompra": 25,
+        "precioVenta": 50,
+        "stock": 22,
+        "nombreProveedor": "NetSolutions",
+        "nombreCategoria": "Redes",
+        "nombreMarca": "TP-Link"
+      },
+      {
+        "id": 13,
+        "nombre": "Webcam Logitech HD",
+        "precioCompra": 20,
+        "precioVenta": 40,
+        "stock": 27,
+        "nombreProveedor": "Distribuidora Norte",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Logitech"
+      },
+      {
+        "id": 14,
+        "nombre": "Silla Gamer",
+        "precioCompra": 90,
+        "precioVenta": 150,
+        "stock": 10,
+        "nombreProveedor": "GamingStore",
+        "nombreCategoria": "Muebles",
+        "nombreMarca": "DXRacer"
+      },
+      {
+        "id": 15,
+        "nombre": "Parlantes Genius",
+        "precioCompra": 15,
+        "precioVenta": 30,
+        "stock": 45,
+        "nombreProveedor": "AudioTech",
+        "nombreCategoria": "Audio",
+        "nombreMarca": "Genius"
+      }
+    ],
+  "productosRequest": [
+    { "id": 1, "nombre": "Bici Montaña", "stock": 10, "precioCompra": 100, "precioVenta": 150, "proveedorId": 1, "categoriaId": 1, "marcaId": 1 },
+    { "id": 2, "nombre": "Casco", "stock": 2, "precioCompra": 20, "precioVenta": 40, "proveedorId": 1, "categoriaId": 2, "marcaId": 2 },
+    { "id": 3, "nombre": "Pedales", "stock": 4, "precioCompra": 15, "precioVenta": 30, "proveedorId": 2, "categoriaId": 3, "marcaId": 1 },
+    { "id": 4, "nombre": "Inflador", "stock": 15, "precioCompra": 10, "precioVenta": 25, "proveedorId": 2, "categoriaId": 4, "marcaId": 3 }
+  ]
+}
