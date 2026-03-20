@@ -51,8 +51,9 @@ export class Inventario implements OnInit {
       maxWidth: 190,
       cellRenderer: () => `
         <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
-          <button type="button" class="btn btn-sm btn-outline-primary" data-action="view">View</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit">Edit</button>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-action="view">Ver</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit">Editar</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete">Eliminar</button>
         </div>
       `,
     },
@@ -95,7 +96,7 @@ export class Inventario implements OnInit {
       return;
     }
 
-    if (action === 'view' || action === 'edit') {
+    if (action === 'view' || action === 'edit' || action === 'delete') {
       this.openModal(action, event.data);
     }
   }

@@ -9,8 +9,8 @@
       <div class="modal-body">
         @if (mode === 'delete') {
         <p class="mb-0">
-          Are you sure you want to delete
-          <strong>{{ product?.nombre ?? 'this product' }}</strong>?
+          ¿Seguro que deseas eliminar el producto?
+          <strong>{{ product?.nombre ?? 'este producto' }}</strong>?
         </p>
         } @else {
         <div class="row g-3">
@@ -68,16 +68,16 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancel</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
         @if (mode === 'create' || mode === 'edit') {
         <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
-          {{ mode === 'create' ? 'Create' : 'Save changes' }}
+          {{ mode === 'create' ? 'Crear' : 'Guardar' }}
         </button>
         }
 
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Delete</button>
+        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Borrar</button>
         }
       </div>
     </div>
