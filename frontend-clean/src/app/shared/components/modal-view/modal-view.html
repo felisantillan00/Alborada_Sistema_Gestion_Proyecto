@@ -63,6 +63,13 @@
                    [value]="mode === 'create' ? '' : (product?.nombreMarca ?? '')"
                    [disabled]="mode === 'view'" />
           </div>
+          <div class="col-md-4">
+            <label class="form-label">NGSELECT</label>
+            <ng-select [items]="cars"
+                       bindLabel="name"
+                       bindValue="id">
+            </ng-select>
+          </div>
         </div>
         }
       </div>

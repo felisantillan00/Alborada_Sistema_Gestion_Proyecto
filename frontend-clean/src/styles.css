@@ -1,6 +1,6 @@
 /*@import 'ag-grid-community/styles/ag-grid.css';*/
 /*@import 'ag-grid-community/styles/ag-theme-alpine.css';*/
-
+@import "@ng-select/ng-select/themes/default.theme.css";
 :root {
   --color-sidebar-bg: #0b1f16; /* Verde muy oscuro del menú */
   --color-primary: #12b745; /* Verde brillante del botón activo */

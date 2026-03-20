@@ -2,6 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProductoView } from '../../../core/models/producto';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 import { Categoria } from '../../../core/models/categoria';
 import { Proveedor } from '../../../core/models/proveedor';
 import { Marca } from '../../../core/models/marca';
@@ -11,7 +12,10 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 @Component({
   selector: 'app-modal-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+    NgLabelTemplateDirective,
+    NgOptionTemplateDirective,
+    NgSelectComponent,],
   templateUrl: './modal-view.html',
   styleUrl: './modal-view.css',
 })
@@ -25,7 +29,7 @@ export class ModalView {
   categorias : Categoria[] = [];
   proveedores : Proveedor[] = [];
   marcas : Marca[] = [];
-
+ cars : any[] = [{id: 1, name: 'Audi'},{id:2,name:'Fiat'}]
   getMarcas(){
     //logica de servicio para traer las marcas
   }
