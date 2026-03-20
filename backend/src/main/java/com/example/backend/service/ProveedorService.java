@@ -1,16 +1,14 @@
 package com.example.backend.service;
-import org.springframework.stereotype.Service;
-
-import com.example.backend.dto.ProveedorDTO;
-import com.example.backend.model.Proveedor;
 import com.example.backend.repository.ProveedorRepository;
-
+import org.springframework.stereotype.Service;
+import com.example.backend.model.Proveedor;
+import org.springframework.data.domain.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 import java.util.stream.Collectors;
+import com.example.backend.dto.*;
+import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -101,6 +99,11 @@ public class ProveedorService {
         proveedorRepository.deleteById(id);
     }
 
+    public Page<ProveedorDTO> findAll(Pageable pageable) {
+        // El repository ya sabe recibir un pageable y devolver un Page<Entity>
+        return proveedorRepository.findAll(pageable)
+            .map(this::mapToDTO); // Convertimos cada Proveedor del Page a DTO
+    }
 
     // --- MAPPER ---
     private ProveedorDTO mapToDTO(Proveedor p) {

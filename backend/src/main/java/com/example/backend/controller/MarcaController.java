@@ -2,10 +2,10 @@ package com.example.backend.controller;
 import org.springframework.web.bind.annotation.*;
 import com.example.backend.service.MarcaService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.*;
 import com.example.backend.dto.MarcaDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
 
 @RestController
 @RequestMapping("/marca")
@@ -16,8 +16,8 @@ public class MarcaController {
 
     // Metodo Listar
     @GetMapping
-    public ResponseEntity<List<MarcaDTO>> listAll() {
-        return ResponseEntity.ok(marcaService.listAll());
+    public ResponseEntity<Page<MarcaDTO>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(marcaService.findAll(pageable));
     }
 
     @GetMapping("/{id}")

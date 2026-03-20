@@ -3,9 +3,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.backend.service.CategoriaService;
 import org.springframework.http.ResponseEntity;
 import com.example.backend.dto.CategoriaDTO;
+import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
 
 @RestController
 @RequestMapping("/categoria")
@@ -16,8 +16,8 @@ public class CategoriaController {
 
     // Metodo Listar
     @GetMapping
-    public ResponseEntity<List<CategoriaDTO>> listAll() {
-        return ResponseEntity.ok(categoriaService.listAll());
+    public ResponseEntity<Page<CategoriaDTO>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(categoriaService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
