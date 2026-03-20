@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Api } from '../api';
-import { Producto } from '../../models/producto';
+import { ProductoRequest, ProductoView } from '../../models/producto';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -9,15 +9,15 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ProductoService extends Api<Producto> {
+export class ProductoService extends Api<ProductoView, ProductoRequest> {
 
   constructor(http: HttpClient) {
-    super(http, 'productos');
+    super(http, 'productosView');
   }
 
  //Implementacion de Paginacion
  //asi funcion solo para el json-server, para Spring Boot es distinto
- getProductosPaginados(pagina: number, cantidad: number): Observable<Producto[]> {
+ getProductosPaginados(pagina: number, cantidad: number): Observable<ProductoView[]> {
     
     const params = {
       _page: pagina,
