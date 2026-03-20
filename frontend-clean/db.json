@@ -152,9 +152,91 @@
       }
     ],
   "productosRequest": [
-    { "id": 1, "nombre": "Bici Montaña", "stock": 10, "precioCompra": 100, "precioVenta": 150, "proveedorId": 1, "categoriaId": 1, "marcaId": 1 },
-    { "id": 2, "nombre": "Casco", "stock": 2, "precioCompra": 20, "precioVenta": 40, "proveedorId": 1, "categoriaId": 2, "marcaId": 2 },
-    { "id": 3, "nombre": "Pedales", "stock": 4, "precioCompra": 15, "precioVenta": 30, "proveedorId": 2, "categoriaId": 3, "marcaId": 1 },
-    { "id": 4, "nombre": "Inflador", "stock": 15, "precioCompra": 10, "precioVenta": 25, "proveedorId": 2, "categoriaId": 4, "marcaId": 3 }
+    {
+      "id": 1,
+      "nombre": "Bici Montaña",
+      "stock": 10,
+      "precioCompra": 100,
+      "precioVenta": 150,
+      "proveedorId": 1,
+      "categoriaId": 1,
+      "marcaId": 1
+    },
+    {
+      "id": 2,
+      "nombre": "Casco",
+      "stock": 2,
+      "precioCompra": 20,
+      "precioVenta": 40,
+      "proveedorId": 1,
+      "categoriaId": 2,
+      "marcaId": 2
+    },
+    {
+      "id": 3,
+      "nombre": "Pedales",
+      "stock": 4,
+      "precioCompra": 15,
+      "precioVenta": 30,
+      "proveedorId": 2,
+      "categoriaId": 3,
+      "marcaId": 1
+    },
+    {
+      "id": 4,
+      "nombre": "Inflador",
+      "stock": 15,
+      "precioCompra": 10,
+      "precioVenta": 25,
+      "proveedorId": 2,
+      "categoriaId": 4,
+      "marcaId": 3
+    }
+  ],
+  "categorias": [
+    {
+      "id": 1,
+      "nombre": "Bicicletas"
+    },
+    {
+      "id": 2,
+      "nombre": "Accesorios"
+    },
+    {
+      "id": 3,
+      "nombre": "Componentes"
+    },
+    {
+      "id": 4,
+      "nombre": "Herramientas"
+    }
+  ],
+  "marcas": [
+    {
+      "id": 1,
+      "nombre": "Marca A"
+    },
+    {
+      "id": 2,
+      "nombre": "Marca B"
+    },
+    {
+      "id": 3,
+      "nombre": "Marca C"
+    }
+  ],
+  "proveedores": [
+    {
+      "id": 1,
+      "nombre": "Proveedor X"
+    },
+    {
+      "id": 2,
+      "nombre": "Proveedor Y"
+    },
+    {
+      "id": 3,
+      "nombre": "Proveedor Z"
+    }
   ]
 }

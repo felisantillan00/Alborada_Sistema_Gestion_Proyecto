@@ -8,6 +8,6 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CategoriasService extends Api<Categoria>{
   constructor(http: HttpClient) {
-    super(http, 'categoria');
+    super(http, 'categorias');
   }
 }
