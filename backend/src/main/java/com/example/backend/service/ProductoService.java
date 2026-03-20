@@ -3,6 +3,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.response.*;
 import com.example.backend.exception.NegocioException;
+import org.springframework.data.domain.*;
 import com.example.backend.dto.request.*;
 import com.example.backend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -54,13 +55,13 @@ public class ProductoService {
         calcularPrecio(producto, request);
 
         Producto guardado = productoRepository.save(producto);
-        return mapToResponse(guardado);
+        return mapToDTO(guardado);
     }
 
     // --- 2. LISTAR ---
     public List<ProductoResponseDTO> listAll() {
         return productoRepository.findAll().stream()
-                .map(this::mapToResponse)
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +75,7 @@ public class ProductoService {
         }
 
         return resultados.stream()
-                .map(this::mapToResponse)
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +83,7 @@ public class ProductoService {
     public ProductoResponseDTO findById(Long id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new NegocioException("Producto no encontrado"));
-        return mapToResponse(producto);
+        return mapToDTO(producto);
     }
 
     // --- 5. UPDATE ---
@@ -123,7 +124,7 @@ public class ProductoService {
         }
 
         Producto actualizado = productoRepository.save(producto);
-        return mapToResponse(actualizado);
+        return mapToDTO(actualizado);
     }
     
     // --- 6. DELETE ---
@@ -131,7 +132,7 @@ public class ProductoService {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + id));
         productoRepository.delete(producto);
-        return mapToResponse(producto);
+        return mapToDTO(producto);
     }
 
     // Funcion para calcular el precio de venta
@@ -188,8 +189,14 @@ public class ProductoService {
         }
     }
 
+    public Page<ProductoResponseDTO> findAll(Pageable pageable) {
+        // El repository ya sabe recibir un pageable y devolver un Page<Entity>
+        return productoRepository.findAll(pageable)
+            .map(this::mapToDTO); // Convertimos cada Producto del Page a DTO
+    }
+
     // Método auxiliar para no repetir código en el GetById o GetAll
-    private ProductoResponseDTO mapToResponse(Producto p) {
+    private ProductoResponseDTO mapToDTO(Producto p) {
         ProductoResponseDTO response = new ProductoResponseDTO();
         // --- Campos simples (esto queda igual) ---
         response.setId(p.getId());

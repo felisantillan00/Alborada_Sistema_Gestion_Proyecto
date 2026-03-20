@@ -2,11 +2,11 @@ package com.example.backend.controller;
 import com.example.backend.service.ProveedorService;
 import org.springframework.web.bind.annotation.*;
 import com.example.backend.dto.ProveedorDTO;
+import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/proveedor")
@@ -16,8 +16,8 @@ public class ProveedorController {
     private final ProveedorService proveedorService;
 
     @GetMapping
-    public ResponseEntity<List<ProveedorDTO>> listAll() {
-        return ResponseEntity.ok(proveedorService.listAll());
+    public ResponseEntity<Page<ProveedorDTO>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(proveedorService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
