@@ -16,60 +16,45 @@
         <div class="row g-3">
           <div class="col-md-8">
             <label class="form-label">Nombre</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="text" [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-4">
             <label class="form-label">Stock</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.stock ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.stock ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-6">
             <label class="form-label">Precio compra</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-6">
             <label class="form-label">Precio venta</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-4">
             <label class="form-label">Proveedor</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreProveedor ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Categoria</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreCategoria ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Marca</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreMarca ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">NGSELECT</label>
-            <ng-select [items]="cars"
-                       bindLabel="name"
-                       bindValue="id">
+            <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
+              [readonly]="mode === 'view'">
             </ng-select>
           </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Categoría</label>
+            <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
+              [readonly]="mode === 'view'">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Marca</label>
+            <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
+              [readonly]="mode === 'view'">
+            </ng-select>
+          </div>
+
         </div>
         }
       </div>
