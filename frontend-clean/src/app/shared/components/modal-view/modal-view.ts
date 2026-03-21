@@ -48,7 +48,7 @@ export class ModalView implements OnInit {
         console.error('Error al cargar marcas', err);
         return EMPTY;
       })
-    ).subscribe(data => this.marcas = data);
+    ).subscribe(data => {this.marcas = data; console.log('Marcas cargadas:', data);});
   }
 
   getProveedores(): void {
@@ -57,7 +57,7 @@ export class ModalView implements OnInit {
         console.error('Error al cargar proveedores', err);
         return EMPTY;
       })
-    ).subscribe(data => this.proveedores = data);
+    ).subscribe(data => {this.proveedores = data; console.log('Proveedores cargados:', data);});
   }
 
   getCategorias(): void {
@@ -66,7 +66,7 @@ export class ModalView implements OnInit {
         console.error('Error al cargar categorías', err);
         return EMPTY;
       })
-    ).subscribe(data => this.categorias = data);
+    ).subscribe(data => {this.categorias = data; console.log('Categorías cargadas:', data);});
   }
 
   get title(): string {
