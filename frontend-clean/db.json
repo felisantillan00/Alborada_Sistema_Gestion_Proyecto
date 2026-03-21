@@ -243,6 +243,54 @@
       ]
     }
   ],
+  "compras": [
+    {
+      "Id": "C-001",
+      "PrecioTotal": 520,
+      "NombreProveedor": "TechSupplier",
+      "Fecha": "2026-03-20",
+      "Producto": [
+        {
+          "Id": "4",
+          "Nombre": "Monitor Samsung 24\"",
+          "Cantidad": 2,
+          "Precio": 120
+        },
+        {
+          "Id": "8",
+          "Nombre": "Disco SSD Kingston 480GB",
+          "Cantidad": 4,
+          "Precio": 35
+        },
+        {
+          "Id": "9",
+          "Nombre": "Memoria RAM Corsair 8GB",
+          "Cantidad": 2,
+          "Precio": 30
+        }
+      ]
+    },
+    {
+      "Id": "C-002",
+      "PrecioTotal": 400,
+      "NombreProveedor": "AudioTech",
+      "Fecha": "2026-03-21",
+      "Producto": [
+        {
+          "Id": "5",
+          "Nombre": "Auriculares Sony",
+          "Cantidad": 5,
+          "Precio": 40
+        },
+        {
+          "Id": "15",
+          "Nombre": "Parlantes Genius",
+          "Cantidad": 10,
+          "Precio": 20
+        }
+      ]
+    }
+  ],
   "categorias": [
     {
       "id": 1,
