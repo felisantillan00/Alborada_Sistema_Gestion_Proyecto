@@ -2,13 +2,17 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProductoView } from '../../../core/models/producto';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { Categoria } from '../../../core/models/categoria';
+import { Proveedor } from '../../../core/models/proveedor';
+import { Marca } from '../../../core/models/marca';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
 @Component({
   selector: 'app-modal-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgSelectModule],
   templateUrl: './modal-view.html',
   styleUrl: './modal-view.css',
 })
@@ -19,18 +23,34 @@ export class ModalView {
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
 
+  categorias : Categoria[] = [];
+  proveedores : Proveedor[] = [];
+  marcas : Marca[] = [];
+
+  getMarcas(){
+    //logica de servicio para traer las marcas
+  }
+
+  getProveedores(){
+    //logica de servicio para traer los proveedores
+  }
+
+  getCategorias(){
+    //logica de servicio para traer las categorias
+  }
+
   get title(): string {
     switch (this.mode) {
       case 'create':
-        return 'New Product';
+        return 'Nuevo Producto';
       case 'view':
-        return 'View Product';
+        return 'Ver Producto';
       case 'edit':
-        return 'Edit Product';
+        return 'Editar Producto';
       case 'delete':
-        return 'Delete Product';
+        return 'Borrar Producto';
       default:
-        return 'Product';
+        return 'Producto';
     }
   }
 }

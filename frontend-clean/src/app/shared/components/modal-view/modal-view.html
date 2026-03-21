@@ -9,75 +9,67 @@
       <div class="modal-body">
         @if (mode === 'delete') {
         <p class="mb-0">
-          Are you sure you want to delete
-          <strong>{{ product?.nombre ?? 'this product' }}</strong>?
+          ¿Seguro que deseas eliminar el producto?
+          <strong>{{ product?.nombre ?? 'este producto' }}</strong>?
         </p>
         } @else {
         <div class="row g-3">
           <div class="col-md-8">
             <label class="form-label">Nombre</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="text" [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-4">
             <label class="form-label">Stock</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.stock ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.stock ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-6">
             <label class="form-label">Precio compra</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-6">
             <label class="form-label">Precio venta</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
-                   [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
+              [disabled]="mode === 'view'" />
           </div>
           <div class="col-md-4">
             <label class="form-label">Proveedor</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreProveedor ?? '')"
-                   [disabled]="mode === 'view'" />
+            <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
+              [readonly]="mode === 'view'">
+            </ng-select>
           </div>
+
           <div class="col-md-4">
-            <label class="form-label">Categoria</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreCategoria ?? '')"
-                   [disabled]="mode === 'view'" />
+            <label class="form-label">Categoría</label>
+            <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
+              [readonly]="mode === 'view'">
+            </ng-select>
           </div>
+
           <div class="col-md-4">
             <label class="form-label">Marca</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreMarca ?? '')"
-                   [disabled]="mode === 'view'" />
+            <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
+              [readonly]="mode === 'view'">
+            </ng-select>
           </div>
+
         </div>
         }
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancel</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
         @if (mode === 'create' || mode === 'edit') {
         <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
-          {{ mode === 'create' ? 'Create' : 'Save changes' }}
+          {{ mode === 'create' ? 'Crear' : 'Guardar' }}
         </button>
         }
 
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Delete</button>
+        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Borrar</button>
         }
       </div>
     </div>
