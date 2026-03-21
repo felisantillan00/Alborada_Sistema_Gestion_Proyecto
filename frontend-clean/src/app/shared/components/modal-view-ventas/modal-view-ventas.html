@@ -1,0 +1,77 @@
+<div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closed.emit()"></button>
+      </div>
+
+      <div class="modal-body">
+        @if (mode === 'delete') {
+        <p class="mb-0">
+          Seguro que deseas eliminar la venta
+          <strong>{{ venta?.Id ?? '' }}</strong>?
+        </p>
+        } @else {
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">ID</label>
+            <input class="form-control" type="text" [value]="mode === 'create' ? '' : (venta?.Id ?? '')" [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Cliente</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (venta?.NombreCliente ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Precio Total</label>
+            <input class="form-control"
+                   type="number"
+                   [value]="mode === 'create' ? '' : (venta?.PrecioTotal ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Fecha</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (venta?.Fecha ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Forma de Pago</label>
+            <input class="form-control"
+                   type="text"
+                   [value]="mode === 'create' ? '' : (venta?.FormaDePago ?? '')"
+                   [disabled]="mode === 'view'" />
+          </div>
+          <div class="col-12">
+            <label class="form-label">Productos</label>
+            <textarea class="form-control"
+                      rows="4"
+                      [value]="mode === 'create' ? '' : (venta?.Productos | json)"
+                      [disabled]="true"></textarea>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
+
+        @if (mode === 'create' || mode === 'edit') {
+        <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
+          {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+        </button>
+        }
+
+        @if (mode === 'delete') {
+        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Borrar</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show"></div>

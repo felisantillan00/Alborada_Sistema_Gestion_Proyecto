@@ -193,6 +193,56 @@
       "marcaId": 3
     }
   ],
+  "ventas": [
+    {
+      "Id": "V-001",
+      "NombreCliente": "Juan Perez",
+      "PrecioTotal": 190,
+      "Fecha": "2026-03-20",
+      "FormaDePago": "Efectivo",
+      "Productos": [
+        {
+          "Id": "2",
+          "Nombre": "Mouse Logitech",
+          "Cantidad": 2,
+          "PrecioVenta": 20
+        },
+        {
+          "Id": "3",
+          "Nombre": "Teclado Redragon",
+          "Cantidad": 1,
+          "PrecioVenta": 45
+        },
+        {
+          "Id": "15",
+          "Nombre": "Parlantes Genius",
+          "Cantidad": 3,
+          "PrecioVenta": 30
+        }
+      ]
+    },
+    {
+      "Id": "V-002",
+      "NombreCliente": "Maria Gomez",
+      "PrecioTotal": 410,
+      "Fecha": "2026-03-21",
+      "FormaDePago": "Tarjeta",
+      "Productos": [
+        {
+          "Id": "1",
+          "Nombre": "Notebook Lenovo",
+          "Cantidad": 1,
+          "PrecioVenta": 750
+        },
+        {
+          "Id": "13",
+          "Nombre": "Webcam Logitech HD",
+          "Cantidad": 1,
+          "PrecioVenta": 40
+        }
+      ]
+    }
+  ],
   "categorias": [
     {
       "id": 1,
