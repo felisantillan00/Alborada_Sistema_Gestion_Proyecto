@@ -144,4 +144,12 @@ export class ModalView implements OnInit {
       default:       return 'Producto';
     }
   }
+
+  onSubmit(): void {
+    if (this.form.invalid){
+      this.form.markAllAsTouched();
+      return;
+    } 
+    this.submitted.emit(this.mode);
+  }
 }
