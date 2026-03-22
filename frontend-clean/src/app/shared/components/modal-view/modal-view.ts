@@ -76,8 +76,20 @@ export class ModalView implements OnInit {
     precioCompra: this.product.precioCompra,
     precioVenta:  this.product.precioVenta,
   });
-}
+  }
 
+  private setSelectValues():void{
+    if (!this.product) return;
+    const categoria = this.categorias.find(c => c.nombre === this.product?.nombreCategoria);
+    const proveedor = this.proveedores.find(p => p.nombre === this.product?.nombreProveedor);
+    const marca = this.marcas.find(m => m.nombre === this.product?.nombreMarca);
+
+    this.form.patchValue({
+      categoriaId: categoria?.id ?? null,
+      proveedorId: proveedor?.id ?? null,
+      marcaId: marca?.id ?? null,
+    });
+  }
   getMarcas(): void {
     this.marcasService.getAll().pipe(
       catchError(err => {
@@ -88,7 +100,7 @@ export class ModalView implements OnInit {
       this.marcas = data;
       if (this.mode === 'edit' || this.mode === 'view') {
         const marca = this.marcas.find(m => m.nombre === this.product?.nombreMarca);
-        this.form.patchValue({ marcaId: marca?.id ?? null });
+        this.setSelectValues();
       }
     });
   }
@@ -103,7 +115,7 @@ export class ModalView implements OnInit {
       this.proveedores = data;
       if (this.mode === 'edit' || this.mode === 'view') {
         const proveedor = this.proveedores.find(p => p.nombre === this.product?.nombreProveedor);
-        this.form.patchValue({ proveedorId: proveedor?.id ?? null });
+        this.setSelectValues();
       }
     });
   }
@@ -118,7 +130,7 @@ export class ModalView implements OnInit {
       this.categorias = data;
       if (this.mode === 'edit' || this.mode === 'view') {
         const categoria = this.categorias.find(c => c.nombre === this.product?.nombreCategoria);
-        this.form.patchValue({ categoriaId: categoria?.id ?? null });
+        this.setSelectValues();
       }
     });
   }
