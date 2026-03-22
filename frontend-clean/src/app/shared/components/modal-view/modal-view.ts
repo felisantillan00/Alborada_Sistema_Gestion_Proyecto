@@ -42,6 +42,9 @@ export class ModalView implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    if(this.mode === 'edit' || this.mode === 'view') {
+      this.patchForm();
+    }
     this.getCategorias();
     this.getProveedores();
     this.getMarcas();
@@ -52,15 +55,25 @@ export class ModalView implements OnInit {
     const p = this.product;
 
     this.form = this.fb.group({
-      nombre:       [{ value: p?.nombre ?? '',      disabled: isViewMode }, Validators.required],
-      stock:        [{ value: p?.stock ?? 0,         disabled: isViewMode }, [Validators.required, Validators.min(0)]],
-      precioCompra: [{ value: p?.precioCompra ?? 0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
-      precioVenta:  [{ value: p?.precioVenta ?? 0,   disabled: isViewMode }, [Validators.required, Validators.min(0)]],
+      nombre:       [{ value: '',  disabled: isViewMode }, Validators.required],
+      stock:        [{ value:  0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
+      precioCompra: [{ value:  0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
+      precioVenta:  [{ value:  0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
       proveedorId:  [{ value: null, disabled: isViewMode }, Validators.required],
       categoriaId:  [{ value: null, disabled: isViewMode }, Validators.required],
       marcaId:      [{ value: null, disabled: isViewMode }, Validators.required],
     });
   }
+
+  private patchForm(): void {
+  if (!this.product) return;
+  this.form.patchValue({
+    nombre:       this.product.nombre,
+    stock:        this.product.stock,
+    precioCompra: this.product.precioCompra,
+    precioVenta:  this.product.precioVenta,
+  });
+}
 
   getMarcas(): void {
     this.marcasService.getAll().pipe(
