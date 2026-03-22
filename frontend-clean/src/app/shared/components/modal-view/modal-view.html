@@ -37,24 +37,23 @@
           <div class="col-md-4">
             <label class="form-label">Proveedor</label>
             <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
-              [readonly]="mode === 'view'">
+              [(ngModel)]="proveedorSelectID" [readonly]="mode === 'view'">
             </ng-select>
           </div>
 
           <div class="col-md-4">
             <label class="form-label">Categoría</label>
             <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
-              [readonly]="mode === 'view'">
+              [(ngModel)]="categoriaSelectID" [readonly]="mode === 'view'">
             </ng-select>
           </div>
 
           <div class="col-md-4">
             <label class="form-label">Marca</label>
             <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
-              [readonly]="mode === 'view'">
+              [(ngModel)]="marcaSelectID" [readonly]="mode === 'view'">
             </ng-select>
           </div>
-
         </div>
         }
       </div>
