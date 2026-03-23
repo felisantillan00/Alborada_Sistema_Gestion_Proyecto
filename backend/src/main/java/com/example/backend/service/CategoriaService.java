@@ -3,6 +3,7 @@ import com.example.backend.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.CategoriaDTO;
 import com.example.backend.model.Categoria;
+import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import java.util.List;
@@ -25,14 +26,14 @@ public class CategoriaService {
         Categoria Categoria = new Categoria();
         Categoria.setNombre(nombreBonito);
         categoriaRepository.save(Categoria);
-        return convertirADTO(Categoria);
+        return mapToDTO(Categoria);
     }
 
     // 2. Metodo Listar
     public List<CategoriaDTO> listAll() {
         List<Categoria> lista = categoriaRepository.findAll();
         return lista.stream()
-            .map(this::convertirADTO)
+            .map(this::mapToDTO)
             .collect(Collectors.toList());
     }
 
@@ -40,7 +41,7 @@ public class CategoriaService {
     public CategoriaDTO findById(Long id) {
         Categoria Categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada con ID: " + id));
-        return convertirADTO(Categoria);
+        return mapToDTO(Categoria);
     }
 
     // 4. Metodo Editar
@@ -63,7 +64,7 @@ public class CategoriaService {
         String nombreBonito = capitalizarTexto(nombreLimpio);
         // 6. Guardar cambios
         CategoriaExistente.setNombre(nombreBonito);
-        return convertirADTO(categoriaRepository.save(CategoriaExistente));
+        return mapToDTO(categoriaRepository.save(CategoriaExistente));
     }
 
     // 5. Metodo Eliminar
@@ -74,8 +75,14 @@ public class CategoriaService {
         categoriaRepository.deleteById(id);
     }
 
+    public Page<CategoriaDTO> findAll(Pageable pageable) {
+        // El repository ya sabe recibir un pageable y devolver un Page<Entity>
+        return categoriaRepository.findAll(pageable)
+            .map(this::mapToDTO); // Convertimos cada Categoria del Page a DTO
+    }
+
     // --- MÉTODO PRIVADO DE AYUDA (HELPER) ---
-    private CategoriaDTO convertirADTO(Categoria Categoria) {
+    private CategoriaDTO mapToDTO(Categoria Categoria) {
         return CategoriaDTO.builder()
                 .id(Categoria.getId())
                 .nombre(Categoria.getNombre())
