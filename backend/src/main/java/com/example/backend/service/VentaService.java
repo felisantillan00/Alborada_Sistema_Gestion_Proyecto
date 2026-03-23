@@ -6,6 +6,8 @@ import com.example.backend.dto.response.DetalleVentaResponseDTO;
 import com.example.backend.dto.response.VentaResponseDTO;
 import com.example.backend.model.*;
 import com.example.backend.repository.VentaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +18,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor // Esto hace que el constructor se cree solo
+@RequiredArgsConstructor 
 public class VentaService {
 
     private final VentaRepository ventaRepository;
-    private final ProductoService productoService; // Usamos el servicio del compañero
+    private final ProductoService productoService; 
+
+    //Listar ventas con paginación
+    @Transactional(readOnly = true)
+    public Page<VentaResponseDTO> listarVentas(Pageable pageable) {
+        return ventaRepository.findAll(pageable)
+                .map(this::mapearAVentaResponse);
+    }
 
     @Transactional
     public VentaResponseDTO registrarVenta(VentaRequestDTO request) {
@@ -36,22 +45,19 @@ public class VentaService {
 
         for (DetalleVentaRequestDTO detalleRequest : request.detalles()) {
             
-            // 1. Usamos el método de tu compañero que ya descuenta stock y valida todo
-            // Convertimos la cantidad a BigDecimal porque así lo pide su método
+            //1. Convertimos la cantidad y descontamos stock
             BigDecimal cantidadBD = BigDecimal.valueOf(detalleRequest.cantidad());
             productoService.descontarStock(detalleRequest.idProducto(), cantidadBD);
 
-            // 2. Buscamos el producto para obtener el precio actual
-            // (Tu compañero ya tiene un método findById en su service)
+            //2. Buscamos el producto para obtener el precio actual
             var productoDto = productoService.findById(detalleRequest.idProducto());
             
-            // 3. Calculamos subtotal
+            //3. Calculamos subtotal
             BigDecimal subtotal = productoDto.getPrecioVenta().multiply(cantidadBD);
             totalVenta = totalVenta.add(subtotal);
 
-            // 4. Creamos el objeto DetalleVenta
+            //4. Creamos el objeto DetalleVenta
             DetalleVenta detalle = new DetalleVenta();
-            // Nota: Aquí creamos una entidad mínima de producto para la relación
             Producto p = new Producto();
             p.setId(productoDto.getId());
             
