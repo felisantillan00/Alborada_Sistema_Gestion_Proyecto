@@ -16,22 +16,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/ventas")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200", "http://localhost:5173"}) 
 public class VentaController {
 
     private final VentaService ventaService;
 
-    // --- NUEVO MÉTODO GET PARA PAGINACIÓN ---
+    //Metodo para obtener todas las ventas con paginación
     @GetMapping
     public ResponseEntity<Page<VentaResponseDTO>> obtenerVentas(
             @PageableDefault(size = 10) Pageable pageable) {
-        // Llama al nuevo método del Service que creamos recién
         return ResponseEntity.ok(ventaService.listarVentas(pageable));
     }
 
     @PostMapping
     public ResponseEntity<VentaResponseDTO> registrarVenta(@RequestBody VentaRequestDTO request) {
-        // Recibe el JSON del frontend y lo manda a tu Service
+        //Recibe el JSON del frontend y lo manda a Service
         log.info("Registrando nueva venta para el cliente: {}", request.nombreCliente());
         VentaResponseDTO respuesta = ventaService.registrarVenta(request);
         return ResponseEntity.ok(respuesta);

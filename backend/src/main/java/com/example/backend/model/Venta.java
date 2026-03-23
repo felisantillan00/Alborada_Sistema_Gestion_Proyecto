@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "venta")
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @ToString(exclude = "detalles") @Builder @NoArgsConstructor @AllArgsConstructor
 public class Venta {
 
     @Id

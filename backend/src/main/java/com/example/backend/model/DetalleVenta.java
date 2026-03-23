@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "detalle_venta")
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @ToString(exclude = {"venta", "producto"}) @Builder @NoArgsConstructor @AllArgsConstructor
 public class DetalleVenta {
 
     @Id
@@ -14,17 +14,15 @@ public class DetalleVenta {
     private Long id;
 
     @Column(name = "precio_unitario")
+
     private BigDecimal precioUnitario;
-
     private Integer cantidad;
-
     private BigDecimal total;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_venta")
     private Venta venta;
 
-    // Esta línea quedará en rojo por ahora, ¡es normal!
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_producto")
     private Producto producto;

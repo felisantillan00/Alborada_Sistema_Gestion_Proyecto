@@ -14,7 +14,6 @@ public record VentaRequestDTO(
     @NotBlank(message = "El nombre del cliente es obligatorio")
     String nombreCliente,
 
-    // Una venta obligatoriamente debe tener una lista de detalles
     @NotEmpty(message = "La venta debe tener al menos un detalle")
     List<DetalleVentaRequestDTO> detalles
 ) {}
