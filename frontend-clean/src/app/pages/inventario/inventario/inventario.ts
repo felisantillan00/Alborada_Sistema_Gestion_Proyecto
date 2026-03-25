@@ -44,19 +44,25 @@ export class Inventario implements OnInit {
     { field: 'nombreCategoria', headerName: 'Categoria' },
     { field: 'nombreMarca', headerName: 'Marca' },
     {
-      headerName: 'Actions',
-      colId: 'actions',
-      sortable: false,
-      filter: false,
-      maxWidth: 190,
-      cellRenderer: () => `
-        <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
-          <button type="button" class="btn btn-sm btn-outline-primary" data-action="view">Ver</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit">Editar</button>
-          <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete">Eliminar</button>
-        </div>
-      `,
-    },
+  headerName: 'Actions',
+  colId: 'actions',
+  sortable: false,
+  filter: false,
+  maxWidth: 150, 
+  cellRenderer: () => `
+    <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
+      <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" title="Ver">
+        <i class="bi bi-eye"></i>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  `,
+},
   ];
 
   constructor(private productoService: ProductoService) { }
