@@ -1,5 +1,6 @@
 {
-    "productosView": [
+  "productosView": {
+    "content": [
       {
         "id": 1,
         "nombre": "Notebook Lenovo",
@@ -19,340 +20,148 @@
         "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
         "nombreMarca": "Marca B"
-      },
-      {
-        "id": 3,
-        "nombre": "Teclado Redragon",
-        "precioCompra": 25,
-        "precioVenta": 45,
-        "stock": 30,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Accesorios",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 4,
-        "nombre": "Monitor Samsung 24\"",
-        "precioCompra": 120,
-        "precioVenta": 180,
-        "stock": 15,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Electrónica",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 5,
-        "nombre": "Auriculares Sony",
-        "precioCompra": 40,
-        "precioVenta": 70,
-        "stock": 25,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Audio",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 6,
-        "nombre": "Celular Xiaomi Redmi",
-        "precioCompra": 150,
-        "precioVenta": 230,
-        "stock": 20,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Electrónica",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 7,
-        "nombre": "Tablet Samsung Galaxy Tab",
-        "precioCompra": 200,
-        "precioVenta": 300,
-        "stock": 12,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Electrónica",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 8,
-        "nombre": "Disco SSD Kingston 480GB",
-        "precioCompra": 35,
-        "precioVenta": 60,
-        "stock": 40,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Componentes",
-        "nombreMarca": "Marca A"
-      },
-      {
-        "id": 9,
-        "nombre": "Memoria RAM Corsair 8GB",
-        "precioCompra": 30,
-        "precioVenta": 55,
-        "stock": 35,
-        "nombreProveedor": "Proveedor Z",
-        "nombreCategoria": "Componentes",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 10,
-        "nombre": "Placa de Video NVIDIA RTX 3060",
-        "precioCompra": 300,
-        "precioVenta": 450,
-        "stock": 8,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Componentes",
-        "nombreMarca": "Marca C"
-      },
-      {
-        "id": 11,
-        "nombre": "Impresora HP DeskJet",
-        "precioCompra": 80,
-        "precioVenta": 130,
-        "stock": 18,
-        "nombreProveedor": "Proveedor Y",
-        "nombreCategoria": "Oficina",
-        "nombreMarca": "Marca A"
-      },
-      {
-        "id": 12,
-        "nombre": "Router TP-Link",
-        "precioCompra": 25,
-        "precioVenta": 50,
-        "stock": 22,
-        "nombreProveedor": "Proveedor Z",
-        "nombreCategoria": "Redes",
-        "nombreMarca": "Marca C"
-      },
-      {
-        "id": 13,
-        "nombre": "Webcam Logitech HD",
-        "precioCompra": 20,
-        "precioVenta": 40,
-        "stock": 27,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Accesorios",
-        "nombreMarca": "Marca B"
-      },
-      {
-        "id": 14,
-        "nombre": "Silla Gamer",
-        "precioCompra": 90,
-        "precioVenta": 150,
-        "stock": 10,
-        "nombreProveedor": "Proveedor Y",
-        "nombreCategoria": "Muebles",
-        "nombreMarca": "Marca A"
-      },
-      {
-        "id": 15,
-        "nombre": "Parlantes Genius",
-        "precioCompra": 15,
-        "precioVenta": 30,
-        "stock": 45,
-        "nombreProveedor": "Proveedor X",
-        "nombreCategoria": "Audio",
-        "nombreMarca": "Marca C"
       }
     ],
-  "productosRequest": [
-    {
-      "id": 1,
-      "nombre": "Bici Montaña",
-      "stock": 10,
-      "precioCompra": 100,
-      "precioVenta": 150,
-      "proveedorId": 1,
-      "categoriaId": 1,
-      "marcaId": 1
-    },
-    {
-      "id": 2,
-      "nombre": "Casco",
-      "stock": 2,
-      "precioCompra": 20,
-      "precioVenta": 40,
-      "proveedorId": 1,
-      "categoriaId": 2,
-      "marcaId": 2
-    },
-    {
-      "id": 3,
-      "nombre": "Pedales",
-      "stock": 4,
-      "precioCompra": 15,
-      "precioVenta": 30,
-      "proveedorId": 2,
-      "categoriaId": 3,
-      "marcaId": 1
-    },
-    {
-      "id": 4,
-      "nombre": "Inflador",
-      "stock": 15,
-      "precioCompra": 10,
-      "precioVenta": 25,
-      "proveedorId": 2,
-      "categoriaId": 4,
-      "marcaId": 3
-    }
-  ],
-  "ventas": [
-    {
-      "Id": "V-001",
-      "NombreCliente": "Juan Perez",
-      "PrecioTotal": 190,
-      "Fecha": "2026-03-20",
-      "FormaDePago": "Efectivo",
-      "Productos": [
-        {
-          "Id": "2",
-          "Nombre": "Mouse Logitech",
-          "Cantidad": 2,
-          "PrecioVenta": 20
-        },
-        {
-          "Id": "3",
-          "Nombre": "Teclado Redragon",
-          "Cantidad": 1,
-          "PrecioVenta": 45
-        },
-        {
-          "Id": "15",
-          "Nombre": "Parlantes Genius",
-          "Cantidad": 3,
-          "PrecioVenta": 30
-        }
-      ]
-    },
-    {
-      "Id": "V-002",
-      "NombreCliente": "Maria Gomez",
-      "PrecioTotal": 410,
-      "Fecha": "2026-03-21",
-      "FormaDePago": "Tarjeta",
-      "Productos": [
-        {
-          "Id": "1",
-          "Nombre": "Notebook Lenovo",
-          "Cantidad": 1,
-          "PrecioVenta": 750
-        },
-        {
-          "Id": "13",
-          "Nombre": "Webcam Logitech HD",
-          "Cantidad": 1,
-          "PrecioVenta": 40
-        }
-      ]
-    }
-  ],
-  "compras": [
-    {
-      "Id": "C-001",
-      "PrecioTotal": 520,
-      "NombreProveedor": "TechSupplier",
-      "Fecha": "2026-03-20",
-      "Producto": [
-        {
-          "Id": "4",
-          "Nombre": "Monitor Samsung 24\"",
-          "Cantidad": 2,
-          "Precio": 120
-        },
-        {
-          "Id": "8",
-          "Nombre": "Disco SSD Kingston 480GB",
-          "Cantidad": 4,
-          "Precio": 35
-        },
-        {
-          "Id": "9",
-          "Nombre": "Memoria RAM Corsair 8GB",
-          "Cantidad": 2,
-          "Precio": 30
-        }
-      ]
-    },
-    {
-      "Id": "C-002",
-      "PrecioTotal": 400,
-      "NombreProveedor": "AudioTech",
-      "Fecha": "2026-03-21",
-      "Producto": [
-        {
-          "Id": "5",
-          "Nombre": "Auriculares Sony",
-          "Cantidad": 5,
-          "Precio": 40
-        },
-        {
-          "Id": "15",
-          "Nombre": "Parlantes Genius",
-          "Cantidad": 10,
-          "Precio": 20
-        }
-      ]
-    }
-  ],
-  "categorias": [
-    {
-      "id": 1,
-      "nombre": "Bicicletas"
-    },
-    {
-      "id": 2,
-      "nombre": "Accesorios"
-    },
-    {
-      "id": 3,
-      "nombre": "Componentes"
-    },
-    {
-      "id": 4,
-      "nombre": "Herramientas"
-    },
-    {
-      "id": 5,
-      "nombre": "Muebles"
-    },
-    {
-      "id": 6,
-      "nombre": "Redes"
-    },
-    { "id": 7,
-      "nombre": "Audio"
-    },
-    {
-      "id": 8,
-      "nombre": "Oficina"
-    },
-    {
-      "id": 9,
-      "nombre": "Electrónica"}
-  ],
-  "marcas": [
-    {
-      "id": 1,
-      "nombre": "Marca A"
-    },
-    {
-      "id": 2,
-      "nombre": "Marca B"
-    },
-    {
-      "id": 3,
-      "nombre": "Marca C"
-    }
-  ],
-  "proveedores": [
-    {
-      "id": 1,
-      "nombre": "Proveedor X"
-    },
-    {
-      "id": 2,
-      "nombre": "Proveedor Y"
-    },
-    {
-      "id": 3,
-      "nombre": "Proveedor Z"
-    }
-  ]
+    "totalElements": 15,
+    "totalPages": 8,
+    "number": 0
+  },
+
+  "productosRequest": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Bici Montaña",
+        "stock": 10,
+        "precioCompra": 100,
+        "precioVenta": 150,
+        "proveedorId": 1,
+        "categoriaId": 1,
+        "marcaId": 1
+      },
+      {
+        "id": 2,
+        "nombre": "Casco",
+        "stock": 2,
+        "precioCompra": 20,
+        "precioVenta": 40,
+        "proveedorId": 1,
+        "categoriaId": 2,
+        "marcaId": 2
+      }
+    ],
+    "totalElements": 4,
+    "totalPages": 2,
+    "number": 0
+  },
+
+  "venta": {
+    "content": [
+      {
+        "Id": "V-001",
+        "NombreCliente": "Juan Perez",
+        "PrecioTotal": 190,
+        "Fecha": "2026-03-20",
+        "FormaDePago": "Efectivo",
+        "Productos": [
+          {
+            "Id": "2",
+            "Nombre": "Mouse Logitech",
+            "Cantidad": 2,
+            "PrecioVenta": 20
+          },
+          {
+            "Id": "3",
+            "Nombre": "Teclado Redragon",
+            "Cantidad": 1,
+            "PrecioVenta": 45
+          },
+          {
+            "Id": "15",
+            "Nombre": "Parlantes Genius",
+            "Cantidad": 3,
+            "PrecioVenta": 30
+          }
+        ]
+      },
+      {
+        "Id": "V-002",
+        "NombreCliente": "Maria Gomez",
+        "PrecioTotal": 410,
+        "Fecha": "2026-03-21",
+        "FormaDePago": "Tarjeta",
+        "Productos": [
+          {
+            "Id": "1",
+            "Nombre": "Notebook Lenovo",
+            "Cantidad": 1,
+            "PrecioVenta": 750
+          },
+          {
+            "Id": "13",
+            "Nombre": "Webcam Logitech HD",
+            "Cantidad": 1,
+            "PrecioVenta": 40
+          }
+        ]
+      }
+    ],
+    "totalElements": 2,
+    "totalPages": 1,
+    "number": 0
+  },
+
+  "compra": {
+    "content": [
+      {
+        "Id": "C-001",
+        "PrecioTotal": 520,
+        "NombreProveedor": "TechSupplier",
+        "Fecha": "2026-03-20",
+        "Producto": [
+          {
+            "Id": "4",
+            "Nombre": "Monitor Samsung 24\"",
+            "Cantidad": 2,
+            "Precio": 120
+          },
+          {
+            "Id": "8",
+            "Nombre": "Disco SSD Kingston 480GB",
+            "Cantidad": 4,
+            "Precio": 35
+          },
+          {
+            "Id": "9",
+            "Nombre": "Memoria RAM Corsair 8GB",
+            "Cantidad": 2,
+            "Precio": 30
+          }
+        ]
+      },
+      {
+        "Id": "C-002",
+        "PrecioTotal": 400,
+        "NombreProveedor": "AudioTech",
+        "Fecha": "2026-03-21",
+        "Producto": [
+          {
+            "Id": "5",
+            "Nombre": "Auriculares Sony",
+            "Cantidad": 5,
+            "Precio": 40
+          },
+          {
+            "Id": "15",
+            "Nombre": "Parlantes Genius",
+            "Cantidad": 10,
+            "Precio": 20
+          }
+        ]
+      }
+    ],
+    "totalElements": 2,
+    "totalPages": 1,
+    "number": 0
+  }
 }

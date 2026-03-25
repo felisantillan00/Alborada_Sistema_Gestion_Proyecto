@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { catchError, of } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, RowClickedEvent } from 'ag-grid-community';
-
+import { Pagina } from '../../../core/models/pagina';
 import { VentaView } from '../../../core/models/venta';
 import { VentasService } from '../../../core/services/ventas/ventas-service';
 import { ModalViewVentas } from '../../../shared/components/modal-view-ventas/modal-view-ventas';
@@ -64,16 +64,22 @@ export class Ventas implements OnInit {
     this.loadingVentas = true;
 
     this.ventasService
-      .getAll()
+      .getPage()
       .pipe(
         catchError((error) => {
           console.error('Error al obtener ventas:', error);
           this.loadingVentas = false;
-          return of([] as VentaView[]);
+
+          return of({
+            content: [],
+            totalElements: 0,
+            totalPages: 0,
+            number: 0
+          } as Pagina<VentaView>);
         })
       )
       .subscribe((data) => {
-        this.ventas = data;
+        this.ventas = data.content;
         this.loadingVentas = false;
       });
   }
