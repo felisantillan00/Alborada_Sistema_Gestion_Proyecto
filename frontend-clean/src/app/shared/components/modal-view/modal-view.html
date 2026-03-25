@@ -67,9 +67,10 @@
           }
         </button>
         }
-
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Borrar</button>
+        <button type="button" class="btn btn-danger" (click)="onSubmit()">
+          <i class="bi bi-trash"></i>
+        </button>
         }
       </div>
     </div>

@@ -146,10 +146,30 @@ export class ModalView implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid){
+    switch(this.mode){
+      case 'create': this.handleCreate(); break;
+      case 'edit': this.handleEdit(); break;
+      case 'delete': this.handleDelete(); break;
+    }
+  }
+
+  private handleCreate(): void {
+    if (this.form.valid) {
       this.form.markAllAsTouched();
       return;
-    } 
-    this.submitted.emit(this.mode);
+    }
+    this.submitted.emit('create');
+  }
+
+  private handleEdit(): void {
+    if (this.form.valid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.submitted.emit('edit');
+  }
+
+  private handleDelete(): void {
+    this.submitted.emit('delete');  
   }
 }
