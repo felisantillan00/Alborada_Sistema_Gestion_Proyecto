@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ProductoView } from '../../../core/models/producto';
+import { ProductoRequest, ProductoView } from '../../../core/models/producto';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -90,6 +90,24 @@ export class ModalView implements OnInit {
       marcaId: marca?.id ?? null,
     });
   }
+
+  private buildPayload(incluedID = false ): ProductoRequest {
+     const v = this.form.getRawValue();
+     return {
+        id: incluedID ? (this.product?.id ?? 0) : 0,
+        nombre: v.nombre,
+        precioCompra: v.precioCompra,
+        precioVenta: v.precioVenta,
+        stock: v.stock,
+        proveedorId: v.proveedorId,
+        categoriaId: v.categoriaId,
+        marcaId: v.marcaId,
+     };
+  }
+
+  private showSucces(mensage: string): void {
+    console.log(mensage);
+  }
   getMarcas(): void {
     this.marcasService.getAll().pipe(
       catchError(err => {
@@ -99,7 +117,6 @@ export class ModalView implements OnInit {
     ).subscribe(data => {
       this.marcas = data;
       if (this.mode === 'edit' || this.mode === 'view') {
-        const marca = this.marcas.find(m => m.nombre === this.product?.nombreMarca);
         this.setSelectValues();
       }
     });
@@ -114,7 +131,6 @@ export class ModalView implements OnInit {
     ).subscribe(data => {
       this.proveedores = data;
       if (this.mode === 'edit' || this.mode === 'view') {
-        const proveedor = this.proveedores.find(p => p.nombre === this.product?.nombreProveedor);
         this.setSelectValues();
       }
     });
@@ -129,7 +145,6 @@ export class ModalView implements OnInit {
     ).subscribe(data => {
       this.categorias = data;
       if (this.mode === 'edit' || this.mode === 'view') {
-        const categoria = this.categorias.find(c => c.nombre === this.product?.nombreCategoria);
         this.setSelectValues();
       }
     });
@@ -154,22 +169,31 @@ export class ModalView implements OnInit {
   }
 
   private handleCreate(): void {
-    if (this.form.valid) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this.submitted.emit('create');
+    const payload = this.buildPayload();
+    console.log('creado', payload);
+    this.showSucces('Producto creado exitosamente');
+    this.closed.emit();
   }
 
   private handleEdit(): void {
-    if (this.form.valid) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this.submitted.emit('edit');
+    const payload = this.buildPayload(true);
+    console.log('editado', payload);
+    this.showSucces('Producto editado exitosamente');
+    this.closed.emit();
   }
 
   private handleDelete(): void {
-    this.submitted.emit('delete');  
+    const payload = {id : this.product?.id}
+    console.log('borrado', payload);
+    this.showSucces('Producto borrado exitosamente');
+    this.closed.emit();  
   }
 }
