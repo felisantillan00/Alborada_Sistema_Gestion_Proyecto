@@ -8,6 +8,6 @@ import { Api } from '../api';
 })
 export class VentasService extends Api<VentaView, VentaRequest> {
   constructor(http: HttpClient) {
-    super(http, 'ventas');
+    super(http, 'venta');
   }
 }

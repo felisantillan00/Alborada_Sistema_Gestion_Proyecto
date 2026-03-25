@@ -8,6 +8,6 @@ import { CompraRequest, CompraView } from '../../models/compra';
 })
 export class ComprasService extends Api<CompraView, CompraRequest> {
   constructor(http: HttpClient) {
-    super(http, 'compras');
+    super(http, 'compra');
   }
 }
