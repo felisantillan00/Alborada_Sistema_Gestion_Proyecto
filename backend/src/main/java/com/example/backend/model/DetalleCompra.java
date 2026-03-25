@@ -1,5 +1,7 @@
 package com.example.backend.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,11 +27,11 @@ public class DetalleCompra {
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
 
-    @Column(name = "precio_unitario")
-    private Double precioUnitario;
+    @Column(name = "precio_unitario", scale = 2, precision = 10)
+    private BigDecimal precioUnitario;
 
-    @Column(name = "subtotal")
-    private Double subtotal;
+    @Column(name = "subtotal", scale = 2, precision = 10)
+    private BigDecimal subtotal;
     
 
 }

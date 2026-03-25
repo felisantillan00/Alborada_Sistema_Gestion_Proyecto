@@ -45,7 +45,7 @@ JSON{
 * Obtener por ID GET /compra/{id}
 * Crear nueva POST /compra - (Nota: No enviar ID en el cuerpo)
 * Actualizar existente PUT /compra/{id} 
-* Eliminar DELETE /marca/{id}
+* Eliminar DELETE /compra/{id}
 
 
 #La compra debe incluir al menos un producto en detalles.

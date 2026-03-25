@@ -1,4 +1,5 @@
 package com.example.backend.model;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,8 +27,8 @@ public class Compra {
     @Column(name = "fecha_compra", nullable = false)
     private LocalDateTime fechaCompra;
 
-    @Column(name = "total_compra")
-    private Double totalCompra;
+    @Column(name = "total_compra", scale = 2, precision = 10)
+    private BigDecimal totalCompra;
 
     @Column(name = "cantidad_total", nullable = false)
     private Integer cantidadTotal;

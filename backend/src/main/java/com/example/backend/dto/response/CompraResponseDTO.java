@@ -1,4 +1,5 @@
 package com.example.backend.dto.response;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import lombok.*;
 public class CompraResponseDTO {
     private Long id;
     private List<ProductoResponseCompraDTO> productos;
-    private Double totalCompra;
+    private BigDecimal totalCompra;
     private String proveedorNombre;
     private LocalDateTime fechaCompra;
 
