@@ -18,36 +18,45 @@
             <div class="col-md-8">
               <label class="form-label">Nombre</label>
               <input class="form-control" type="text" formControlName="nombre" />
+            <div *ngIf="Control['nombre'].hasError('required') && Control['nombre'].touched" class="text-danger"> *El campo nombre es obligatorio</div>
             </div>
             <div class="col-md-4">
               <label class="form-label">Stock</label>
               <input class="form-control" type="number" formControlName="stock" />
+              <div *ngIf="Control['stock'].hasError('required') && Control['stock'].touched" class="text-danger"> *El campo Stock es obligatorio</div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Precio compra</label>
               <input class="form-control" type="number" formControlName="precioCompra" />
+              <div *ngIf="Control['precioCompra'].hasError('required') && Control['precioCompra'].touched" class="text-danger"> *El campo precio de COMPRA es obligatorio</div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Precio venta</label>
               <input class="form-control" type="number" formControlName="precioVenta" />
+              <div *ngIf="Control['precioVenta'].hasError('required') && Control['precioVenta'].touched" class="text-danger">
+                *El campo precio de VENTA es obligatorio
+              </div>
             </div>
             <div class="col-md-4">
               <label class="form-label">Proveedor</label>
               <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
-                formControlName="proveedorId">
+                         formControlName="proveedorId">
               </ng-select>
+              <div *ngIf="Control['proveedorId'].hasError('required') && Control['proveedorId'].touched" class="text-danger"> *El campo proveedor es obligatorio</div>
             </div>
             <div class="col-md-4">
               <label class="form-label">Categoría</label>
               <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
-                formControlName="categoriaId">
+                         formControlName="categoriaId">
               </ng-select>
+              <div *ngIf="Control['categoriaId'].hasError('required') && Control['categoriaId'].touched" class="text-danger"> *El campo categoría es obligatorio</div>
             </div>
             <div class="col-md-4">
               <label class="form-label">Marca</label>
               <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
-                formControlName="marcaId">
+                         formControlName="marcaId">
               </ng-select>
+              <div *ngIf="Control['marcaId'].hasError('required') && Control['marcaId'].touched" class="text-danger"> *El campo marca es obligatorio</div>
             </div>
           </div>
         </form>

@@ -54,6 +54,10 @@ export class ModalView implements OnInit {
     }
   }
 
+  get Control() {
+    return this.form.controls;
+  }
+
   private initForm(): void {
     const isViewMode = this.mode === 'view';
     const p = this.product;
