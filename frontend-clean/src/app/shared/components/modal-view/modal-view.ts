@@ -9,6 +9,7 @@ import { Marca } from '../../../core/models/marca';
 import { CategoriasService } from '../../../core/services/categorias/categorias-service';
 import { ProveedoresService } from '../../../core/services/proveedores/proveedores-service';
 import { MarcasService } from '../../../core/services/marcas/marcas-service';
+import Swal from 'sweetalert2';
 import { catchError, EMPTY } from 'rxjs';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
@@ -31,7 +32,7 @@ export class ModalView implements OnInit {
   proveedores: Proveedor[] = [];
   marcas: Marca[] = [];
 
-  form!: FormGroup;  
+  form!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -42,13 +43,13 @@ export class ModalView implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    if(this.mode === 'edit' || this.mode === 'view') {
+    if (this.mode === 'edit' || this.mode === 'view') {
       this.patchForm();
     }
     this.getCategorias();
     this.getProveedores();
     this.getMarcas();
-    if(this.mode === 'view') {
+    if (this.mode === 'view') {
       this.form.disable();
     }
   }
@@ -58,27 +59,27 @@ export class ModalView implements OnInit {
     const p = this.product;
 
     this.form = this.fb.group({
-      nombre:       [ '' , Validators.required],
-      stock:        [ 0,   [Validators.required, Validators.min(0)]],
-      precioCompra: [ 0,   [Validators.required, Validators.min(0)]],
-      precioVenta:  [ 0,   [Validators.required, Validators.min(0)]],
-      proveedorId:  [ null,  Validators.required],
-      categoriaId:  [null, Validators.required],
-      marcaId:      [ null, Validators.required],
+      nombre: ['', Validators.required],
+      stock: [0, [Validators.required, Validators.min(0)]],
+      precioCompra: [0, [Validators.required, Validators.min(0)]],
+      precioVenta: [0, [Validators.required, Validators.min(0)]],
+      proveedorId: [null, Validators.required],
+      categoriaId: [null, Validators.required],
+      marcaId: [null, Validators.required],
     });
   }
 
   private patchForm(): void {
-  if (!this.product) return;
-  this.form.patchValue({
-    nombre:       this.product.nombre,
-    stock:        this.product.stock,
-    precioCompra: this.product.precioCompra,
-    precioVenta:  this.product.precioVenta,
-  });
+    if (!this.product) return;
+    this.form.patchValue({
+      nombre: this.product.nombre,
+      stock: this.product.stock,
+      precioCompra: this.product.precioCompra,
+      precioVenta: this.product.precioVenta,
+    });
   }
 
-  private setSelectValues():void{
+  private setSelectValues(): void {
     if (!this.product) return;
     const categoria = this.categorias.find(c => c.nombre === this.product?.nombreCategoria);
     const proveedor = this.proveedores.find(p => p.nombre === this.product?.nombreProveedor);
@@ -91,22 +92,27 @@ export class ModalView implements OnInit {
     });
   }
 
-  private buildPayload(incluedID = false ): ProductoRequest {
-     const v = this.form.getRawValue();
-     return {
-        id: incluedID ? (this.product?.id ?? 0) : 0,
-        nombre: v.nombre,
-        precioCompra: v.precioCompra,
-        precioVenta: v.precioVenta,
-        stock: v.stock,
-        proveedorId: v.proveedorId,
-        categoriaId: v.categoriaId,
-        marcaId: v.marcaId,
-     };
+  private buildPayload(incluedID = false): ProductoRequest {
+    const v = this.form.getRawValue();
+    return {
+      id: incluedID ? (this.product?.id ?? 0) : 0,
+      nombre: v.nombre,
+      precioCompra: v.precioCompra,
+      precioVenta: v.precioVenta,
+      stock: v.stock,
+      proveedorId: v.proveedorId,
+      categoriaId: v.categoriaId,
+      marcaId: v.marcaId,
+    };
   }
 
-  private showSucces(mensage: string): void {
-    console.log(mensage);
+  private showSuccess(mensaje: string): void {
+    Swal.fire({
+      icon: 'success',
+      title: 'OK',
+      text: mensaje,
+      confirmButtonText: 'Aceptar'
+    })
   }
   getMarcas(): void {
     this.marcasService.getAll().pipe(
@@ -153,15 +159,15 @@ export class ModalView implements OnInit {
   get title(): string {
     switch (this.mode) {
       case 'create': return 'Nuevo Producto';
-      case 'view':   return 'Ver Producto';
-      case 'edit':   return 'Editar Producto';
+      case 'view': return 'Ver Producto';
+      case 'edit': return 'Editar Producto';
       case 'delete': return 'Borrar Producto';
-      default:       return 'Producto';
+      default: return 'Producto';
     }
   }
 
   onSubmit(): void {
-    switch(this.mode){
+    switch (this.mode) {
       case 'create': this.handleCreate(); break;
       case 'edit': this.handleEdit(); break;
       case 'delete': this.handleDelete(); break;
@@ -175,7 +181,7 @@ export class ModalView implements OnInit {
     }
     const payload = this.buildPayload();
     console.log('creado', payload);
-    this.showSucces('Producto creado exitosamente');
+    this.showSuccess('Producto creado exitosamente');
     this.closed.emit();
   }
 
@@ -186,14 +192,14 @@ export class ModalView implements OnInit {
     }
     const payload = this.buildPayload(true);
     console.log('editado', payload);
-    this.showSucces('Producto editado exitosamente');
+    this.showSuccess('Producto editado exitosamente');
     this.closed.emit();
   }
 
   private handleDelete(): void {
-    const payload = {id : this.product?.id}
+    const payload = { id: this.product?.id }
     console.log('borrado', payload);
-    this.showSucces('Producto borrado exitosamente');
-    this.closed.emit();  
+    this.showSuccess('Producto borrado exitosamente');
+    this.closed.emit();
   }
 }
