@@ -12,7 +12,7 @@ import { Pagina } from '../../models/pagina'; // (Para cuando conectemos con Spr
 export class ProductoService extends Api<ProductoView, ProductoRequest> {
 
   constructor(http: HttpClient) {
-    super(http, 'producto');
+    super(http, 'productosView');
   }
 
  //Implementacion de Paginacion
