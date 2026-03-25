@@ -38,7 +38,7 @@ export class Inventario implements OnInit {
   readonly columnDefs: ColDef<ProductoView>[] = [
     { field: 'id', headerName: 'ID', maxWidth: 110 },
     { field: 'nombre', headerName: 'Nombre', minWidth: 200 },
-    { field: 'precioCompra', headerName: 'Precio Compra' },
+    { field: 'precioCosto', headerName: 'Precio Compra' },
     { field: 'precioVenta', headerName: 'Precio Venta' },
     { field: 'stock', headerName: 'Stock', maxWidth: 120 },
     { field: 'nombreProveedor', headerName: 'Proveedor' },
@@ -140,8 +140,7 @@ export class Inventario implements OnInit {
   }
 
   onModalSubmit(mode: ModalMode): void {
-    // Placeholder for create/edit/delete integration.
-    console.log(`Modal submit action: ${mode}`);
+    this.getProductos();
     this.closeModal();
   }
 
