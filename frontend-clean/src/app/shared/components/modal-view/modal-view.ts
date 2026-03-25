@@ -48,6 +48,9 @@ export class ModalView implements OnInit {
     this.getCategorias();
     this.getProveedores();
     this.getMarcas();
+    if(this.mode === 'view') {
+      this.form.disable();
+    }
   }
 
   private initForm(): void {
@@ -55,13 +58,13 @@ export class ModalView implements OnInit {
     const p = this.product;
 
     this.form = this.fb.group({
-      nombre:       [{ value: '',  disabled: isViewMode }, Validators.required],
-      stock:        [{ value:  0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
-      precioCompra: [{ value:  0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
-      precioVenta:  [{ value:  0,  disabled: isViewMode }, [Validators.required, Validators.min(0)]],
-      proveedorId:  [{ value: null, disabled: isViewMode }, Validators.required],
-      categoriaId:  [{ value: null, disabled: isViewMode }, Validators.required],
-      marcaId:      [{ value: null, disabled: isViewMode }, Validators.required],
+      nombre:       [ '' , Validators.required],
+      stock:        [ 0,   [Validators.required, Validators.min(0)]],
+      precioCompra: [ 0,   [Validators.required, Validators.min(0)]],
+      precioVenta:  [ 0,   [Validators.required, Validators.min(0)]],
+      proveedorId:  [ null,  Validators.required],
+      categoriaId:  [null, Validators.required],
+      marcaId:      [ null, Validators.required],
     });
   }
 
