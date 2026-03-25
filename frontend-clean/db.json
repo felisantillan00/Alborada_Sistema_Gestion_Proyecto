@@ -163,5 +163,91 @@
     "totalElements": 2,
     "totalPages": 1,
     "number": 0
+  },
+
+  "categoria": {
+    "content":
+    [
+      {
+        "id": 1,
+        "nombre": "Bicicletas"
+      },
+      {
+        "id": 2,
+        "nombre": "Accesorios"
+      },
+      {
+        "id": 3,
+        "nombre": "Componentes"
+      },
+      {
+        "id": 4,
+        "nombre": "Herramientas"
+      },
+      {
+        "id": 5,
+        "nombre": "Muebles"
+      },
+      {
+        "id": 6,
+        "nombre": "Redes"
+      },
+      {
+        "id": 7,
+        "nombre": "Audio"
+      },
+      {
+        "id": 8,
+        "nombre": "Oficina"
+      },
+      {
+        "id": 9,
+        "nombre": "Electrónica"
+      }
+    ],
+    "totalElements":9,
+    "totalPages":3,
+    "number":0
+  },
+  "marca": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Marca A"
+      },
+      {
+        "id": 2,
+        "nombre": "Marca B"
+      },
+      {
+        "id": 3,
+        "nombre": "Marca C"
+      }
+    ],
+    "totalElements": 9,
+    "totalPages": 3,
+    "number": 0
+
+  },
+  "proveedor": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Proveedor X"
+      },
+      {
+        "id": 2,
+        "nombre": "Proveedor Y"
+      },
+      {
+        "id": 3,
+        "nombre": "Proveedor Z"
+      }
+    ],
+    "totalElements": 9,
+    "totalPages": 3,
+    "number": 0
   }
 }
+
+
