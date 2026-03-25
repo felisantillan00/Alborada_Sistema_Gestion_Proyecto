@@ -11,6 +11,7 @@ import { ProveedoresService } from '../../../core/services/proveedores/proveedor
 import { MarcasService } from '../../../core/services/marcas/marcas-service';
 import Swal from 'sweetalert2';
 import { catchError, EMPTY } from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -43,12 +44,13 @@ export class ModalView implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+
     if (this.mode === 'edit' || this.mode === 'view') {
       this.patchForm();
     }
-    this.getCategorias();
-    this.getProveedores();
-    this.getMarcas();
+
+    this.loadSelects();
+
     if (this.mode === 'view') {
       this.form.disable();
     }
@@ -56,6 +58,27 @@ export class ModalView implements OnInit {
 
   get Control() {
     return this.form.controls;
+  }
+
+  loadSelects(): void {
+    forkJoin({
+      categorias: this.categoriasService.getAll(),
+      proveedores: this.proveedoresService.getAll(),
+      marcas: this.marcasService.getAll()
+    }).pipe(
+      catchError(err => {
+        console.error('Error cargando selects', err);
+        return EMPTY;
+      })
+    ).subscribe(({ categorias, proveedores, marcas }) => {
+      this.categorias = categorias;
+      this.proveedores = proveedores;
+      this.marcas = marcas;
+
+      if (this.mode === 'edit' || this.mode === 'view') {
+        this.setSelectValues();
+      }
+    });
   }
 
   private initForm(): void {
@@ -126,9 +149,6 @@ export class ModalView implements OnInit {
       })
     ).subscribe(data => {
       this.marcas = data;
-      if (this.mode === 'edit' || this.mode === 'view') {
-        this.setSelectValues();
-      }
     });
   }
 
@@ -140,9 +160,6 @@ export class ModalView implements OnInit {
       })
     ).subscribe(data => {
       this.proveedores = data;
-      if (this.mode === 'edit' || this.mode === 'view') {
-        this.setSelectValues();
-      }
     });
   }
 
@@ -154,9 +171,6 @@ export class ModalView implements OnInit {
       })
     ).subscribe(data => {
       this.categorias = data;
-      if (this.mode === 'edit' || this.mode === 'view') {
-        this.setSelectValues();
-      }
     });
   }
 

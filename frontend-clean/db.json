@@ -6,9 +6,9 @@
         "precioCompra": 500,
         "precioVenta": 750,
         "stock": 10,
-        "nombreProveedor": "TechSupplier",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Electrónica",
-        "nombreMarca": "Lenovo"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 2,
@@ -16,9 +16,9 @@
         "precioCompra": 10,
         "precioVenta": 20,
         "stock": 50,
-        "nombreProveedor": "Distribuidora Norte",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
-        "nombreMarca": "Logitech"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 3,
@@ -26,9 +26,9 @@
         "precioCompra": 25,
         "precioVenta": 45,
         "stock": 30,
-        "nombreProveedor": "GamingStore",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
-        "nombreMarca": "Redragon"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 4,
@@ -36,9 +36,9 @@
         "precioCompra": 120,
         "precioVenta": 180,
         "stock": 15,
-        "nombreProveedor": "TechSupplier",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Electrónica",
-        "nombreMarca": "Samsung"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 5,
@@ -46,9 +46,9 @@
         "precioCompra": 40,
         "precioVenta": 70,
         "stock": 25,
-        "nombreProveedor": "AudioTech",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Audio",
-        "nombreMarca": "Sony"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 6,
@@ -56,9 +56,9 @@
         "precioCompra": 150,
         "precioVenta": 230,
         "stock": 20,
-        "nombreProveedor": "MobileWorld",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Electrónica",
-        "nombreMarca": "Xiaomi"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 7,
@@ -66,9 +66,9 @@
         "precioCompra": 200,
         "precioVenta": 300,
         "stock": 12,
-        "nombreProveedor": "TechSupplier",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Electrónica",
-        "nombreMarca": "Samsung"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 8,
@@ -76,9 +76,9 @@
         "precioCompra": 35,
         "precioVenta": 60,
         "stock": 40,
-        "nombreProveedor": "StoragePlus",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Componentes",
-        "nombreMarca": "Kingston"
+        "nombreMarca": "Marca A"
       },
       {
         "id": 9,
@@ -86,9 +86,9 @@
         "precioCompra": 30,
         "precioVenta": 55,
         "stock": 35,
-        "nombreProveedor": "StoragePlus",
+        "nombreProveedor": "Proveedor Z",
         "nombreCategoria": "Componentes",
-        "nombreMarca": "Corsair"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 10,
@@ -96,9 +96,9 @@
         "precioCompra": 300,
         "precioVenta": 450,
         "stock": 8,
-        "nombreProveedor": "GamingStore",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Componentes",
-        "nombreMarca": "NVIDIA"
+        "nombreMarca": "Marca C"
       },
       {
         "id": 11,
@@ -106,9 +106,9 @@
         "precioCompra": 80,
         "precioVenta": 130,
         "stock": 18,
-        "nombreProveedor": "OfficeTech",
+        "nombreProveedor": "Proveedor Y",
         "nombreCategoria": "Oficina",
-        "nombreMarca": "HP"
+        "nombreMarca": "Marca A"
       },
       {
         "id": 12,
@@ -116,9 +116,9 @@
         "precioCompra": 25,
         "precioVenta": 50,
         "stock": 22,
-        "nombreProveedor": "NetSolutions",
+        "nombreProveedor": "Proveedor Z",
         "nombreCategoria": "Redes",
-        "nombreMarca": "TP-Link"
+        "nombreMarca": "Marca C"
       },
       {
         "id": 13,
@@ -126,9 +126,9 @@
         "precioCompra": 20,
         "precioVenta": 40,
         "stock": 27,
-        "nombreProveedor": "Distribuidora Norte",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
-        "nombreMarca": "Logitech"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 14,
@@ -136,9 +136,9 @@
         "precioCompra": 90,
         "precioVenta": 150,
         "stock": 10,
-        "nombreProveedor": "GamingStore",
+        "nombreProveedor": "Proveedor Y",
         "nombreCategoria": "Muebles",
-        "nombreMarca": "DXRacer"
+        "nombreMarca": "Marca A"
       },
       {
         "id": 15,
@@ -146,9 +146,9 @@
         "precioCompra": 15,
         "precioVenta": 30,
         "stock": 45,
-        "nombreProveedor": "AudioTech",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Audio",
-        "nombreMarca": "Genius"
+        "nombreMarca": "Marca C"
       }
     ],
   "productosRequest": [
@@ -307,7 +307,25 @@
     {
       "id": 4,
       "nombre": "Herramientas"
-    }
+    },
+    {
+      "id": 5,
+      "nombre": "Muebles"
+    },
+    {
+      "id": 6,
+      "nombre": "Redes"
+    },
+    { "id": 7,
+      "nombre": "Audio"
+    },
+    {
+      "id": 8,
+      "nombre": "Oficina"
+    },
+    {
+      "id": 9,
+      "nombre": "Electrónica"}
   ],
   "marcas": [
     {
