@@ -1,1 +1,4 @@
-export interface Proveedor {}
+export interface Proveedor {
+    id: number;
+    nombre: string;
+}
