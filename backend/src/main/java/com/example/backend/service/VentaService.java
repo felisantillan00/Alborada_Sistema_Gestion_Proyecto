@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import com.example.backend.enums.FormaPago;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,18 +27,16 @@ public class VentaService {
 
     private final VentaRepository ventaRepository;
     private final ProductoService productoService; 
-    private final ProductoRepository productoRepository; //Repo para buscar los productos rápido
+    private final ProductoRepository productoRepository;
 
-    //Listar ventas con paginación
     @Transactional(readOnly = true)
-    public Page<VentaResponseDTO> listarVentas(Pageable pageable) {
+    public Page<VentaResponseDTO> findAll(Pageable pageable) {
         return ventaRepository.findAll(pageable)
                 .map(this::mapearAVentaResponse);
     }
 
     @Transactional
-    public VentaResponseDTO registrarVenta(VentaRequestDTO request) {
-        
+    public VentaResponseDTO create(VentaRequestDTO request) {
         Venta nuevaVenta = new Venta();
         nuevaVenta.setFechaVenta(LocalDateTime.now());
         nuevaVenta.setNombreCliente(request.nombreCliente());
@@ -49,7 +48,8 @@ public class VentaService {
             throw new RuntimeException("Forma de pago no válida: " + request.formaPago());
         }
         
-        //1. Busco todos los productos de una sola vez para optimizar 
+        //Se obtienen los IDs de los productos de los detalles de la venta
+        //Busco todos los productos en una sola consulta a la BDD para optimizar el rendimiento
         List<Long> productoIds = request.detalles().stream()
                 .map(DetalleVentaRequestDTO::idProducto)
                 .toList();
@@ -65,19 +65,13 @@ public class VentaService {
         BigDecimal totalVenta = BigDecimal.ZERO;
 
         for (DetalleVentaRequestDTO detalleRequest : request.detalles()) {
-            
-            //2. Obtengo el producto real desde el mapa que ya buscamos
             Producto producto = productosMap.get(detalleRequest.idProducto());
-            
-            //3. Convierto la cantidad y descuento stock usando el servicio de producto
             BigDecimal cantidadBD = BigDecimal.valueOf(detalleRequest.cantidad());
             productoService.descontarStock(producto.getId(), cantidadBD);
 
-            //4. Subtotal
             BigDecimal subtotal = producto.getPrecioVenta().multiply(cantidadBD);
             totalVenta = totalVenta.add(subtotal);
 
-            //5. Se crea el objeto DetalleVenta pasando la Entidad real
             DetalleVenta detalle = new DetalleVenta();
             detalle.setProducto(producto); 
             detalle.setVenta(nuevaVenta);
@@ -92,7 +86,6 @@ public class VentaService {
         nuevaVenta.setTotal(totalVenta);
         
         Venta ventaGuardada = ventaRepository.save(nuevaVenta);
-
         return mapearAVentaResponse(ventaGuardada);
     }
 
