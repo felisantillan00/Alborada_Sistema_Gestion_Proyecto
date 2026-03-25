@@ -13,48 +13,44 @@
           <strong>{{ product?.nombre ?? 'este producto' }}</strong>?
         </p>
         } @else {
-        <div class="row g-3">
-          <div class="col-md-8">
-            <label class="form-label">Nombre</label>
-            <input class="form-control" type="text" [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
-              [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Stock</label>
-            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.stock ?? '')"
-              [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Precio compra</label>
-            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
-              [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Precio venta</label>
-            <input class="form-control" type="number" [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
-              [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Proveedor</label>
-            <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
-              [(ngModel)]="proveedorSelectID" [readonly]="mode === 'view'">
-            </ng-select>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Categoría</label>
-            <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
-              [(ngModel)]="categoriaSelectID" [readonly]="mode === 'view'">
-            </ng-select>
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Marca</label>
-            <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
-              [(ngModel)]="marcaSelectID" [readonly]="mode === 'view'">
-            </ng-select>
-          </div>
-        </div>
+        <form [formGroup]="form">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label">Nombre</label>
+                <input class="form-control" type="text" formControlName="nombre" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Stock</label>
+                <input class="form-control" type="number" formControlName="stock" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Precio compra</label>
+                <input class="form-control" type="number" formControlName="precioCompra" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Precio venta</label>
+                <input class="form-control" type="number" formControlName="precioVenta" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Proveedor</label>
+                <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id"
+                  placeholder="Seleccione proveedor" formControlName="proveedorId">
+                </ng-select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Categoría</label>
+                <ng-select [items]="categorias" bindLabel="nombre" bindValue="id"
+                  placeholder="Seleccione categoría" formControlName="categoriaId">
+              </ng-select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Marca</label>
+                <ng-select [items]="marcas" bindLabel="nombre" bindValue="id"
+                  placeholder="Seleccione marca" formControlName="marcaId">
+                </ng-select>
+              </div>
+            </div>
+          </form>
         }
       </div>
 
