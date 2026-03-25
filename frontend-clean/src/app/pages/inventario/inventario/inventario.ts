@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { catchError, finalize, of } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, RowClickedEvent } from 'ag-grid-community';
@@ -8,6 +8,7 @@ import { ProductoView } from '../../../core/models/producto';
 import { Pagina } from '../../../core/models/pagina';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ModalView } from '../../../shared/components/modal-view/modal-view';
+
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -66,7 +67,7 @@ export class Inventario implements OnInit {
 },
   ];
 
-  constructor(private productoService: ProductoService) { }
+  constructor(private productoService: ProductoService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
       this.getProductos();
@@ -110,11 +111,15 @@ export class Inventario implements OnInit {
         })
       )
       .subscribe((data) => {
-        this.productos = data.content;
+        this.productos = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
         this.loadingProductos = false;
+        this.cdr.detectChanges();           //fuerzo la deteccion
         console.log("SERAN?", this.productos)
       });
   }
+  //Al realizar un cambio en el producto, 
+  // se actualiza la tabla forzando a Angular a detectar el cambio y refrescar la tabla.
+  getRowId= (params : any) => params.data.id.toString();
 
   onNewProduct(): void {
     this.openModal('create', null);
@@ -140,8 +145,8 @@ export class Inventario implements OnInit {
   }
 
   onModalSubmit(mode: ModalMode): void {
-    this.getProductos();
     this.closeModal();
+    this.getProductos();
   }
 
   private openModal(mode: ModalMode, product: ProductoView | null): void {

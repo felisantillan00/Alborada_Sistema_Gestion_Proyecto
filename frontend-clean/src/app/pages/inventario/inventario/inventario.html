@@ -9,24 +9,22 @@
   <div>{{ productos.length }}</div>
   <div class="card shadow-sm">
     <div class="card-body">
-      <ag-grid-angular style="width: 100%; height: 540px"
-                       [rowData]="productos"
-                       [columnDefs]="columnDefs"
-                       [defaultColDef]="defaultColDef"
-                       [pagination]="true"
-                       [paginationPageSize]="10"
-                       [animateRows]="true"
-                       [suppressCellFocus]="true"
-                       (rowClicked)="onRowClicked($event)">
+      <ag-grid-angular style="width: 100%; height: 540px" 
+                      [rowData]="productos" 
+                      [columnDefs]="columnDefs"
+                      [defaultColDef]="defaultColDef" 
+                      [getRowId]="getRowId" 
+                      [pagination]="true" 
+                      [paginationPageSize]="10"
+                      [animateRows]="true" 
+                      [suppressCellFocus]="true" 
+                      (rowClicked)="onRowClicked($event)">
       </ag-grid-angular>
     </div>
   </div>
 </section>
 @if (modalOpen) {
-<app-modal-view 
-                [mode]="modalMode"
-                [product]="selectedProducto"
-                (closed)="closeModal()"
-                (submitted)="onModalSubmit($event)">
+<app-modal-view [mode]="modalMode" [product]="selectedProducto" (closed)="closeModal()"
+  (submitted)="onModalSubmit($event)">
 </app-modal-view>
 }
