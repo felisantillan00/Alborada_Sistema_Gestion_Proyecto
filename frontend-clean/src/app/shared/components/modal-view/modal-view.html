@@ -14,43 +14,43 @@
         </p>
         } @else {
         <form [formGroup]="form">
-            <div class="row g-3">
-              <div class="col-md-8">
-                <label class="form-label">Nombre</label>
-                <input class="form-control" type="text" formControlName="nombre" />
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Stock</label>
-                <input class="form-control" type="number" formControlName="stock" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Precio compra</label>
-                <input class="form-control" type="number" formControlName="precioCompra" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Precio venta</label>
-                <input class="form-control" type="number" formControlName="precioVenta" />
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Proveedor</label>
-                <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id"
-                  placeholder="Seleccione proveedor" formControlName="proveedorId">
-                </ng-select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Categoría</label>
-                <ng-select [items]="categorias" bindLabel="nombre" bindValue="id"
-                  placeholder="Seleccione categoría" formControlName="categoriaId">
-              </ng-select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Marca</label>
-                <ng-select [items]="marcas" bindLabel="nombre" bindValue="id"
-                  placeholder="Seleccione marca" formControlName="marcaId">
-                </ng-select>
-              </div>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Nombre</label>
+              <input class="form-control" type="text" formControlName="nombre" />
             </div>
-          </form>
+            <div class="col-md-4">
+              <label class="form-label">Stock</label>
+              <input class="form-control" type="number" formControlName="stock" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Precio compra</label>
+              <input class="form-control" type="number" formControlName="precioCompra" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Precio venta</label>
+              <input class="form-control" type="number" formControlName="precioVenta" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Proveedor</label>
+              <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
+                formControlName="proveedorId">
+              </ng-select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Categoría</label>
+              <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
+                formControlName="categoriaId">
+              </ng-select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Marca</label>
+              <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
+                formControlName="marcaId">
+              </ng-select>
+            </div>
+          </div>
+        </form>
         }
       </div>
 
@@ -58,8 +58,13 @@
         <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
         @if (mode === 'create' || mode === 'edit') {
-        <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
-          {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+        <button type="button" class="btn btn-primary" title="{{ mode === 'create' ? 'Crear' : 'Guardar' }}"
+          (click)="onSubmit()">
+          @if (mode === 'create') {
+          <i class="bi bi-plus-lg"></i>
+          } @else {
+          <i class="bi bi-floppy"></i>
+          }
         </button>
         }
 
