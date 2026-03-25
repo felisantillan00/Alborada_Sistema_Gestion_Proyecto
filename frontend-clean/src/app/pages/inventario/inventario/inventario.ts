@@ -5,6 +5,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, RowClickedEvent } from 'ag-grid-community';
 
 import { ProductoView } from '../../../core/models/producto';
+import { Pagina } from '../../../core/models/pagina';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ModalView } from '../../../shared/components/modal-view/modal-view';
 
@@ -71,22 +72,47 @@ export class Inventario implements OnInit {
       this.getProductos();
   }
 
+  //getProductos(): void {
+  //  this.loadingProductos = true;
+
+  //  this.productoService
+  //    .getPage()
+  //    .pipe(
+  //      catchError((error) => {
+  //        console.error('Error al obtener productos:', error);
+  //        this.loadingProductos = false;
+  //        return of([] as ProductoView[]);
+  //      })
+  //    )
+  //    .subscribe((data) => {
+  //      this.productos = data.content;
+  //      this.loadingProductos = false;
+  //      console.log("SERAN?", this.productos)
+  //    });
+  //}
+
   getProductos(): void {
     this.loadingProductos = true;
 
     this.productoService
-      .getAll()
+      .getPage()
       .pipe(
         catchError((error) => {
           console.error('Error al obtener productos:', error);
           this.loadingProductos = false;
-          return of([] as ProductoView[]);
+
+          return of({
+            content: [],
+            totalElements: 0,
+            totalPages: 0,
+            number: 0
+          } as Pagina<ProductoView>);
         })
       )
       .subscribe((data) => {
-        this.productos = data;
+        this.productos = data.content;
         this.loadingProductos = false;
-        console.log(this.productos)
+        console.log("SERAN?", this.productos)
       });
   }
 

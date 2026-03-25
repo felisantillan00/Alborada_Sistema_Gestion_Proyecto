@@ -62,18 +62,18 @@ export class ModalView implements OnInit {
 
   loadSelects(): void {
     forkJoin({
-      categorias: this.categoriasService.getAll(),
-      proveedores: this.proveedoresService.getAll(),
-      marcas: this.marcasService.getAll()
+      categorias: this.categoriasService.getPage(),
+      proveedores: this.proveedoresService.getPage(),
+      marcas: this.marcasService.getPage()
     }).pipe(
       catchError(err => {
         console.error('Error cargando selects', err);
         return EMPTY;
       })
     ).subscribe(({ categorias, proveedores, marcas }) => {
-      this.categorias = categorias;
-      this.proveedores = proveedores;
-      this.marcas = marcas;
+      this.categorias = categorias.content;
+      this.proveedores = proveedores.content;
+      this.marcas = marcas.content;
 
       if (this.mode === 'edit' || this.mode === 'view') {
         this.setSelectValues();
