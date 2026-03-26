@@ -30,13 +30,14 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   form = this.fb.group({
-    Id: ['',Validators.required],
+    Id: ['', Validators.required],
     NombreCliente: ['', Validators.required],
     PrecioTotal: [0, Validators.required],
     Fecha: [''],
     FormaDePago: ['', Validators.required],
     Productos: this.fb.array<FormGroup>([]),
   });
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['venta'] || changes['mode']) {
