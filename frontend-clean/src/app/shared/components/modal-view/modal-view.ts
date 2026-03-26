@@ -9,6 +9,7 @@ import { Marca } from '../../../core/models/marca';
 import { CategoriasService } from '../../../core/services/categorias/categorias-service';
 import { ProveedoresService } from '../../../core/services/proveedores/proveedores-service';
 import { MarcasService } from '../../../core/services/marcas/marcas-service';
+import { ProductoService } from '../../../core/services/producto/producto-service';
 import Swal from 'sweetalert2';
 import { catchError, EMPTY } from 'rxjs';
 import { forkJoin } from 'rxjs';
@@ -40,6 +41,7 @@ export class ModalView implements OnInit {
     private categoriasService: CategoriasService,
     private proveedoresService: ProveedoresService,
     private marcasService: MarcasService,
+    private productoService: ProductoService
   ) { }
 
   ngOnInit(): void {
@@ -88,7 +90,7 @@ export class ModalView implements OnInit {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       stock: [0, [Validators.required, Validators.min(0)]],
-      precioCompra: [0, [Validators.required, Validators.min(0)]],
+      precioCosto: [0, [Validators.required, Validators.min(0)]],
       precioVenta: [0, [Validators.required, Validators.min(0)]],
       proveedorId: [null, Validators.required],
       categoriaId: [null, Validators.required],
@@ -101,7 +103,7 @@ export class ModalView implements OnInit {
     this.form.patchValue({
       nombre: this.product.nombre,
       stock: this.product.stock,
-      precioCompra: this.product.precioCompra,
+      precioCosto: this.product.precioCosto,
       precioVenta: this.product.precioVenta,
     });
   }
@@ -124,12 +126,12 @@ export class ModalView implements OnInit {
     return {
       id: incluedID ? (this.product?.id ?? 0) : 0,
       nombre: v.nombre,
-      precioCompra: v.precioCompra,
+      precioCosto: v.precioCosto,
       precioVenta: v.precioVenta,
       stock: v.stock,
-      proveedorId: v.proveedorId,
-      categoriaId: v.categoriaId,
-      marcaId: v.marcaId,
+      idProveedor: v.proveedorId,
+      idCategoria: v.categoriaId,
+      idMarca: v.marcaId,
     };
   }
 
@@ -198,9 +200,22 @@ export class ModalView implements OnInit {
       return;
     }
     const payload = this.buildPayload();
-    console.log('creado', payload);
-    this.showSuccess('Producto creado exitosamente');
-    this.closed.emit();
+    this.productoService.create(payload).pipe(
+      catchError(err => {
+        console.error('Error al crear producto', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un problema al crear el producto',
+          confirmButtonText: 'Aceptar'
+        })
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      this.showSuccess('Producto creado exitosamente');
+      this.submitted.emit('create');
+      this.closed.emit();
+    });
   }
 
   private handleEdit(): void {
@@ -209,15 +224,42 @@ export class ModalView implements OnInit {
       return;
     }
     const payload = this.buildPayload(true);
-    console.log('editado', payload);
-    this.showSuccess('Producto editado exitosamente');
-    this.closed.emit();
+    //console.log('EDIT payload:', payload);  
+    //console.log('form values:', this.form.getRawValue());
+    this.productoService.update(this.product!.id, payload).pipe(
+      catchError(err => {
+        console.error('Error al editar producto', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un problema al editar el producto',
+          confirmButtonText: 'Aceptar'
+        })
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      this.showSuccess('Producto editado exitosamente');
+      this.submitted.emit('edit');
+      this.closed.emit();
+    });
   }
 
   private handleDelete(): void {
-    const payload = { id: this.product?.id }
-    console.log('borrado', payload);
-    this.showSuccess('Producto borrado exitosamente');
-    this.closed.emit();
+    this.productoService.delete(this.product!.id).pipe(
+      catchError(err => {
+        console.error('Error al eliminar producto', err);
+        Swal.fire({
+          icon: 'error', 
+          title: 'Error', 
+          text: 'No se pudo eliminar el producto', 
+          confirmButtonText: 'Aceptar'
+        });
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      this.showSuccess('Producto eliminado exitosamente');
+      this.submitted.emit('delete');
+      this.closed.emit();
+    });
   }
 }
