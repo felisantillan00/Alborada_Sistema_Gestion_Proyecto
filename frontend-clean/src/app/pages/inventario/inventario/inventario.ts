@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, ViewChild } from '@angular/core';
 import { catchError, finalize, of } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, RowClickedEvent } from 'ag-grid-community';
@@ -23,6 +23,10 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 })
 export class Inventario implements OnInit {
   private gridApi!: GridApi;
+  searchText: string = '';
+  isSearchExpanded = false;
+  @ViewChild('searchInput') searchInput!: ElementRef;
+  currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
 
   productos: ProductoView[] = [];
   loadingProductos = false;
@@ -33,7 +37,7 @@ export class Inventario implements OnInit {
 
   readonly defaultColDef: ColDef<ProductoView> = {
     sortable: true,
-    filter: true,
+    filter: false,
     resizable: true,
     flex: 1,
     minWidth: 120,
@@ -181,4 +185,76 @@ export class Inventario implements OnInit {
     //hago que el tamaño de las columnas se ajuste al nuevo tamaño de la pantalla
     this.gridApi.sizeColumnsToFit();
   }
+
+  //Cada vez que el usuario escribe se actualiza el quick filter de af-grid
+  onSearchInput(event: any) {
+    this.searchText = event.target.value;
+    if (this.gridApi) {
+      this.gridApi.setGridOption('quickFilterText', this.searchText);
+    }
+  }
+
+  toggleSearch() {
+    if(this.isSearchExpanded && this.searchText) {
+      this.searchText = '';
+      if(this.gridApi) {
+        this.gridApi.setGridOption('quickFilterText','')
+      }
+      this.isSearchExpanded = false;
+    }else{
+      this.isSearchExpanded = !this.isSearchExpanded;
+      if(this.isSearchExpanded){
+        setTimeout(() => {
+          this.searchInput.nativeElement.focus(), 300
+        });
+      }
+    }
+  }
+
+  applySort(colId: string, sortDirection: 'asc' | 'desc' | null) {
+    if (!this.gridApi) return;
+    
+    // Si pasamos null, limpia el orden. Si pasamos asc/desc, lo aplica a esa columna
+    const state = sortDirection ? [{ colId: colId, sort: sortDirection }] : [];
+    
+    this.gridApi.applyColumnState({
+      state: state,
+      defaultState: { sort: null } // Esto asegura que se limpie el orden de las demás columnas
+    });
+  }
+
+  applyFilter(filterType: 'all' | 'lowStock' | 'noStock') {
+    this.currentFilter = filterType;
+    if (this.gridApi) {
+      // Le avisamos a la grilla que algo cambió y debe volver a ejecutar doesExternalFilterPass
+      this.gridApi.onFilterChanged();
+    }
+  }
+
+  clearFiltersAndSort() {
+    this.applySort('', null); // Limpia orden
+    this.applyFilter('all');  // Limpia filtro de stock
+    
+    // Opcional: limpiar también la barra de búsqueda si lo deseas
+    // this.searchText = '';
+    // if (this.gridApi) this.gridApi.setGridOption('quickFilterText', '');
+  }
+
+  // Funciones requeridas por AG Grid para filtros externos (usamos arrow functions para no perder el contexto 'this')
+  isExternalFilterPresent = (): boolean => {
+    return this.currentFilter !== 'all';
+  };
+
+  doesExternalFilterPass = (node: any): boolean => {
+    switch (this.currentFilter) {
+      case 'lowStock':
+        // Consideramos "Stock bajo" entre 1 y 5 unidades
+        return node.data.stock > 0 && node.data.stock <= 5;
+      case 'noStock':
+        // Sin stock
+        return node.data.stock === 0;
+      default:
+        return true;
+    }
+  };
 }
