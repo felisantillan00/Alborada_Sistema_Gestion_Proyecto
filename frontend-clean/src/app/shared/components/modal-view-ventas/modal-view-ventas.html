@@ -20,11 +20,17 @@
           </div>
           <div class="col-md-6">
             <label class="form-label">Cliente</label>
-            <input class="form-control" type="text" formControlName="NombreCliente" [disabled]="mode === 'view'" />
+            <input class="form-control" type="text" formControlName="NombreCliente" [disabled]="mode === 'view'" [class.is-invalid]="form.get('NombreCliente')?.touched && form.get('NombreCliente')?.invalid"/>
+            @if (form.get('NombreCliente')?.touched && form.get('NombreCliente')?.invalid) {
+            <div class="invalid-feedback d-block">El cliente es obligatorio</div>
+            }
           </div>
           <div class="col-md-4">
             <label class="form-label">Precio Total</label>
-            <input class="form-control" type="number" formControlName="PrecioTotal" [disabled]="mode === 'view'" />
+            <input class="form-control" type="number" formControlName="PrecioTotal" [disabled]="mode === 'view'" [class.is-invalid]="form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid"/>
+            @if (form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid) {
+            <div class="invalid-feedback d-block">El precio debe ser mayor a 0</div>
+            }
           </div>
           <div class="col-md-4">
             <label class="form-label">Fecha</label>
@@ -32,7 +38,10 @@
           </div>
           <div class="col-md-4">
             <label class="form-label">Forma de Pago</label>
-            <input class="form-control" type="text" formControlName="FormaDePago" [disabled]="mode === 'view'" />
+            <input class="form-control" type="text" formControlName="FormaDePago" [disabled]="mode === 'view'" [class.is-invalid]="form.get('FormaDePago')?.touched && form.get('FormaDePago')?.invalid"/>
+            @if (form.get('FormaDePago')?.touched && form.get('FormaDePago')?.invalid) {
+            <div class="invalid-feedback d-block">La forma de pago es obligatoria</div>
+            }
           </div>
           <div class="col-12" formArrayName="Productos">
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -77,17 +86,26 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
+        <!-- CANCELAR -->
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+        <!-- CREAR / GUARDAR -->
         @if (mode === 'create' || mode === 'edit') {
-        <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
-          {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+        <button type="button" class="btn btn-primary" (click)="onSubmit(mode)">
+          <i class="bi bi-check-lg"></i>
         </button>
         }
 
+        <!-- BORRAR -->
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Borrar</button>
+        <button type="button" class="btn btn-danger" (click)="onSubmit(mode)">
+          <i class="bi bi-trash"></i>
+        </button>
         }
+
       </div>
     </div>
   </div>
