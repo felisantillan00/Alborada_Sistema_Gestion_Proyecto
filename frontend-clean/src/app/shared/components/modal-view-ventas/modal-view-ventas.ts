@@ -22,7 +22,7 @@ export class ModalViewVentas implements OnChanges {
   form = this.fb.group({
     Id: [''],
     NombreCliente: ['', Validators.required],
-    PrecioTotal: [0, Validators.required],
+    PrecioTotal: [0, [Validators.required, Validators.min(1)]],
     Fecha: [''],
     FormaDePago: ['', Validators.required],
     Productos: this.fb.array<FormGroup>([]),
@@ -105,4 +105,13 @@ export class ModalViewVentas implements OnChanges {
         return 'Venta';
     }
   }
+
+  onSubmit(mode: ModalMode) {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
+  }
+
+  this.submitted.emit(mode);
+}
 }
