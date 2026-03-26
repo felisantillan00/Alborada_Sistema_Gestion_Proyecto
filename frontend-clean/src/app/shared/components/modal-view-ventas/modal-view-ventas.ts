@@ -1,5 +1,8 @@
+import { ProductoView } from '../../../core/models/producto';
+import { ProductoService } from '../../../core/services/producto/producto-service';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VentaView } from '../../../core/models/venta';
 import Swal from 'sweetalert2';
@@ -9,25 +12,33 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 @Component({
   selector: 'app-modal-view-ventas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './modal-view-ventas.html',
 })
-export class ModalViewVentas implements OnChanges {
+export class ModalViewVentas implements OnChanges, OnInit {
   @Input() mode: ModalMode = 'create';
   @Input() venta: VentaView | null = null;
+
+  productos: ProductoView[] = [];
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
   private fb = inject(FormBuilder);
+  private productService = inject(ProductoService);
+
+  ngOnInit(): void {
+    this.getProductos();
+  }
 
   form = this.fb.group({
-    Id: [''],
+    Id: ['', Validators.required],
     NombreCliente: ['', Validators.required],
     PrecioTotal: [0, [Validators.required, Validators.min(1)]],
     Fecha: [''],
     FormaDePago: ['', Validators.required],
     Productos: this.fb.array<FormGroup>([]),
   });
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['venta'] || changes['mode']) {
@@ -49,6 +60,12 @@ export class ModalViewVentas implements OnChanges {
 
   removeProducto(index: number): void {
     this.productosFormArray.removeAt(index);
+  }
+
+  getProductos(): void {
+    this.productService.getAll().subscribe(data => {
+      this.productos = data;
+    });
   }
 
   private loadForm(): void {
@@ -85,7 +102,7 @@ export class ModalViewVentas implements OnChanges {
     precioVenta: number | null = null
   ): FormGroup {
     return this.fb.group({
-      Id: [id],
+      Id: [id, Validators.required],
       Nombre: [nombre],
       Cantidad: [cantidad, [Validators.required, Validators.min(1)]],
       PrecioVenta: [precioVenta],

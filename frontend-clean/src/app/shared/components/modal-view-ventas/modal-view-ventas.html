@@ -56,8 +56,11 @@
             <div class="row g-2 align-items-end mb-2" [formGroupName]="$index">
               <div class="col-md-4">
                 <label class="form-label">Producto</label>
-                <input class="form-control" type="text"
-                  [value]="producto.get('Nombre')?.value || producto.get('Id')?.value" [disabled]="true" />
+
+                <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="Id"
+                  [disabled]="mode === 'view'">
+                </ng-select>
+
               </div>
               <div class="col-md-3">
                 <label class="form-label">Cantidad</label>
