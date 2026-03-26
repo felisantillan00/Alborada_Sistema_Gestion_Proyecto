@@ -8,6 +8,8 @@ import { ProductoView } from '../../../core/models/producto';
 import { Pagina } from '../../../core/models/pagina';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ModalView } from '../../../shared/components/modal-view/modal-view';
+import { HostListener } from '@angular/core';
+import { GridApi, GridReadyEvent } from 'ag-grid-community';
 
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
@@ -20,6 +22,7 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   styleUrl: './inventario.css',
 })
 export class Inventario implements OnInit {
+  private gridApi!: GridApi;
 
   productos: ProductoView[] = [];
   loadingProductos = false;
@@ -153,5 +156,29 @@ export class Inventario implements OnInit {
     this.modalMode = mode;
     this.selectedProducto = product;
     this.modalOpen = true;
+  }
+
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+    this.checkResponsiveColumns(window.innerWidth);
+  }
+
+  //Por si el usuario rota el celular  o cambia el tamaño de la pantalla, se ajustan las columnas para que se vean bien
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkResponsiveColumns(event.target.innerWidth);
+  }
+  //Oculta/muestra columnas
+  private checkResponsiveColumns(width: number) {
+    if(!this.gridApi) return;
+
+    //si el tamaño es de celular, oculto columnas no tan importantes
+    if (width < 768) {
+      this.gridApi.setColumnsVisible(['id', 'precioCosto', 'nombreProveedor', 'nombreCategoria', 'nombreMarca'], false)
+    }else{
+      this.gridApi.setColumnsVisible(['id', 'precioCosto', 'nombreProveedor', 'nombreCategoria', 'nombreMarca'], true)
+    }
+    //hago que el tamaño de las columnas se ajuste al nuevo tamaño de la pantalla
+    this.gridApi.sizeColumnsToFit();
   }
 }

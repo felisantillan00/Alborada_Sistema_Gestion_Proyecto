@@ -1,30 +1,38 @@
-<section class="container-fluid py-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h4 mb-0">Inventario</h2>
-    <button class="btn btn-success" type="button" (click)="onNewProduct()">
-      <i class="bi bi-plus-lg me-1"></i>
-      Nuevo Producto
+<section class="container-fluid py-3 px-2 px-md-3 mt-2">
+  <div class="d-flex justify-content-between align-items-center mb-4 gap-2">
+    <h2 class="h3 mb-0 fw-bold text-dark" style="letter-spacing: -0.5px;">Inventario</h2>
+    
+    <button class="btn btn-success rounded-pill shadow-sm px-3 py-2 d-flex align-items-center gap-2 transition-all" type="button" (click)="onNewProduct()">
+      <i class="bi bi-plus-lg"></i>
+      <span class="d-none d-sm-inline fw-medium">Nuevo Producto</span>
     </button>
   </div>
-  <div>{{ productos.length }}</div>
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <ag-grid-angular style="width: 100%; height: 540px" 
-                      [rowData]="productos" 
-                      [columnDefs]="columnDefs"
-                      [defaultColDef]="defaultColDef" 
-                      [getRowId]="getRowId" 
-                      [pagination]="true" 
-                      [paginationPageSize]="10"
-                      [animateRows]="true" 
-                      [suppressCellFocus]="true" 
-                      (rowClicked)="onRowClicked($event)">
+
+  <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px;">
+    <div class="card-body p-0 p-md-3">
+      <ag-grid-angular 
+          style="width: 100%; height: 60vh; min-height: 400px;" 
+          class="ag-theme-alpine border-0"
+          [rowData]="productos" 
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef" 
+          [getRowId]="getRowId" 
+          [pagination]="true" 
+          [paginationPageSize]="10"
+          [animateRows]="true" 
+          [suppressCellFocus]="true" 
+          (gridReady)="onGridReady($event)" 
+          (rowClicked)="onRowClicked($event)">
       </ag-grid-angular>
     </div>
   </div>
 </section>
+
 @if (modalOpen) {
-<app-modal-view [mode]="modalMode" [product]="selectedProducto" (closed)="closeModal()"
+<app-modal-view 
+  [mode]="modalMode" 
+  [product]="selectedProducto" 
+  (closed)="closeModal()"
   (submitted)="onModalSubmit($event)">
 </app-modal-view>
 }
