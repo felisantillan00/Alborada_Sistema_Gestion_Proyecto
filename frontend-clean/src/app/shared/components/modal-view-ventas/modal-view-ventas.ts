@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VentaView } from '../../../core/models/venta';
+import Swal from 'sweetalert2';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -106,12 +107,78 @@ export class ModalViewVentas implements OnChanges {
     }
   }
 
-  onSubmit(mode: ModalMode) {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
+  onSubmit(mode: ModalMode): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    switch (mode) {
+      case 'create':
+        this.handleCreate();
+        break;
+
+      case 'edit':
+        this.handleEdit();
+        break;
+
+      case 'delete':
+        this.handleDelete();
+        break;
+    }
   }
 
-  this.submitted.emit(mode);
-}
+  handleCreate(): void {
+    const payload = this.buildPayload();
+    console.log('CREATE venta:', payload);
+
+    this.showSuccess('Venta creada correctamente');
+    this.closed.emit();
+  }
+
+  handleEdit(): void {
+    const payload = this.buildPayload(true);
+    console.log('EDIT venta:', payload);
+
+    this.showSuccess('Venta editada correctamente');
+    this.closed.emit();
+  }
+
+  handleDelete(): void {
+    console.log('DELETE venta:', this.venta?.Id);
+
+    this.showSuccess('Venta eliminada correctamente');
+    this.closed.emit();
+  }
+
+
+  buildPayload(includeId: boolean = false): any {
+    const formValue = this.form.value;
+
+    const payload: any = {
+      nombreCliente: formValue.NombreCliente,
+      precioTotal: formValue.PrecioTotal,
+      fecha: formValue.Fecha,
+      formaDePago: formValue.FormaDePago,
+      productos: (formValue.Productos || []).map((p: any) => ({
+        id: p.Id,
+        cantidad: p.Cantidad,
+        precioVenta: p.PrecioVenta
+      }))
+    };
+
+    if (includeId) {
+      payload.id = formValue.Id;
+    }
+
+    return payload;
+  }
+
+  showSuccess(message: string): void {
+    Swal.fire({
+      icon: 'success',
+      title: 'OK',
+      text: message
+    });
+  }
 }

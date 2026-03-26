@@ -98,7 +98,7 @@
 
         <!-- BORRAR -->
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">
+        <button type="button" class="btn btn-danger" (click)="onSubmit(mode)">
           <i class="bi bi-trash"></i>
         </button>
         }
