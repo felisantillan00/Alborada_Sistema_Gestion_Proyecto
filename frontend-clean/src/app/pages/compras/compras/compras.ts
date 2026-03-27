@@ -4,6 +4,7 @@ import { catchError, of } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, RowClickedEvent } from 'ag-grid-community';
 
+import { Pagina } from '../../../core/models/pagina';
 import { CompraView } from '../../../core/models/compra';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ModalViewCompras } from '../../../shared/components/modal-view-compras/modal-view-compras';
@@ -63,16 +64,22 @@ export class Compras implements OnInit {
     this.loadingCompras = true;
 
     this.comprasService
-      .getAll()
+      .getPage()
       .pipe(
         catchError((error) => {
           console.error('Error al obtener compras:', error);
           this.loadingCompras = false;
-          return of([] as CompraView[]);
+
+          return of({
+            content: [],
+            totalElements: 0,
+            totalPages: 0,
+            number: 0
+          } as Pagina<CompraView>);
         })
       )
       .subscribe((data) => {
-        this.compras = data;
+        this.compras = data.content;
         this.loadingCompras = false;
       });
   }
