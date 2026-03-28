@@ -31,7 +31,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   form = this.fb.group({
-    Id: ['', Validators.required],
+    // Id: ['', Validators.required],
     NombreCliente: ['', Validators.required],
     PrecioTotal: [0, [Validators.required, Validators.min(1)]],
     Fecha: [''],
@@ -70,7 +70,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   private loadForm(): void {
     this.form.patchValue({
-      Id: this.venta?.Id ?? '',
+      // Id: this.venta?.Id ?? '',
       NombreCliente: this.venta?.NombreCliente ?? '',
       PrecioTotal: this.venta?.PrecioTotal ?? 0,
       Fecha: this.venta?.Fecha ?? '',
@@ -184,8 +184,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
       }))
     };
 
-    if (includeId) {
-      payload.id = formValue.Id;
+    if (includeId && this.venta) {
+      payload.id = this.venta.Id;
     }
 
     return payload;
