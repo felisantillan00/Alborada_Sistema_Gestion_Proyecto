@@ -15,8 +15,7 @@ export class ProductoService extends Api<ProductoView, ProductoRequest> {
     super(http, 'productosView');
   }
 
- //Implementacion de Paginacion
- //asi funcion solo para el json-server, para Spring Boot es distinto
+
  getProductosPaginados(pagina: number, cantidad: number): Observable<ProductoView[]> {
     
     const params = {

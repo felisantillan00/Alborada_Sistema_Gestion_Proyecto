@@ -1,0 +1,7 @@
+@media (max-width: 767px) {
+  app-sidebar {
+    width: 100%;
+    display: block;
+    z-index: 1050;
+  }
+}
