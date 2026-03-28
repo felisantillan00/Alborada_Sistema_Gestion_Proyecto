@@ -20,6 +20,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   @Input() venta: VentaView | null = null;
 
   productos: ProductoView[] = [];
+  productosLoaded = false;
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
@@ -31,7 +32,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   form = this.fb.group({
-    Id: ['', Validators.required],
+    // Id: ['', Validators.required],
     NombreCliente: ['', Validators.required],
     PrecioTotal: [0, [Validators.required, Validators.min(1)]],
     Fecha: [''],
@@ -43,9 +44,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['venta'] || changes['mode']) {
       this.loadForm();
+      if (this.productosLoaded) {
+        this.setProductosEnFormArray();
+      }
     }
   }
-
   get productosFormArray(): FormArray<FormGroup> {
     return this.form.get('Productos') as FormArray<FormGroup>;
   }
@@ -65,12 +68,16 @@ export class ModalViewVentas implements OnChanges, OnInit {
   getProductos(): void {
     this.productService.getAll().subscribe(data => {
       this.productos = data;
+      this.productosLoaded = true;
+
+      if (this.venta) {
+        this.setProductosEnFormArray();
+      }
     });
   }
 
   private loadForm(): void {
     this.form.patchValue({
-      Id: this.venta?.Id ?? '',
       NombreCliente: this.venta?.NombreCliente ?? '',
       PrecioTotal: this.venta?.PrecioTotal ?? 0,
       Fecha: this.venta?.Fecha ?? '',
@@ -78,32 +85,33 @@ export class ModalViewVentas implements OnChanges, OnInit {
     });
 
     this.productosFormArray.clear();
+  }
 
-    if (this.venta?.Productos?.length) {
-      this.venta.Productos.forEach((producto) => {
-        this.productosFormArray.push(
-          this.createProductoGroup(
-            producto.Id,
-            producto.Nombre,
-            producto.Cantidad,
-            producto.PrecioVenta
-          )
-        );
-      });
-    } else {
-      this.addProducto();
-    }
+  private setProductosEnFormArray(): void {
+
+    if (!this.venta?.Productos) return;
+
+    this.productosFormArray.clear();
+
+    this.venta.Productos.forEach((producto) => {
+      this.productosFormArray.push(
+        this.createProductoGroup(
+          producto.Id,
+          producto.Cantidad,
+          producto.PrecioVenta
+        )
+      );
+    });
+
   }
 
   private createProductoGroup(
     id: string = '',
-    nombre: string = '',
     cantidad: number = 1,
     precioVenta: number | null = null
   ): FormGroup {
     return this.fb.group({
       Id: [id, Validators.required],
-      Nombre: [nombre],
       Cantidad: [cantidad, [Validators.required, Validators.min(1)]],
       PrecioVenta: [precioVenta],
     });
@@ -184,8 +192,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
       }))
     };
 
-    if (includeId) {
-      payload.id = formValue.Id;
+    if (includeId && this.venta) {
+      payload.id = this.venta.Id;
     }
 
     return payload;

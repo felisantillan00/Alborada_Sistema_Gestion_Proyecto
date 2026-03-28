@@ -14,10 +14,10 @@
         </p>
         } @else {
         <div class="row g-3">
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <label class="form-label">ID</label>
             <input class="form-control" type="text" formControlName="Id" [disabled]="mode === 'view'" />
-          </div>
+          </div> -->
           <div class="col-md-6">
             <label class="form-label">Cliente</label>
             <input class="form-control" type="text" formControlName="NombreCliente" [disabled]="mode === 'view'" [class.is-invalid]="form.get('NombreCliente')?.touched && form.get('NombreCliente')?.invalid"/>
@@ -88,9 +88,7 @@
       <div class="modal-footer">
 
         <!-- CANCELAR -->
-        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">
-          <i class="bi bi-x-lg"></i>
-        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
         <!-- CREAR / GUARDAR -->
         @if (mode === 'create' || mode === 'edit') {
