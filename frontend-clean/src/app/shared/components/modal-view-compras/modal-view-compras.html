@@ -26,11 +26,11 @@
           <div class="col-md-4">
             <label class="form-label">Precio Total</label>
             <input class="form-control" type="number" formControlName="PrecioTotal" [disabled]="mode === 'view'" />
-          @if (form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid) {
-<div class="text-danger small">
-  El precio total debe ser mayor a 0
-</div>
-}
+            @if (form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid) {
+            <div class="text-danger small">
+              El precio total debe ser mayor a 0
+            </div>
+            }
           </div>
           <div class="col-md-4">
             <label class="form-label">Fecha</label>
@@ -79,7 +79,9 @@
           </div>
         </div>
         }
+        
       </div>
+
 
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
