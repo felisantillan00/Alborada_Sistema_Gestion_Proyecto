@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CompraView } from '../../../core/models/compra';
 import { ProductoService } from '../../../core/services/producto/producto-service';
+import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
 import Swal from 'sweetalert2';
 
@@ -26,6 +27,7 @@ export class ModalViewCompras implements OnChanges {
   @Output() submitted = new EventEmitter<ModalMode>();
   private fb = inject(FormBuilder);
   private productService = inject(ProductoService);
+  private comprasService = inject(ComprasService);
 
   ngOnInit(): void {
     this.getProductos();
@@ -87,24 +89,44 @@ export class ModalViewCompras implements OnChanges {
 
   handleCreate(): void {
     const payload = this.buildPayload();
-    console.log('CREATE compra:', payload);
 
-    this.showSuccess('Compra creada correctamente');
-    this.closed.emit();
+    this.comprasService.create(payload).subscribe({
+      next: () => {
+        this.showSuccess('Compra creada correctamente');
+        this.closed.emit();
+      },
+      error: () => {
+        this.showError();
+      }
+    });
   }
+
   handleEdit(): void {
     const payload = this.buildPayload(true);
-    console.log('EDIT compra:', payload);
 
-    this.showSuccess('Compra editada correctamente');
-    this.closed.emit();
+    this.comprasService.update(this.compra!.Id, payload).subscribe({
+      next: () => {
+        this.showSuccess('Compra editada correctamente');
+        this.closed.emit();
+      },
+      error: () => {
+        this.showError();
+      }
+    });
   }
 
   handleDelete(): void {
-    console.log('DELETE compra:', this.compra?.Id);
+    if (!this.compra?.Id) return;
 
-    this.showSuccess('Compra eliminada correctamente');
-    this.closed.emit();
+    this.comprasService.delete(this.compra.Id).subscribe({
+      next: () => {
+        this.showSuccess('Compra eliminada correctamente');
+        this.closed.emit();
+      },
+      error: () => {
+        this.showError();
+      }
+    });
   }
 
   buildPayload(includeId: boolean = false): any {
@@ -195,10 +217,18 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
-showSuccess(message: string): void {
-  Swal.fire({
-    icon: 'success',
-    title: 'OK',
-    text: message
-  });
-}}
+  showSuccess(message: string): void {
+    Swal.fire({
+      icon: 'success',
+      title: 'OK',
+      text: message
+    });
+  }
+  showError(): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Ocurrió un problema'
+    });
+  }
+}
