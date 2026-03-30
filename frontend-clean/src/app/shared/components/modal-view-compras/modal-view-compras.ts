@@ -5,6 +5,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { CompraView } from '../../../core/models/compra';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ProductoView } from '../../../core/models/producto';
+import Swal from 'sweetalert2';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -194,7 +195,10 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
-  showSuccess(message: string): void {
-  console.log(message);
-}
-}
+showSuccess(message: string): void {
+  Swal.fire({
+    icon: 'success',
+    title: 'OK',
+    text: message
+  });
+}}
