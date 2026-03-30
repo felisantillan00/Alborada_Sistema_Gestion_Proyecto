@@ -1,17 +1,15 @@
 package com.example.backend.config;
-import java.math.BigDecimal;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import jakarta.transaction.Transactional;
+import com.example.backend.dto.request.*;
 import com.example.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import com.example.backend.service.*;
 import com.example.backend.model.*;
 import lombok.extern.slf4j.Slf4j;
+import java.math.BigDecimal;
 import java.util.List;
-import com.example.backend.service.VentaService;
-import com.example.backend.dto.request.VentaRequestDTO;
-import com.example.backend.dto.request.DetalleVentaRequestDTO;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +21,9 @@ public class DataInitializer implements CommandLineRunner {
     private final ProductoRepository productoRepository;
     private final VentaRepository ventaRepository;
     private final VentaService ventaService;
-
+    private final CompraRepository compraRepository;
+    private final CompraService compraService;
+    
     @Override
     @Transactional
     public void run(String... args) throws Exception {
@@ -42,7 +42,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("ventas@bicipartes.com")
                 .build());
         }
-
         // 2. Cargamos Marcas 
         if (marcaRepository.count() == 0) {
             log.info("Cargando marcas iniciales...");
@@ -50,7 +49,6 @@ public class DataInitializer implements CommandLineRunner {
             marcaRepository.save(Marca.builder().nombre("Maxxis").descripcion("Cubiertas de alta gama").build());
             marcaRepository.save(Marca.builder().nombre("Venzo").descripcion("Cuadros y bicicletas completas").build());
         }
-
         // 3. Cargamos Categorias
         if (categoriaRepository.count() == 0) {
             log.info("Cargando categorias iniciales...");
@@ -58,22 +56,17 @@ public class DataInitializer implements CommandLineRunner {
             categoriaRepository.save(Categoria.builder().nombre("Cubiertas").descripcion("Neumáticos para todo terreno").build());
             categoriaRepository.save(Categoria.builder().nombre("Bicicletas").descripcion("Bicis completas").build());
         }
-
         // 4. Cargamos Productos
         if (productoRepository.count() == 0) {
             log.info("Cargando productos iniciales...");
-
             // Buscamos las dependencias (usamos orElseThrow para detectar errores de tipeo rápido)
             Categoria catTransmision = categoriaRepository.findByNombre("Transmisión").orElseThrow();
             Categoria catCubiertas = categoriaRepository.findByNombre("Cubiertas").orElseThrow();
             Categoria catBicis = categoriaRepository.findByNombre("Bicicletas").orElseThrow();
-
             Marca marcaShimano = marcaRepository.findByNombre("Shimano").orElseThrow();
             Marca marcaMaxxis = marcaRepository.findByNombre("Maxxis").orElseThrow();
             Marca marcaVenzo = marcaRepository.findByNombre("Venzo").orElseThrow();
-
             Proveedor provPampeana = proveedorRepository.findByNombre("Distribuidora Pampeana").orElse(null);
-
             // --- PRODUCTO 1: Transmisión ---
             productoRepository.save(Producto.builder()
                 .nombre("Cassette Shimano 11-32")
@@ -87,7 +80,6 @@ public class DataInitializer implements CommandLineRunner {
                 .marca(marcaShimano)
                 .proveedor(provPampeana)
                 .build());
-
             // --- PRODUCTO 2: Cubierta (Para probar ALERTA DE STOCK BAJO) ---
             productoRepository.save(Producto.builder()
                 .nombre("Cubierta Maxxis Ikon 29x2.20")
@@ -101,7 +93,6 @@ public class DataInitializer implements CommandLineRunner {
                 .marca(marcaMaxxis)
                 .proveedor(provPampeana)
                 .build());
-
             // --- PRODUCTO 3: Bicicleta Completa ---
             productoRepository.save(Producto.builder()
                 .nombre("Bicicleta Venzo Talon Rodado 29")
@@ -115,7 +106,6 @@ public class DataInitializer implements CommandLineRunner {
                 .marca(marcaVenzo)
                 .proveedor(provPampeana)
                 .build());
-
             log.info("Carga de productos finalizada con éxito.");
         }
         // 5. Cargamos Ventas de prueba
@@ -128,7 +118,6 @@ public class DataInitializer implements CommandLineRunner {
             if (productos.size() >= 2) {
                 Producto prod1 = productos.get(0);
                 Producto prod2 = productos.get(1);
-
                 //Creo una venta de prueba con 2 productos (1 unidad del primero y 2 unidades del segundo)
                 VentaRequestDTO ventaPrueba = new VentaRequestDTO(
                     "EFECTIVO", 
@@ -139,9 +128,31 @@ public class DataInitializer implements CommandLineRunner {
                         new DetalleVentaRequestDTO(prod2.getId(), 2)
                     )
                 );
-
                 ventaService.create(ventaPrueba);
                 log.info("Ventas de prueba cargadas con éxito.");
+            }
+        }
+        // 6. Cargamos Compras de prueba
+        if (compraRepository.count() == 0) {
+            log.info("Cargando compras iniciales de prueba...");
+            List<Producto> productos = productoRepository.findAll();
+            Proveedor provBiciPartes = proveedorRepository.findByNombre("BiciPartes S.A.").orElseThrow();
+            if (productos.size() >= 3) {
+                Producto prod1 = productos.get(0); 
+                Producto prod3 = productos.get(2);
+                
+                // Compra de 10 unidades del Cassette y 5 de la Bici Venzo
+                CompraRequestDTO compraPrueba = new CompraRequestDTO(
+                    null, // El ID es nulo porque es una creación
+                    provBiciPartes.getNombre(),
+                    null, // El total se autocalcula en el servicio
+                    List.of(
+                        new DetalleCompraRequestDTO(new ProductoIdDTO(prod1.getId()), 10, new BigDecimal("51000.00")), // Precio de compra ligeramente diferente
+                        new DetalleCompraRequestDTO(new ProductoIdDTO(prod3.getId()), 5, new BigDecimal("345000.00"))
+                    )
+                );
+                compraService.create(compraPrueba);
+                log.info("Compras de prueba cargadas con éxito.");
             }
         }
     }
