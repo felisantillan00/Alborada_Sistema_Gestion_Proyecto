@@ -31,7 +31,7 @@ export class ModalViewCompras implements OnChanges {
   }
 
   form = this.fb.group({
-    PrecioTotal: [0, Validators.required],
+    PrecioTotal: [0, [Validators.required, Validators.min(1)]],
     NombreProveedor: ['', Validators.required],
     Fecha: [''],
     Producto: this.fb.array<FormGroup>([]),
@@ -60,6 +60,14 @@ export class ModalViewCompras implements OnChanges {
 
   removeProducto(index: number): void {
     this.productoFormArray.removeAt(index);
+  }
+
+  onSubmit(mode: ModalMode): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    } 
+    this.submitted.emit(mode);
   }
 
   getProductos(): void {
