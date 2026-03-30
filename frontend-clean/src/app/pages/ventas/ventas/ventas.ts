@@ -41,11 +41,11 @@ export class Ventas implements OnInit {
   };
 
   readonly columnDefs: ColDef<VentaView>[] = [
-    // { field: 'Id', headerName: 'ID', maxWidth: 110 },
-    { field: 'NombreCliente', headerName: 'Cliente', minWidth: 200 },
-    { field: 'PrecioTotal', headerName: 'Precio Total' },
-    { field: 'Fecha', headerName: 'Fecha' },
-    { field: 'FormaDePago', headerName: 'Forma de Pago' },
+    //  { field: 'id',            headerName: 'ID' },
+  { field: 'nombreCliente', headerName: 'Cliente',        minWidth: 200 },
+  { field: 'total',         headerName: 'Precio Total' },
+  { field: 'fechaVenta',    headerName: 'Fecha' },
+  { field: 'formaPago',     headerName: 'Forma de Pago' },
     {
       headerName: 'Actions',
       colId: 'actions',
@@ -101,7 +101,7 @@ export class Ventas implements OnInit {
 
   //Al realizar un cambio en el producto, 
   // se actualiza la tabla forzando a Angular a detectar el cambio y refrescar la tabla.
-  getRowId = (params: any) => params.data.Id.toString();
+  getRowId = (params: any) => params.data.id.toString();
 
 
   onNewVenta(): void {

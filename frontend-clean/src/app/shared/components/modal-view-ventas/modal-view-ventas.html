@@ -8,102 +8,107 @@
 
       <div class="modal-body" [formGroup]="form">
         @if (mode === 'delete') {
-        <p class="mb-0">
-          Seguro que deseas eliminar la venta
-          <strong>{{ venta?.Id ?? '' }}</strong>?
-        </p>
+          <p class="mb-0">
+            Seguro que deseas eliminar la venta de
+            <strong>{{ venta?.nombreCliente ?? '' }}</strong>?
+          </p>
         } @else {
-        <div class="row g-3">
-          <!-- <div class="col-md-6">
-            <label class="form-label">ID</label>
-            <input class="form-control" type="text" formControlName="Id" [disabled]="mode === 'view'" />
-          </div> -->
-          <div class="col-md-6">
-            <label class="form-label">Cliente</label>
-            <input class="form-control" type="text" formControlName="NombreCliente" [disabled]="mode === 'view'" [class.is-invalid]="form.get('NombreCliente')?.touched && form.get('NombreCliente')?.invalid"/>
-            @if (form.get('NombreCliente')?.touched && form.get('NombreCliente')?.invalid) {
-            <div class="invalid-feedback d-block">El cliente es obligatorio</div>
-            }
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Precio Total</label>
-            <input class="form-control" type="number" formControlName="PrecioTotal" [disabled]="mode === 'view'" [class.is-invalid]="form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid"/>
-            @if (form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid) {
-            <div class="invalid-feedback d-block">El precio debe ser mayor a 0</div>
-            }
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Fecha</label>
-            <input class="form-control" type="text" formControlName="Fecha" [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Forma de Pago</label>
-            <input class="form-control" type="text" formControlName="FormaDePago" [disabled]="mode === 'view'" [class.is-invalid]="form.get('FormaDePago')?.touched && form.get('FormaDePago')?.invalid"/>
-            @if (form.get('FormaDePago')?.touched && form.get('FormaDePago')?.invalid) {
-            <div class="invalid-feedback d-block">La forma de pago es obligatoria</div>
-            }
-          </div>
-          <div class="col-12" formArrayName="Productos">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <label class="form-label mb-0">Productos</label>
-              <button type="button" class="btn btn-sm btn-outline-primary" (click)="addProducto()"
-                [disabled]="mode === 'view'">
-                Agregar
-              </button>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Cliente</label>
+              <input class="form-control" type="text" formControlName="nombreCliente"
+                [class.is-invalid]="form.get('nombreCliente')?.touched && form.get('nombreCliente')?.invalid"/>
+              @if (form.get('nombreCliente')?.touched && form.get('nombreCliente')?.invalid) {
+                <div class="invalid-feedback d-block">El cliente es obligatorio</div>
+              }
             </div>
 
-            @for (producto of productosFormArray.controls; track $index) {
-            <div class="row g-2 align-items-end mb-2" [formGroupName]="$index">
-              <div class="col-md-4">
-                <label class="form-label">Producto</label>
-
-                <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="Id"
-                  [disabled]="mode === 'view'">
-                </ng-select>
-
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Cantidad</label>
-                <input class="form-control" type="number" formControlName="Cantidad" [disabled]="mode === 'view'" />
-              </div>
-              @if (showPrecioVenta) {
-              <div class="col-md-3">
-                <label class="form-label">PrecioVenta</label>
-                <input class="form-control" type="number" formControlName="PrecioVenta" [disabled]="mode === 'view'" />
-              </div>
+            <div class="col-md-4">
+              <label class="form-label">Precio Total</label>
+              <input class="form-control" type="number" formControlName="total"
+                [class.is-invalid]="form.get('total')?.touched && form.get('total')?.invalid"/>
+              @if (form.get('total')?.touched && form.get('total')?.invalid) {
+                <div class="invalid-feedback d-block">El precio debe ser mayor a 0</div>
               }
-              <div class="col-md-2">
-                <button type="button" class="btn btn-outline-danger w-100" (click)="removeProducto($index)"
-                  [disabled]="mode === 'view' || productosFormArray.length === 1">
-                  Quitar
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Fecha</label>
+              <input class="form-control" type="text" formControlName="fechaVenta"/>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Forma de Pago</label>
+              <input class="form-control" type="text" formControlName="formaPago"
+                [class.is-invalid]="form.get('formaPago')?.touched && form.get('formaPago')?.invalid"/>
+              @if (form.get('formaPago')?.touched && form.get('formaPago')?.invalid) {
+                <div class="invalid-feedback d-block">La forma de pago es obligatoria</div>
+              }
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label">Observación</label>
+              <input class="form-control" type="text" formControlName="observacion"/>
+            </div>
+
+            <div class="col-12" formArrayName="detalles">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label mb-0">Productos</label>
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                  (click)="addDetalle()" [disabled]="mode === 'view'">
+                  Agregar
                 </button>
               </div>
+
+              @for (detalle of detallesFormArray.controls; track $index) {
+                <div class="row g-2 align-items-end mb-2" [formGroupName]="$index">
+                  <div class="col-md-4">
+                    <label class="form-label">Producto</label>
+                    <ng-select [items]="productos" bindLabel="nombre" bindValue="id"
+                      formControlName="idProducto" [readonly]="mode === 'view'">
+                    </ng-select>
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label">Cantidad</label>
+                    <input class="form-control" type="number" formControlName="cantidad"/>
+                  </div>
+
+                  @if (venta !== null) {
+                    <div class="col-md-3">
+                      <label class="form-label">Precio Unitario</label>
+                      <input class="form-control" type="number" formControlName="precioUnitario" [readonly]="true"/>
+                    </div>
+                  }
+
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-danger w-100"
+                      (click)="removeDetalle($index)"
+                      [disabled]="mode === 'view' || detallesFormArray.length === 1">
+                      Quitar
+                    </button>
+                  </div>
+                </div>
+              }
             </div>
-            }
           </div>
-        </div>
         }
       </div>
 
       <div class="modal-footer">
-
-        <!-- CANCELAR -->
         <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
-        <!-- CREAR / GUARDAR -->
         @if (mode === 'create' || mode === 'edit') {
-        <button type="button" class="btn btn-primary" (click)="onSubmit(mode)">
-          <i class="bi bi-check-lg"></i>
-        </button>
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">
+            <i class="bi bi-check-lg"></i>
+          </button>
         }
 
-        <!-- BORRAR -->
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="onSubmit(mode)">
-          <i class="bi bi-trash"></i>
-        </button>
+          <button type="button" class="btn btn-danger" (click)="onSubmit()">
+            <i class="bi bi-trash"></i>
+          </button>
         }
-
       </div>
     </div>
   </div>
