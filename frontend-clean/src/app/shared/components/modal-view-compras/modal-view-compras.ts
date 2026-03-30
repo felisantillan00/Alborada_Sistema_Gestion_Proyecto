@@ -62,12 +62,68 @@ export class ModalViewCompras implements OnChanges {
     this.productoFormArray.removeAt(index);
   }
 
-  onSubmit(mode: ModalMode): void {
+  onSubmit(): void {
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
-    } 
-    this.submitted.emit(mode);
+    }
+
+    switch (this.mode) {
+      case 'create':
+        this.handleCreate();
+        break;
+
+      case 'edit':
+        this.handleEdit();
+        break;
+
+      case 'delete':
+        this.handleDelete();
+        break;
+    }
+  }
+
+  handleCreate(): void {
+    const payload = this.buildPayload();
+    console.log('CREATE compra:', payload);
+
+    this.showSuccess('Compra creada correctamente');
+    this.closed.emit();
+  }
+  handleEdit(): void {
+    const payload = this.buildPayload(true);
+    console.log('EDIT compra:', payload);
+
+    this.showSuccess('Compra editada correctamente');
+    this.closed.emit();
+  }
+
+  handleDelete(): void {
+    console.log('DELETE compra:', this.compra?.Id);
+
+    this.showSuccess('Compra eliminada correctamente');
+    this.closed.emit();
+  }
+
+  buildPayload(includeId: boolean = false): any {
+    const v = this.form.value;
+    const payload: any = {
+      proveedor: v.NombreProveedor,
+      precioTotal: v.PrecioTotal,
+      fecha: v.Fecha,
+      productos: (v.Producto || []).map((p: any) => ({
+        id: p.Id,
+        cantidad: p.Cantidad,
+        precioCompra: p.PrecioCompra
+      }))
+    };
+
+    if (includeId) {
+      payload.id = this.compra?.Id;
+    }
+
+    return payload;
   }
 
   getProductos(): void {
@@ -82,34 +138,34 @@ export class ModalViewCompras implements OnChanges {
   }
 
   private setProductosEnFormArray(): void {
-  if (!this.compra?.Producto) return;
+    if (!this.compra?.Producto) return;
 
-  this.productoFormArray.clear();
+    this.productoFormArray.clear();
 
-  this.compra.Producto.forEach((producto) => {
-    this.productoFormArray.push(
-      this.createProductoGroup(
-        producto.Id,
-        producto.Cantidad,
-        producto.Precio
-      )
-    );
-  });
-}
-
- private loadForm(): void {
-  this.form.patchValue({
-    PrecioTotal: this.compra?.PrecioTotal ?? 0,
-    NombreProveedor: this.compra?.NombreProveedor ?? '',
-    Fecha: this.compra?.Fecha ?? '',
-  });
-
-  this.productoFormArray.clear();
-
-  if (!this.compra) {
-    this.addProducto();
+    this.compra.Producto.forEach((producto) => {
+      this.productoFormArray.push(
+        this.createProductoGroup(
+          producto.Id,
+          producto.Cantidad,
+          producto.Precio
+        )
+      );
+    });
   }
-}
+
+  private loadForm(): void {
+    this.form.patchValue({
+      PrecioTotal: this.compra?.PrecioTotal ?? 0,
+      NombreProveedor: this.compra?.NombreProveedor ?? '',
+      Fecha: this.compra?.Fecha ?? '',
+    });
+
+    this.productoFormArray.clear();
+
+    if (!this.compra) {
+      this.addProducto();
+    }
+  }
 
   private createProductoGroup(
     id: string = '',
@@ -136,5 +192,9 @@ export class ModalViewCompras implements OnChanges {
       default:
         return 'Compra';
     }
+  }
+
+  showSuccess(message: string): void {
+    console.log(message);
   }
 }

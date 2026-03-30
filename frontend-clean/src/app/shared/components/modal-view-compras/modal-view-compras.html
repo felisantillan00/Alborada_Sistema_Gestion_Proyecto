@@ -85,13 +85,13 @@
         <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
         @if (mode === 'create' || mode === 'edit') {
-        <button type="button" class="btn btn-primary" (click)="onSubmit(mode)">
+        <button type="button" class="btn btn-primary" (click)="onSubmit()">
           {{ mode === 'create' ? 'Crear' : 'Guardar' }}
         </button>
         }
 
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="onSubmit(mode)">Borrar</button>
+        <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
         }
       </div>
     </div>
