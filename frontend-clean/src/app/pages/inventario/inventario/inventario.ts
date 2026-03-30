@@ -44,7 +44,6 @@ export class Inventario implements OnInit {
   };
 
   readonly columnDefs: ColDef<ProductoView>[] = [
-    { field: 'id', headerName: 'ID', maxWidth: 110 },
     { field: 'nombre', headerName: 'Nombre', minWidth: 200 },
     { field: 'precioCosto', headerName: 'Precio Compra' },
     { field: 'precioVenta', headerName: 'Precio Venta' },

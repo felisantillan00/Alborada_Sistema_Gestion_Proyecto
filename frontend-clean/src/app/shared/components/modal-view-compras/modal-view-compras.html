@@ -14,11 +14,7 @@
         </p>
         } @else {
         <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">ID</label>
-            <input class="form-control" type="text" formControlName="Id" [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label class="form-label">Proveedor</label>
             <input class="form-control" type="text" formControlName="NombreProveedor" [disabled]="mode === 'view'" />
           </div>
@@ -40,27 +36,40 @@
 
             @for (producto of productoFormArray.controls; track $index) {
             <div class="row g-2 align-items-end mb-2" [formGroupName]="$index">
-              <div class="col-md-4">
-                <label class="form-label">Id</label>
-                <input class="form-control" type="text" formControlName="Id" [disabled]="mode === 'view'" />
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Cantidad</label>
-                <input class="form-control" type="number" formControlName="Cantidad" [disabled]="mode === 'view'" />
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">{{ precioLabel }}</label>
-                <input class="form-control" type="number" formControlName="PrecioCompra" [disabled]="mode === 'view'" />
-              </div>
-              <div class="col-md-2">
-                <button type="button"
-                        class="btn btn-outline-danger w-100"
-                        (click)="removeProducto($index)"
-                        [disabled]="mode === 'view' || productoFormArray.length === 1">
-                  Quitar
-                </button>
-              </div>
-            </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Producto</label>
+
+    <ng-select
+      [items]="productos"
+      bindLabel="nombre"
+      bindValue="Id"
+      formControlName="Id"
+      [disabled]="mode === 'view'">
+    </ng-select>
+
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Cantidad</label>
+    <input class="form-control" type="number" formControlName="Cantidad" [disabled]="mode === 'view'" />
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">{{ precioLabel }}</label>
+    <input class="form-control" type="number" formControlName="PrecioCompra" [disabled]="mode === 'view'" />
+  </div>
+
+  <div class="col-md-2">
+    <button type="button"
+            class="btn btn-outline-danger w-100"
+            (click)="removeProducto($index)"
+            [disabled]="mode === 'view' || productoFormArray.length === 1">
+      Quitar
+    </button>
+  </div>
+
+</div>
             }
           </div>
         </div>

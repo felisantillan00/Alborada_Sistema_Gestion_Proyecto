@@ -1,23 +1,100 @@
-<section class="container-fluid py-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h4 mb-0">Compras</h2>
-    <button class="btn btn-success" type="button" (click)="onNewCompra()">
-      <i class="bi bi-plus-lg me-1"></i>
-      Nueva Compra
-    </button>
-  </div>
+<section class="container-fluid py-3 px-2 px-md-3 mt-2">
+  <section class="container-fluid py-3 px-2 px-md-3 mt-2">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <ag-grid-angular style="width: 100%; height: 540px"
-                       [rowData]="compras"
-                       [columnDefs]="columnDefs"
-                       [defaultColDef]="defaultColDef"
-                       [pagination]="true"
-                       [paginationPageSize]="10"
-                       [animateRows]="true"
-                       [suppressCellFocus]="true"
-                       (rowClicked)="onRowClicked($event)">
+    <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+
+      <h2 class="h3 mb-0  fw-bold text-dark" style="letter-spacing: -0.5px;">Compras</h2>
+
+      <div class="d-flex align-items-center gap-2 ms-auto">
+
+        <!-- Buscador -->
+        <div class="search-wrapper shadow-sm" [class.expanded]="isSearchExpanded">
+          <input #searchInput type="text" class="form-control search-input" placeholder="Buscar venta..."
+            [value]="searchText" (input)="onSearchInput($event)">
+
+          <button class="btn search-icon-btn shadow-none" type="button" (click)="toggleSearch()">
+            <i class="bi" [ngClass]="(isSearchExpanded && searchText) ? 'bi-x-lg' : 'bi-search'"></i>
+          </button>
+        </div>
+
+        <!-- Filtro -->
+        <div class="dropdown">
+          <button
+            class="btn btn-light rounded-pill shadow-sm px-3 py-2 d-flex align-items-center gap-2 border text-dark transition-all"
+            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-funnel"></i>
+            <span class="d-none d-md-inline fw-medium">Filtros</span>
+            <span *ngIf="currentFilter !== 'all'"
+              class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+              <span class="visually-hidden">Filtro activo</span>
+            </span>
+          </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px; min-width: 220px;">
+          <li>
+            <h6 class="dropdown-header text-success fw-bold">Ordenar por</h6>
+          </li>
+          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('nombre', 'asc')"><i
+                class="bi bi-sort-alpha-down me-2"></i>Nombre (A - Z)</a></li>
+          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('nombre', 'desc')"><i
+                class="bi bi-sort-alpha-up me-2"></i>Nombre (Z - A)</a></li>
+          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('precioVenta', 'asc')"><i
+                class="bi bi-sort-numeric-down me-2"></i>Menor Precio</a></li>
+          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('precioVenta', 'desc')"><i
+                class="bi bi-sort-numeric-up-alt me-2"></i>Mayor Precio</a></li>
+
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li>
+            <h6 class="dropdown-header text-success fw-bold">Filtrar por</h6>
+          </li>
+          <li><a class="dropdown-item py-2 d-flex justify-content-between align-items-center" href="javascript:void(0)"
+              (click)="applyFilter('lowStock')">
+              <span><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Stock Bajo (1-5)</span>
+              <i *ngIf="currentFilter === 'lowStock'" class="bi bi-check2 text-success"></i>
+            </a></li>
+          <li><a class="dropdown-item py-2 d-flex justify-content-between align-items-center" href="javascript:void(0)"
+              (click)="applyFilter('noStock')">
+              <span><i class="bi bi-x-octagon me-2 text-danger"></i>Sin Stock</span>
+              <i *ngIf="currentFilter === 'noStock'" class="bi bi-check2 text-success"></i>
+            </a></li>
+
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li><a class="dropdown-item py-2 text-danger fw-medium" href="javascript:void(0)"
+              (click)="clearFiltersAndSort()">
+              <i class="bi bi-eraser-fill me-2"></i>Limpiar filtros y orden
+            </a></li>
+        </ul>
+      </div>
+
+      <button
+        class="btn btn-success rounded-pill shadown-sm px-3 py-2 d-flex aling-items-center gap-2 transition-all text-nowrap"
+        type="button" (click)="onNewCompra()">
+
+        <i class="bi bi-plus-lg"></i>
+        <span class="d-none d-sm-inline fw-medium">Nueva Compra</span>
+
+      </button>
+    </div>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px">
+    </div>
+  </section>
+
+  <!-- Tabla -->
+  <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px">
+    <div class="card-body p-0 p-md-3">
+
+      <ag-grid-angular style="width: 100%; height: 60vh" min-height="400px" class="ag-theme-alpine border-0"
+        [rowData]="compras" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [getRowId]="getRowId"
+        [pagination]="true" [paginationPageSize]="10" [animateRows]="true" [suppressCellFocus]="true" 
+        (gridReady)="onGridReady($event)" (rowClicked)="onRowClicked($event)">
       </ag-grid-angular>
     </div>
   </div>
