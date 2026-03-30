@@ -76,6 +76,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     });
   }
 
+
   private loadForm(): void {
     this.form.patchValue({
       NombreCliente: this.venta?.NombreCliente ?? '',

@@ -195,6 +195,6 @@ export class ModalViewCompras implements OnChanges {
   }
 
   showSuccess(message: string): void {
-    console.log(message);
-  }
+  console.log(message);
+}
 }
