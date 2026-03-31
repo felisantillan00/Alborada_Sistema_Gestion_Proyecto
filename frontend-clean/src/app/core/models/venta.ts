@@ -1,24 +1,29 @@
 export interface VentaRequest {
-  Id?: string;
-  NombreCliente: string;
-  PrecioTotal: number;
-  Fecha?: string;
-  FormaDePago: string;
-  Productos: {
-    Id: string;
-    Cantidad: number;
+  nombreCliente: string;
+  total: number;
+  formaPago: string;
+  observacion?: string;
+  detalles: {
+    idProducto: number;
+    cantidad: number;
   }[];
 }
+
+export interface VentaDetalle {
+  id: number;
+  idProducto: number;
+  nombreProducto: string;
+  cantidad: number;
+  precioUnitario: number;
+  subtotal: number;
+}
+
 export interface VentaView {
-  Id: string;
-  NombreCliente: string;
-  PrecioTotal: number;
-  Fecha: string;
-  FormaDePago: string;
-  Productos: {
-    Id: string;
-    Nombre: string;
-    Cantidad: number;
-    PrecioVenta: number;
-  }[];
+  id: number;
+  total: number;
+  formaPago: string;
+  observacion?: string;
+  nombreCliente: string;
+  fechaVenta: string;
+  detalles: VentaDetalle[];
 }
