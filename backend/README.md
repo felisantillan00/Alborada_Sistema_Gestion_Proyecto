@@ -55,6 +55,9 @@ Instalación Rápida
 * `@Builder`: Permite crear objetos de forma fluida: `Modelo.builder().nombre("X").build()`.
 * `@AllArgsConstructor`: Constructor con todos los campos (requerido por Builder).
 * `@NoArgsConstructor`: Constructor vacío (requerido por Hibernate).
+A nivel de Atributos:
+* @Id + @GeneratedValue(strategy = GenerationType.IDENTITY): Define la Primary Key autoincremental.
+* @Column(name = "nombre_columna"): Mapea el atributo a un nombre específico en la DB (Ej: nro_factura).
 
 🔹 **Repositories (Acceso a Datos)**
 * `@Repository`: Registra la interfaz como un componente de acceso a datos.
@@ -64,10 +67,31 @@ Instalación Rápida
 * `@Service`: Registra la clase en el contenedor de Spring.
 * `@RequiredArgsConstructor`: Crea el constructor para Inyección de Dependencias de campos `final`.
 * `@Slf4j`: Habilita el log: `log.info("Mensaje")`.
+* `@Transactional`: CRÍTICO. Garantiza que si algo falla, se haga un Rollback (Ej: Si falla el stock, que no se guarde la Venta).
 
-🔹 **DTOs (Data Transfer Objects) - Request o Response**
+🔹 **DTOs (Data Transfer Objects) - Response**
 * `@Data`, `@Builder`, `@AllArgsConstructor`, `@NoArgsConstructor`.
 * **Nota:** Usamos DTOs para no exponer la entidad de la base de datos directamente al exterior.
+Validaciones de Atributos:
+* @NotBlank(message = "..."): Obligatorio para texto (no nulo, no vacío).
+* @NotNull(message = "..."): Obligatorio para números o fechas.
+
+🔹 **Request - DTOs (Data Transfer Objects)**
+* 📝 Uso de Java Records para DTOs
+* A partir de la versión actual, todos los Data Transfer Objects (DTOs) de entrada (RequestDTO) se han migrado a Java Records.
+
+* ¿Por qué usamos Records?
+* Inmutabilidad Garantizada: Al ser records, los datos que llegan desde el Frontend no pueden ser alterados accidentalmente durante su procesamiento en el Backend.
+
+* Código más Limpio: Eliminamos el "boilerplate" de Lombok (@Data, @Getter, @AllArgsConstructor). Un DTO que antes ocupaba 30 líneas ahora se define en una sola.
+
+* Nativo de Java: Aprovechamos las funcionalidades de Java 17+ (y nuestra versión actual Java 24), mejorando el rendimiento y la legibilidad.
+
+* ⚠️ Cambios en la implementación (Importante para el equipo):
+* Al trabajar con Records, ya no se utiliza el prefijo get. El acceso a los datos se realiza llamando directamente al nombre del campo como un método:
+* Antes: request.getNombre()
+* Ahora: request.nombre()
+* Nota: Las Entidades (como Producto, Marca, etc.) siguen siendo clases convencionales con @Data de Lombok, ya que Hibernate requiere que sean mutables para gestionar el ciclo de vida en la base de datos.
 
 🔹 **Controllers (API Endpoints)**
 * `@RestController`: Define que esta clase es un punto de entrada de la API.
@@ -93,3 +117,5 @@ Para mantener la consistencia, todos los controladores deben seguir este formato
 📖 Documentación de API
 * Swagger UI: http://localhost:8080/swagger-ui.html (Para ver y probar la documentación técnica).
 * Postman: Se recomienda crear una "Collection" compartida para el equipo con las peticiones base de cada módulo.
+
+Como consumir la API? Base URL: http://localhost:8080/api/URL
