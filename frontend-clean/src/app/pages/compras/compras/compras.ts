@@ -1,41 +1,38 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, ViewChild } from '@angular/core';
-import { catchError, finalize, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { catchError, of } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, RowClickedEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
 
-import { ProductoView } from '../../../core/models/producto';
 import { Pagina } from '../../../core/models/pagina';
-import { ProductoService } from '../../../core/services/producto/producto-service';
-import { ModalView } from '../../../shared/components/modal-view/modal-view';
-import { HostListener } from '@angular/core';
-import { GridApi, GridReadyEvent } from 'ag-grid-community';
-
+import { CompraView } from '../../../core/models/compra';
+import { ComprasService } from '../../../core/services/compras/compras-service';
+import { ModalViewCompras } from '../../../shared/components/modal-view-compras/modal-view-compras';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
 @Component({
-  selector: 'app-inventario',
+  selector: 'app-compras',
   standalone: true,
-  imports: [CommonModule, AgGridAngular, ModalView],
-  templateUrl: './inventario.html',
-  styleUrl: './inventario.css',
+  imports: [CommonModule, AgGridAngular, ModalViewCompras],
+  templateUrl: './compras.html',
+  styleUrl: './compras.css'
 })
-export class Inventario implements OnInit {
+export class Compras implements OnInit {
   private gridApi!: GridApi;
   searchText: string = '';
-  isSearchExpanded = false;
+  isSearchExpanded = false
   @ViewChild('searchInput') searchInput!: ElementRef;
   currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
 
-  productos: ProductoView[] = [];
-  loadingProductos = false;
+  compras: CompraView[] = [];
+  loadingCompras = false;
 
   modalOpen = false;
   modalMode: ModalMode = 'create';
-  selectedProducto: ProductoView | null = null;
+  selectedCompra: CompraView | null = null;
 
-  readonly defaultColDef: ColDef<ProductoView> = {
+  readonly defaultColDef: ColDef<CompraView> = {
     sortable: true,
     filter: false,
     resizable: true,
@@ -43,95 +40,71 @@ export class Inventario implements OnInit {
     minWidth: 120,
   };
 
-  readonly columnDefs: ColDef<ProductoView>[] = [
-    { field: 'nombre', headerName: 'Nombre', minWidth: 200 },
-    { field: 'precioCosto', headerName: 'Precio Compra' },
-    { field: 'precioVenta', headerName: 'Precio Venta' },
-    { field: 'stock', headerName: 'Stock', maxWidth: 120 },
-    { field: 'nombreProveedor', headerName: 'Proveedor' },
-    { field: 'nombreCategoria', headerName: 'Categoria' },
-    { field: 'nombreMarca', headerName: 'Marca' },
+  readonly columnDefs: ColDef<CompraView>[] = [
+    // { field: 'Id', headerName: 'ID', maxWidth: 120 },
+    { field: 'PrecioTotal', headerName: 'Precio Total' },
+    { field: 'NombreProveedor', headerName: 'Proveedor', minWidth: 200 },
+    { field: 'Fecha', headerName: 'Fecha' },
     {
-  headerName: 'Actions',
-  colId: 'actions',
-  sortable: false,
-  filter: false,
-  maxWidth: 150, 
-  cellRenderer: () => `
-    <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
-      <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" title="Ver">
-        <i class="bi bi-eye"></i>
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
-        <i class="bi bi-pencil"></i>
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
-        <i class="bi bi-trash"></i>
-      </button>
-    </div>
-  `,
-},
+      headerName: 'Actions',
+      colId: 'actions',
+      sortable: false,
+      filter: false,
+      maxWidth: 150,
+      cellRenderer: () => `
+        <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
+          <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" title="Ver">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `,
+    },
   ];
 
-  constructor(private productoService: ProductoService, private cdr: ChangeDetectorRef) { }
+  constructor(private comprasService: ComprasService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-      this.getProductos();
+    this.getCompras();
   }
 
-  //getProductos(): void {
-  //  this.loadingProductos = true;
+  getCompras(): void {
+    this.loadingCompras = true;
 
-  //  this.productoService
-  //    .getPage()
-  //    .pipe(
-  //      catchError((error) => {
-  //        console.error('Error al obtener productos:', error);
-  //        this.loadingProductos = false;
-  //        return of([] as ProductoView[]);
-  //      })
-  //    )
-  //    .subscribe((data) => {
-  //      this.productos = data.content;
-  //      this.loadingProductos = false;
-  //      console.log("SERAN?", this.productos)
-  //    });
-  //}
-
-  getProductos(): void {
-    this.loadingProductos = true;
-
-    this.productoService
+    this.comprasService
       .getPage()
       .pipe(
         catchError((error) => {
-          console.error('Error al obtener productos:', error);
-          this.loadingProductos = false;
+          console.error('Error al obtener compras:', error);
+          this.loadingCompras = false;
 
           return of({
             content: [],
             totalElements: 0,
             totalPages: 0,
             number: 0
-          } as Pagina<ProductoView>);
+          } as Pagina<CompraView>);
         })
       )
       .subscribe((data) => {
-        this.productos = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
-        this.loadingProductos = false;
-        this.cdr.detectChanges();           //fuerzo la deteccion
-        console.log("SERAN?", this.productos)
+        this.compras = data.content;
+        this.loadingCompras = false;
+        this.cdr.detectChanges();
       });
   }
-  //Al realizar un cambio en el producto, 
-  // se actualiza la tabla forzando a Angular a detectar el cambio y refrescar la tabla.
-  getRowId= (params : any) => params.data.id.toString();
 
-  onNewProduct(): void {
+  getRowId = (params: any) => params.data.Id.toString();
+
+  onNewCompra(): void {
     this.openModal('create', null);
   }
 
-  onRowClicked(event: RowClickedEvent<ProductoView>): void {
+  onRowClicked(event: RowClickedEvent<CompraView>): void {
     const target = event.event?.target as HTMLElement | null;
     const action = target?.closest('[data-action]')?.getAttribute('data-action');
 
@@ -146,24 +119,24 @@ export class Inventario implements OnInit {
 
   closeModal(): void {
     this.modalOpen = false;
-    this.selectedProducto = null;
+    this.selectedCompra = null;
     this.modalMode = 'create';
   }
 
   onModalSubmit(mode: ModalMode): void {
+    // Placeholder for create/edit/delete integration.
+    console.log(`Modal submit action: ${mode}`);
     this.closeModal();
-    this.getProductos();
   }
 
-  private openModal(mode: ModalMode, product: ProductoView | null): void {
+  private openModal(mode: ModalMode, compra: CompraView | null): void {
     this.modalMode = mode;
-    this.selectedProducto = product;
+    this.selectedCompra = compra;
     this.modalOpen = true;
   }
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    this.checkResponsiveColumns(window.innerWidth);
   }
 
   //Por si el usuario rota el celular  o cambia el tamaño de la pantalla, se ajustan las columnas para que se vean bien
@@ -173,17 +146,18 @@ export class Inventario implements OnInit {
   }
   //Oculta/muestra columnas
   private checkResponsiveColumns(width: number) {
-    if(!this.gridApi) return;
+    if (!this.gridApi) return;
 
     //si el tamaño es de celular, oculto columnas no tan importantes
     if (width < 768) {
       this.gridApi.setColumnsVisible(['id', 'precioCosto', 'nombreProveedor', 'nombreCategoria', 'nombreMarca'], false)
-    }else{
+    } else {
       this.gridApi.setColumnsVisible(['id', 'precioCosto', 'nombreProveedor', 'nombreCategoria', 'nombreMarca'], true)
     }
     //hago que el tamaño de las columnas se ajuste al nuevo tamaño de la pantalla
     this.gridApi.sizeColumnsToFit();
   }
+
 
   //Cada vez que el usuario escribe se actualiza el quick filter de af-grid
   onSearchInput(event: any) {
@@ -194,15 +168,15 @@ export class Inventario implements OnInit {
   }
 
   toggleSearch() {
-    if(this.isSearchExpanded && this.searchText) {
+    if (this.isSearchExpanded && this.searchText) {
       this.searchText = '';
-      if(this.gridApi) {
-        this.gridApi.setGridOption('quickFilterText','')
+      if (this.gridApi) {
+        this.gridApi.setGridOption('quickFilterText', '')
       }
       this.isSearchExpanded = false;
-    }else{
+    } else {
       this.isSearchExpanded = !this.isSearchExpanded;
-      if(this.isSearchExpanded){
+      if (this.isSearchExpanded) {
         setTimeout(() => {
           this.searchInput.nativeElement.focus(), 300
         });
@@ -212,10 +186,10 @@ export class Inventario implements OnInit {
 
   applySort(colId: string, sortDirection: 'asc' | 'desc' | null) {
     if (!this.gridApi) return;
-    
+
     // Si pasamos null, limpia el orden. Si pasamos asc/desc, lo aplica a esa columna
     const state = sortDirection ? [{ colId: colId, sort: sortDirection }] : [];
-    
+
     this.gridApi.applyColumnState({
       state: state,
       defaultState: { sort: null } // Esto asegura que se limpie el orden de las demás columnas
@@ -233,7 +207,7 @@ export class Inventario implements OnInit {
   clearFiltersAndSort() {
     this.applySort('', null); // Limpia orden
     this.applyFilter('all');  // Limpia filtro de stock
-    
+
     // Opcional: limpiar también la barra de búsqueda si lo deseas
     // this.searchText = '';
     // if (this.gridApi) this.gridApi.setGridOption('quickFilterText', '');
@@ -256,4 +230,8 @@ export class Inventario implements OnInit {
         return true;
     }
   };
+
+
+
 }
+

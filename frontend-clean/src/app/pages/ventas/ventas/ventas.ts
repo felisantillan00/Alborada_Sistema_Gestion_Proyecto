@@ -1,41 +1,38 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, ViewChild } from '@angular/core';
-import { catchError, finalize, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { catchError, of } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, RowClickedEvent } from 'ag-grid-community';
-
-import { ProductoView } from '../../../core/models/producto';
+import { ColDef, GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
 import { Pagina } from '../../../core/models/pagina';
-import { ProductoService } from '../../../core/services/producto/producto-service';
-import { ModalView } from '../../../shared/components/modal-view/modal-view';
-import { HostListener } from '@angular/core';
-import { GridApi, GridReadyEvent } from 'ag-grid-community';
-
+import { VentaView } from '../../../core/models/venta';
+import { VentasService } from '../../../core/services/ventas/ventas-service';
+import { ModalViewVentas } from '../../../shared/components/modal-view-ventas/modal-view-ventas';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
 @Component({
-  selector: 'app-inventario',
+  selector: 'app-ventas',
   standalone: true,
-  imports: [CommonModule, AgGridAngular, ModalView],
-  templateUrl: './inventario.html',
-  styleUrl: './inventario.css',
+  imports: [CommonModule, AgGridAngular, ModalViewVentas],
+  templateUrl: './ventas.html',
+  styleUrl: './ventas.css'
 })
-export class Inventario implements OnInit {
+export class Ventas implements OnInit {
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
   @ViewChild('searchInput') searchInput!: ElementRef;
   currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
 
-  productos: ProductoView[] = [];
-  loadingProductos = false;
+
+  ventas: VentaView[] = [];
+  loadingVentas = false;
 
   modalOpen = false;
   modalMode: ModalMode = 'create';
-  selectedProducto: ProductoView | null = null;
+  selectedVenta: VentaView | null = null;
 
-  readonly defaultColDef: ColDef<ProductoView> = {
+  readonly defaultColDef: ColDef<VentaView> = {
     sortable: true,
     filter: false,
     resizable: true,
@@ -43,22 +40,20 @@ export class Inventario implements OnInit {
     minWidth: 120,
   };
 
-  readonly columnDefs: ColDef<ProductoView>[] = [
-    { field: 'nombre', headerName: 'Nombre', minWidth: 200 },
-    { field: 'precioCosto', headerName: 'Precio Compra' },
-    { field: 'precioVenta', headerName: 'Precio Venta' },
-    { field: 'stock', headerName: 'Stock', maxWidth: 120 },
-    { field: 'nombreProveedor', headerName: 'Proveedor' },
-    { field: 'nombreCategoria', headerName: 'Categoria' },
-    { field: 'nombreMarca', headerName: 'Marca' },
+  readonly columnDefs: ColDef<VentaView>[] = [
+    //  { field: 'id',            headerName: 'ID' },
+  { field: 'nombreCliente', headerName: 'Cliente',        minWidth: 200 },
+  { field: 'total',         headerName: 'Precio Total' },
+  { field: 'fechaVenta',    headerName: 'Fecha' },
+  { field: 'formaPago',     headerName: 'Forma de Pago' },
     {
-  headerName: 'Actions',
-  colId: 'actions',
-  sortable: false,
-  filter: false,
-  maxWidth: 150, 
-  cellRenderer: () => `
-    <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
+      headerName: 'Actions',
+      colId: 'actions',
+      sortable: false,
+      filter: false,
+      maxWidth: 150,
+      cellRenderer: () => `
+        <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
       <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" title="Ver">
         <i class="bi bi-eye"></i>
       </button>
@@ -69,69 +64,51 @@ export class Inventario implements OnInit {
         <i class="bi bi-trash"></i>
       </button>
     </div>
-  `,
-},
+      `,
+    },
   ];
 
-  constructor(private productoService: ProductoService, private cdr: ChangeDetectorRef) { }
+  constructor(private ventasService: VentasService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-      this.getProductos();
+    this.getVentas();
   }
 
-  //getProductos(): void {
-  //  this.loadingProductos = true;
+  getVentas(): void {
+    this.loadingVentas = true;
 
-  //  this.productoService
-  //    .getPage()
-  //    .pipe(
-  //      catchError((error) => {
-  //        console.error('Error al obtener productos:', error);
-  //        this.loadingProductos = false;
-  //        return of([] as ProductoView[]);
-  //      })
-  //    )
-  //    .subscribe((data) => {
-  //      this.productos = data.content;
-  //      this.loadingProductos = false;
-  //      console.log("SERAN?", this.productos)
-  //    });
-  //}
-
-  getProductos(): void {
-    this.loadingProductos = true;
-
-    this.productoService
+    this.ventasService
       .getPage()
       .pipe(
         catchError((error) => {
-          console.error('Error al obtener productos:', error);
-          this.loadingProductos = false;
+          console.error('Error al obtener ventas:', error);
+          this.loadingVentas = false;
 
           return of({
             content: [],
             totalElements: 0,
             totalPages: 0,
             number: 0
-          } as Pagina<ProductoView>);
+          } as Pagina<VentaView>);
         })
       )
       .subscribe((data) => {
-        this.productos = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
-        this.loadingProductos = false;
-        this.cdr.detectChanges();           //fuerzo la deteccion
-        console.log("SERAN?", this.productos)
+        this.ventas = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
+        this.loadingVentas = false;
+        this.cdr.detectChanges();
       });
   }
+
   //Al realizar un cambio en el producto, 
   // se actualiza la tabla forzando a Angular a detectar el cambio y refrescar la tabla.
-  getRowId= (params : any) => params.data.id.toString();
+  getRowId = (params: any) => params.data.id.toString();
 
-  onNewProduct(): void {
+
+  onNewVenta(): void {
     this.openModal('create', null);
   }
 
-  onRowClicked(event: RowClickedEvent<ProductoView>): void {
+  onRowClicked(event: RowClickedEvent<VentaView>): void {
     const target = event.event?.target as HTMLElement | null;
     const action = target?.closest('[data-action]')?.getAttribute('data-action');
 
@@ -146,24 +123,24 @@ export class Inventario implements OnInit {
 
   closeModal(): void {
     this.modalOpen = false;
-    this.selectedProducto = null;
+    this.selectedVenta = null;
     this.modalMode = 'create';
   }
 
   onModalSubmit(mode: ModalMode): void {
+    // Placeholder for create/edit/delete integration.
+    console.log(`Modal submit action: ${mode}`);
     this.closeModal();
-    this.getProductos();
   }
 
-  private openModal(mode: ModalMode, product: ProductoView | null): void {
+  private openModal(mode: ModalMode, venta: VentaView | null): void {
     this.modalMode = mode;
-    this.selectedProducto = product;
+    this.selectedVenta = venta;
     this.modalOpen = true;
   }
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    this.checkResponsiveColumns(window.innerWidth);
   }
 
   //Por si el usuario rota el celular  o cambia el tamaño de la pantalla, se ajustan las columnas para que se vean bien
@@ -173,17 +150,18 @@ export class Inventario implements OnInit {
   }
   //Oculta/muestra columnas
   private checkResponsiveColumns(width: number) {
-    if(!this.gridApi) return;
+    if (!this.gridApi) return;
 
     //si el tamaño es de celular, oculto columnas no tan importantes
     if (width < 768) {
       this.gridApi.setColumnsVisible(['id', 'precioCosto', 'nombreProveedor', 'nombreCategoria', 'nombreMarca'], false)
-    }else{
+    } else {
       this.gridApi.setColumnsVisible(['id', 'precioCosto', 'nombreProveedor', 'nombreCategoria', 'nombreMarca'], true)
     }
     //hago que el tamaño de las columnas se ajuste al nuevo tamaño de la pantalla
     this.gridApi.sizeColumnsToFit();
   }
+
 
   //Cada vez que el usuario escribe se actualiza el quick filter de af-grid
   onSearchInput(event: any) {
@@ -194,15 +172,15 @@ export class Inventario implements OnInit {
   }
 
   toggleSearch() {
-    if(this.isSearchExpanded && this.searchText) {
+    if (this.isSearchExpanded && this.searchText) {
       this.searchText = '';
-      if(this.gridApi) {
-        this.gridApi.setGridOption('quickFilterText','')
+      if (this.gridApi) {
+        this.gridApi.setGridOption('quickFilterText', '')
       }
       this.isSearchExpanded = false;
-    }else{
+    } else {
       this.isSearchExpanded = !this.isSearchExpanded;
-      if(this.isSearchExpanded){
+      if (this.isSearchExpanded) {
         setTimeout(() => {
           this.searchInput.nativeElement.focus(), 300
         });
@@ -212,10 +190,10 @@ export class Inventario implements OnInit {
 
   applySort(colId: string, sortDirection: 'asc' | 'desc' | null) {
     if (!this.gridApi) return;
-    
+
     // Si pasamos null, limpia el orden. Si pasamos asc/desc, lo aplica a esa columna
     const state = sortDirection ? [{ colId: colId, sort: sortDirection }] : [];
-    
+
     this.gridApi.applyColumnState({
       state: state,
       defaultState: { sort: null } // Esto asegura que se limpie el orden de las demás columnas
@@ -233,7 +211,7 @@ export class Inventario implements OnInit {
   clearFiltersAndSort() {
     this.applySort('', null); // Limpia orden
     this.applyFilter('all');  // Limpia filtro de stock
-    
+
     // Opcional: limpiar también la barra de búsqueda si lo deseas
     // this.searchText = '';
     // if (this.gridApi) this.gridApi.setGridOption('quickFilterText', '');
@@ -256,4 +234,5 @@ export class Inventario implements OnInit {
         return true;
     }
   };
+
 }

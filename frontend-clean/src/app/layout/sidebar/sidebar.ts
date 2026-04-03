@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -17,9 +17,12 @@ interface MenuItem {
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar {
+export class Sidebar implements OnInit {
   // Recibo el estado desde el main-layout para saber si colapsar
   @Input() isCollapsed = false;
+
+  isMobile = false;
+  mobileMenuOpen = false;
 
   //Defino las opciones del menú
   menuItems: MenuItem[] = [
@@ -29,4 +32,30 @@ export class Sidebar {
     { name: 'Reparaciones', icon: 'bi-tools', route: '/reparaciones' },
     { name: 'Balance', icon: 'bi-graph-up', route: '/balance' }
   ];
+
+  ngOnInit(): void {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
+  checkScreenSize() {
+    this.isMobile = window.innerWidth < 768; // breakpoint de Boostrap para celulares
+    if(!this.isMobile) {
+      this.mobileMenuOpen = false; // cierro el menú móvil si paso a desktop
+    }
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    if(this.isMobile) {
+      this.mobileMenuOpen = false;
+    }
+  }
 }

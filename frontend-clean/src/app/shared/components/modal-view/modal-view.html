@@ -9,75 +9,77 @@
       <div class="modal-body">
         @if (mode === 'delete') {
         <p class="mb-0">
-          Are you sure you want to delete
-          <strong>{{ product?.nombre ?? 'this product' }}</strong>?
+          ¿Seguro que deseas eliminar el producto?
+          <strong>{{ product?.nombre ?? 'este producto' }}</strong>?
         </p>
         } @else {
-        <div class="row g-3">
-          <div class="col-md-8">
-            <label class="form-label">Nombre</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
-                   [disabled]="mode === 'view'" />
+        <form [formGroup]="form">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Nombre</label>
+              <input class="form-control" type="text" formControlName="nombre" />
+            <div *ngIf="Control['nombre'].hasError('required') && Control['nombre'].touched" class="text-danger"> *El campo nombre es obligatorio</div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Stock</label>
+              <input class="form-control" type="number" formControlName="stock" />
+              <div *ngIf="Control['stock'].hasError('required') && Control['stock'].touched" class="text-danger"> *El campo Stock es obligatorio</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Precio compra</label>
+              <input class="form-control" type="number" formControlName="precioCosto" />
+              <div *ngIf="Control['precioCosto'].hasError('required') && Control['precioCosto'].touched" class="text-danger"> *El campo precio de COSTO es obligatorio</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Precio venta</label>
+              <input class="form-control" type="number" formControlName="precioVenta" />
+              <div *ngIf="Control['precioVenta'].hasError('required') && Control['precioVenta'].touched" class="text-danger">
+                *El campo precio de VENTA es obligatorio
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Proveedor</label>
+              <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
+                         formControlName="proveedorId">
+              </ng-select>
+              <div *ngIf="Control['proveedorId'].hasError('required') && Control['proveedorId'].touched" class="text-danger"> *El campo proveedor es obligatorio</div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Categoría</label>
+              <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
+                         formControlName="categoriaId">
+              </ng-select>
+              <div *ngIf="Control['categoriaId'].hasError('required') && Control['categoriaId'].touched" class="text-danger"> *El campo categoría es obligatorio</div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Marca</label>
+              <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
+                         formControlName="marcaId">
+              </ng-select>
+              <div *ngIf="Control['marcaId'].hasError('required') && Control['marcaId'].touched" class="text-danger"> *El campo marca es obligatorio</div>
+            </div>
           </div>
-          <div class="col-md-4">
-            <label class="form-label">Stock</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.stock ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Precio compra</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Precio venta</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Proveedor</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreProveedor ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Categoria</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreCategoria ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Marca</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreMarca ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-        </div>
+        </form>
         }
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancel</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancelar</button>
 
         @if (mode === 'create' || mode === 'edit') {
-        <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
-          {{ mode === 'create' ? 'Create' : 'Save changes' }}
+        <button type="button" class="btn btn-primary" title="{{ mode === 'create' ? 'Crear' : 'Guardar' }}"
+          (click)="onSubmit()">
+          @if (mode === 'create') {
+          <i class="bi bi-plus-lg"></i>
+          } @else {
+          <i class="bi bi-floppy"></i>
+          }
         </button>
         }
-
         @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Delete</button>
+        <button type="button" class="btn btn-danger" (click)="onSubmit()">
+          <i class="bi bi-trash"></i>
+        </button>
         }
       </div>
     </div>
