@@ -26,7 +26,6 @@
     "totalPages": 8,
     "number": 0
   },
-
   "productosRequest": {
     "content": [
       {
@@ -54,7 +53,6 @@
     "totalPages": 2,
     "number": 0
   },
-
   "venta": {
     "content": [
       {
@@ -110,7 +108,6 @@
     "totalPages": 1,
     "number": 0
   },
-
   "compra": {
     "content": [
       {
@@ -164,10 +161,8 @@
     "totalPages": 1,
     "number": 0
   },
-
   "categoria": {
-    "content":
-    [
+    "content": [
       {
         "id": 1,
         "nombre": "Bicicletas"
@@ -205,9 +200,9 @@
         "nombre": "Electrónica"
       }
     ],
-    "totalElements":9,
-    "totalPages":3,
-    "number":0
+    "totalElements": 9,
+    "totalPages": 3,
+    "number": 0
   },
   "marca": {
     "content": [
@@ -227,7 +222,6 @@
     "totalElements": 9,
     "totalPages": 3,
     "number": 0
-
   },
   "proveedor": {
     "content": [
@@ -247,7 +241,27 @@
     "totalElements": 9,
     "totalPages": 3,
     "number": 0
+  },
+  "reparaciones": {
+    "content": [
+      {
+        "id": 1,
+        "estadoReparacion": "EN_REPARACION",
+        "valorTotal": 15000,
+        "valorManoDeObra": 5000,
+        "fechaConfirmada": "2026-03-20",
+        "detalle": [
+          {
+            "id": 1,
+            "nombreProducto": "Pantalla Samsung",
+            "valorVenta": 10000,
+            "cantidad": 1
+          }
+        ]
+      }
+    ],
+    "totalElements": 1,
+    "totalPages": 1,
+    "number": 0
   }
 }
-
-
