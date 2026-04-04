@@ -6,7 +6,7 @@
     </div>
   </div>
 
- <div class="row g-3 mb-4">
+  <div class="row g-3 mb-4">
 
     <!-- Ingresos Totales -->
     <div class="col-12 col-sm-6 col-xl-3">
@@ -82,9 +82,53 @@
       </div>
     </div>
 
+
+  </div>
+  <div class="row g-3 mb-4">
+
+    <!-- Total Ventas -->
+    <div class="col-12 col-sm-6">
+      <div class="card border-0 shadow-sm h-100"
+        style="border-radius: 16px; border-left: 4px solid #198754 !important;">
+        <div class="card-body p-4 d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-success bg-opacity-10 p-3">
+            <i class="bi bi-cart-check text-success fs-4"></i>
+          </div>
+          <div>
+            <small class="text-muted fw-medium d-block">Ventas — mes actual</small>
+            <div *ngIf="!loadingTotales; else loadingTpl">
+              <h4 class="fw-bold text-dark mb-0">
+                ${{ totalVentas | number:'1.0-0' }}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Reparaciones -->
+    <div class="col-12 col-sm-6">
+      <div class="card border-0 shadow-sm h-100"
+        style="border-radius: 16px; border-left: 4px solid #212529 !important;">
+        <div class="card-body p-4 d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-dark bg-opacity-10 p-3">
+            <i class="bi bi-tools text-dark fs-4"></i>
+          </div>
+          <div>
+            <small class="text-muted fw-medium d-block">Reparaciones — mes actual</small>
+            <div *ngIf="!loadingTotales; else loadingTpl">
+              <h4 class="fw-bold text-dark mb-0">
+                ${{ totalReparaciones | number:'1.0-0' }}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-   <div class="row g-3 mb-4">
+  <div class="row g-3 mb-4">
 
     <!-- Line Chart: Reparaciones -->
     <div class="col-12 col-lg-7">
@@ -93,10 +137,7 @@
           <h6 class="fw-bold text-dark mb-1">Ingresos por Reparaciones</h6>
           <small class="text-muted d-block mb-3">Cantidad mensual — últimos 6 meses</small>
           <div *ngIf="!loadingReparaciones; else loadingTpl" style="height: 260px;">
-            <canvas baseChart
-              [data]="reparacionesChartData"
-              [options]="reparacionesChartOptions"
-              [type]="'line'">
+            <canvas baseChart [data]="reparacionesChartData" [options]="reparacionesChartOptions" [type]="'line'">
             </canvas>
           </div>
         </div>
@@ -110,10 +151,7 @@
           <h6 class="fw-bold text-dark mb-1">Distribución de Ingresos</h6>
           <small class="text-muted d-block mb-3">Ventas vs Reparaciones</small>
           <div *ngIf="!loadingPie; else loadingTpl" style="height: 260px;">
-            <canvas baseChart
-              [data]="pieChartData"
-              [options]="pieChartOptions"
-              [type]="'pie'">
+            <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'pie'">
             </canvas>
           </div>
         </div>

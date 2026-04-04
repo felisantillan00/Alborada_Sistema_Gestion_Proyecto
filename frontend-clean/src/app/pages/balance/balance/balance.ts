@@ -18,6 +18,9 @@ export class Balance implements OnInit {
   loadingEstadisticas = false;
   loadingReparaciones = false;
   loadingPie = false;
+  loadingTotales = false;
+  totalVentas: number=0;
+  totalReparaciones: number=0;
 
   reparacionesChartData: ChartData<'line'> = {
     labels: [],
@@ -80,6 +83,7 @@ export class Balance implements OnInit {
     this.getEstadisticas()
     this.getReparacionesMensuales()
     this.getPie()
+    this.getTotalesActuales()
   }
 
   getEstadisticas(): void {
@@ -133,6 +137,21 @@ export class Balance implements OnInit {
       error: (err) => {
         console.error('Error al obtener datos del pie chart:', err);
         this.loadingPie = false;
+      }
+    });
+  }
+
+  getTotalesActuales(): void {
+    this.loadingTotales = true;
+    this.balanceService.getTotalesActuales().subscribe({
+      next: (data) => {
+        this.totalVentas = data.ventas;
+        this.totalReparaciones = data.reparaciones;
+        this.loadingTotales = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener totales actuales:', err);
+        this.loadingTotales = false;
       }
     });
   }
