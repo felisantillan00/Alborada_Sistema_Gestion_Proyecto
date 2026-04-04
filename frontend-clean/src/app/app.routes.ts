@@ -34,6 +34,13 @@ export const routes: Routes = [
             },
 
             {
+                path: 'reparaciones',
+                loadComponent: () =>
+                    import('./pages/reparaciones/reparaciones')
+                        .then(m => m.Reparaciones)
+            },
+
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full'
