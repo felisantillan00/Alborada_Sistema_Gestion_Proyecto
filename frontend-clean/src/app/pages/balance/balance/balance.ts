@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BalanceService } from '../../../core/services/balance/balance-service';
 import { BalanceView } from '../../../core/models/balance';
@@ -20,6 +20,7 @@ export class Balance implements OnInit {
   loadingPie = false;
   loadingTotales = false;
   loadingBar = false;
+  loadingVentas = false;
   totalVentas: number = 0;
   totalReparaciones: number = 0;
 
@@ -109,7 +110,33 @@ export class Balance implements OnInit {
     }
   };
 
-  constructor(private balanceService: BalanceService) { }
+  ventasLineData: ChartData<'line'> = {
+    labels: [],
+    datasets: [
+      {
+        label: 'Ventas',
+        data: [],
+        borderColor: '#198754',
+        backgroundColor: 'rgba(25, 135, 84, 0.08)',
+        pointBackgroundColor: '#198754',
+        pointRadius: 5,
+        tension: 0.4,
+        fill: true,
+      }]
+  }
+
+  ventasLineOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: 'bottom' }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  };
+
+  constructor(private balanceService: BalanceService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.getEstadisticas()
@@ -117,6 +144,7 @@ export class Balance implements OnInit {
     this.getPie()
     this.getTotalesActuales()
     this.getIngresosVSGastos()
+    this.getVentasMensuales()
   }
 
   getEstadisticas(): void {
@@ -125,10 +153,12 @@ export class Balance implements OnInit {
       next: (resp) => {
         this.estadisticas = resp;
         this.loadingEstadisticas = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cargar las estadísticas:', err);
         this.loadingEstadisticas = false;
+        this.cdr.detectChanges();
       }
     })
   }
@@ -146,10 +176,12 @@ export class Balance implements OnInit {
           }]
         };
         this.loadingReparaciones = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al obtener reparaciones:', err);
         this.loadingReparaciones = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -166,10 +198,13 @@ export class Balance implements OnInit {
           }]
         };
         this.loadingPie = false;
+        this.cdr.detectChanges();
+
       },
       error: (err) => {
         console.error('Error al obtener datos del pie chart:', err);
         this.loadingPie = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -181,10 +216,12 @@ export class Balance implements OnInit {
         this.totalVentas = data.ventas;
         this.totalReparaciones = data.reparaciones;
         this.loadingTotales = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al obtener totales actuales:', err);
         this.loadingTotales = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -211,12 +248,38 @@ export class Balance implements OnInit {
           ]
         };
         this.loadingBar = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al obtener ingresos vs gastos:', err);
         this.loadingBar = false;
+        this.cdr.detectChanges();
       }
     })
+  }
+
+  getVentasMensuales(): void {
+    this.loadingVentas = true;
+    this.balanceService.getVentasMensuales().subscribe({
+      next: (data) => {
+        this.ventasLineData = {
+          ...this.ventasLineData,
+          labels: data.map(d => d.mes),
+          datasets: [{
+            ...this.ventasLineData.datasets[0],
+            data: data.map(d => d.total)
+          }]
+        };
+        this.loadingVentas = false;
+        this.cdr.detectChanges();
+
+      },
+      error: (err) => {
+        console.error('Error al obtener ventas mensuales:', err);
+        this.loadingVentas = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   get margen(): number {
