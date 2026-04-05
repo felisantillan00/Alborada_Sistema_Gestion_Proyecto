@@ -1,17 +1,83 @@
-<div class="modal fade show d-block">
-  <div class="modal-dialog">
-    <div class="modal-content">
+<div class="modal-backdrop fade show"></div>
 
-      <div class="modal-header">
-        <h5 class="modal-title">Nueva Reparación</h5>
-      </div>
+<div class="modal d-block">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content p-3">
 
-      <div class="modal-body">
-        <p>Formulario próximamente...</p>
-      </div>
+      <h4>Nueva Reparación</h4>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <!-- MANO DE OBRA -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Mano de obra</label>
+          <input type="number" class="form-control" formControlName="valorManoDeObra" placeholder="Ej: 5000" />
+
+          <div class="text-danger small"
+            *ngIf="form.get('valorManoDeObra')?.touched && form.get('valorManoDeObra')?.invalid">
+            Ingresá un valor válido
+          </div>
+        </div>
+
+        <!-- DETALLE -->
+        <div formArrayName="detalle">
+          <div *ngFor="let d of detalleFormArray.controls; let i = index" [formGroupName]="i" class="border p-2 mb-2">
+
+            <!-- PRODUCTO -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Producto</label>
+              <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
+                (change)="onProductoChange(i)" placeholder="Seleccionar producto">
+              </ng-select>
+
+              <div class="text-danger small" *ngIf="d.get('idProducto')?.touched && d.get('idProducto')?.invalid">
+                Seleccioná un producto
+              </div>
+            </div>
+
+            <!-- CANTIDAD -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Cantidad</label>
+              <input type="number" class="form-control" formControlName="cantidad" placeholder="Ej: 2" />
+
+              <div class="text-danger small" *ngIf="d.get('cantidad')?.touched && d.get('cantidad')?.invalid">
+                La cantidad debe ser mayor a 0
+              </div>
+            </div>
+
+            <!-- PRECIO -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Valor del producto</label>
+              <input type="number" class="form-control" formControlName="valorVenta" placeholder="Ej: 15000" />
+            </div>
+
+            <!-- BOTÓN ELIMINAR -->
+            <div class="col-md-2 d-flex align-items-end">
+              <button class="btn btn-danger w-100" (click)="removeDetalle(i)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="btn btn-outline-primary mt-2" (click)="addDetalle()">
+          <i class="bi bi-plus-lg"></i> Agregar producto
+        </button>
+
+        <!-- TOTAL -->
+        <div class="alert alert-success mt-3">
+          <strong>Total calculado:</strong> $ {{ totalCalculado }}
+        </div>
+
+        <!-- BOTONES -->
+        <div class="mt-3 d-flex gap-2">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+        </div>
+
+      </form>
 
     </div>
   </div>
 </div>
-
-<div class="modal-backdrop fade show"></div>

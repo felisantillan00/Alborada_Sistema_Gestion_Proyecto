@@ -35,10 +35,10 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
-    total:         [0, [Validators.required, Validators.min(1)]],
-    fechaVenta:    [''],
-    formaPago:     ['', Validators.required],
-    observacion:   [''],
+    total: [0, [Validators.required, Validators.min(1)]],
+    fechaVenta: [''],
+    formaPago: ['', Validators.required],
+    observacion: [''],
     detalles: this.fb.array<FormGroup>([]),
   });
 
@@ -80,10 +80,10 @@ export class ModalViewVentas implements OnChanges, OnInit {
   private loadForm(): void {
     this.form.patchValue({
       nombreCliente: this.venta?.nombreCliente ?? '',
-      total:         this.venta?.total         ?? 0,
-      fechaVenta:    this.venta?.fechaVenta     ?? '',
-      formaPago:     this.venta?.formaPago      ?? '',
-      observacion:   this.venta?.observacion    ?? '',
+      total: this.venta?.total ?? 0,
+      fechaVenta: this.venta?.fechaVenta ?? '',
+      formaPago: this.venta?.formaPago ?? '',
+      observacion: this.venta?.observacion ?? '',
     });
 
     this.detallesFormArray.clear();
@@ -118,13 +118,13 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   private createDetalleGroup(
     idProducto: number | null = null,
-    cantidad:   number        = 1,
+    cantidad: number = 1,
     precioUnitario: number | null = null
   ): FormGroup {
     return this.fb.group({
-      idProducto:    [idProducto, Validators.required],
-      cantidad:      [cantidad, [Validators.required, Validators.min(1)]],
-      precioUnitario:[precioUnitario],   // solo lectura en view/edit
+      idProducto: [idProducto, Validators.required],
+      cantidad: [cantidad, [Validators.required, Validators.min(1)]],
+      precioUnitario: [precioUnitario],   // solo lectura en view/edit
     });
   }
 
@@ -132,12 +132,12 @@ export class ModalViewVentas implements OnChanges, OnInit {
     const v = this.form.getRawValue();
     const payload: VentaRequest = {
       nombreCliente: v.nombreCliente!,
-      total:         v.total!,
-      formaPago:     v.formaPago!,
-      observacion:   v.observacion ?? '',
+      total: v.total!,
+      formaPago: v.formaPago!,
+      observacion: v.observacion ?? '',
       detalles: (v.detalles ?? []).map((d: any) => ({
         idProducto: d.idProducto,
-        cantidad:   d.cantidad,
+        cantidad: d.cantidad,
       })),
     };
     return payload;
@@ -150,7 +150,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     }
     switch (this.mode) {
       case 'create': this.handleCreate(); break;
-      case 'edit':   this.handleEdit();   break;
+      case 'edit': this.handleEdit(); break;
       case 'delete': this.handleDelete(); break;
     }
   }
@@ -194,8 +194,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
   get title(): string {
     const titles: Record<ModalMode, string> = {
       create: 'Nueva Venta',
-      view:   'Ver Venta',
-      edit:   'Editar Venta',
+      view: 'Ver Venta',
+      edit: 'Editar Venta',
       delete: 'Borrar Venta',
     };
     return titles[this.mode] ?? 'Venta';
