@@ -34,9 +34,9 @@
         "stock": 10,
         "precioCosto": 100,
         "precioVenta": 150,
-        "proveedorId": 1,
-        "categoriaId": 1,
-        "marcaId": 1
+        "proveedorid": 1,
+        "categoriaid": 1,
+        "marcaid": 1
       },
       {
         "id": 2,
@@ -44,38 +44,38 @@
         "stock": 2,
         "precioCosto": 20,
         "precioVenta": 40,
-        "proveedorId": 1,
-        "categoriaId": 2,
-        "marcaId": 2
+        "proveedorid": 1,
+        "categoriaid": 2,
+        "marcaid": 2
       }
     ],
     "totalElements": 4,
     "totalPages": 2,
     "number": 0
   },
-  "venta": {
+  "ventas": {
     "content": [
       {
-        "Id": "V-001",
-        "NombreCliente": "Juan Perez",
-        "PrecioTotal": 190,
-        "Fecha": "2026-03-20",
-        "FormaDePago": "Efectivo",
+        "id": "V-001",
+        "nombreCliente": "Juan Perez",
+        "total": 190,
+        "fechaVenta": "2026-03-20",
+        "formaPago": "Efectivo",
         "Productos": [
           {
-            "Id": "2",
+            "id": "2",
             "Nombre": "Mouse Logitech",
             "Cantidad": 2,
             "PrecioVenta": 20
           },
           {
-            "Id": "3",
+            "id": "3",
             "Nombre": "Teclado Redragon",
             "Cantidad": 1,
             "PrecioVenta": 45
           },
           {
-            "Id": "15",
+            "id": "15",
             "Nombre": "Parlantes Genius",
             "Cantidad": 3,
             "PrecioVenta": 30
@@ -83,20 +83,20 @@
         ]
       },
       {
-        "Id": "V-002",
+        "id": "V-002",
         "NombreCliente": "Maria Gomez",
         "PrecioTotal": 410,
         "Fecha": "2026-03-21",
         "FormaDePago": "Tarjeta",
         "Productos": [
           {
-            "Id": "1",
+            "id": "1",
             "Nombre": "Notebook Lenovo",
             "Cantidad": 1,
             "PrecioVenta": 750
           },
           {
-            "Id": "13",
+            "id": "13",
             "Nombre": "Webcam Logitech HD",
             "Cantidad": 1,
             "PrecioVenta": 40
@@ -111,25 +111,25 @@
   "compra": {
     "content": [
       {
-        "Id": "C-001",
+        "id": "C-001",
         "PrecioTotal": 520,
         "NombreProveedor": "TechSupplier",
         "Fecha": "2026-03-20",
         "Producto": [
           {
-            "Id": "4",
+            "id": "4",
             "Nombre": "Monitor Samsung 24\"",
             "Cantidad": 2,
             "Precio": 120
           },
           {
-            "Id": "8",
+            "id": "8",
             "Nombre": "Disco SSD Kingston 480GB",
             "Cantidad": 4,
             "Precio": 35
           },
           {
-            "Id": "9",
+            "id": "9",
             "Nombre": "Memoria RAM Corsair 8GB",
             "Cantidad": 2,
             "Precio": 30
@@ -137,19 +137,19 @@
         ]
       },
       {
-        "Id": "C-002",
+        "id": "C-002",
         "PrecioTotal": 400,
         "NombreProveedor": "AudioTech",
         "Fecha": "2026-03-21",
         "Producto": [
           {
-            "Id": "5",
+            "id": "5",
             "Nombre": "Auriculares Sony",
             "Cantidad": 5,
             "Precio": 40
           },
           {
-            "Id": "15",
+            "id": "15",
             "Nombre": "Parlantes Genius",
             "Cantidad": 10,
             "Precio": 20

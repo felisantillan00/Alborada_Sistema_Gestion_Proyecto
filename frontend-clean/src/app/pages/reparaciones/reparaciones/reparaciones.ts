@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReparacionView } from '../../../core/models/reparacion';
 import { ReparacionesService } from '../../../core/services/reparaciones/reparaciones-service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
 import { Pagina } from '../../../core/models/pagina';
+import { catchError, of } from 'rxjs';
 
 
 
@@ -14,7 +15,7 @@ import { Pagina } from '../../../core/models/pagina';
   imports: [CommonModule, AgGridAngular],
   templateUrl: './reparaciones.html',
 })
-export class Reparaciones {
+export class Reparaciones implements OnInit{
 
   onNewReparacion(): void {
     console.log('Nueva reparación');
@@ -23,6 +24,11 @@ export class Reparaciones {
   reparaciones: ReparacionView[] = [];
   searchText: string = '';
   private gridApi!: GridApi;
+loadingReparaciones = false;
+
+totalElements = 0;
+totalPages = 0;
+number = 0;
 
   readonly defaultColDef = {
     sortable: true,
@@ -31,7 +37,7 @@ export class Reparaciones {
     flex: 1,
     minWidth: 120,
   };
-  
+
   readonly columnDefs: ColDef<ReparacionView>[] = [
     { field: 'id', headerName: 'ID', maxWidth: 100 },
     { field: 'estadoReparacion', headerName: 'Estado' },
@@ -62,17 +68,41 @@ export class Reparaciones {
     }
   ];
 
-  constructor(private reparacionesService: ReparacionesService) { }
+  constructor(private reparacionesService: ReparacionesService,
+  private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.getReparaciones();
   }
 
   getReparaciones(): void {
-    this.reparacionesService.getPage().subscribe(res => {
-      this.reparaciones = res.content;
+this.loadingReparaciones = true;
+
+  this.reparacionesService
+    .getPage()
+    .pipe(
+      catchError((error) => {
+        console.error('Error al obtener reparaciones:', error);
+        this.loadingReparaciones = false;
+
+        return of({
+          content: [],
+          totalElements: 0,
+          totalPages: 0,
+          number: 0
+        });
+      })
+    )
+    .subscribe((data) => {
+      this.reparaciones = [...data.content];
+      this.totalElements = data.totalElements;
+      this.totalPages = data.totalPages;
+      this.number = data.number;
+
+      this.loadingReparaciones = false;
+      this.cdr.detectChanges();
     });
-  }
+    }
 
   onRowClicked(event: RowClickedEvent<ReparacionView>): void {
     const action = (event.event?.target as HTMLElement)
@@ -101,7 +131,7 @@ export class Reparaciones {
   }
 
   terminarReparacion(id: number): void {
-    this.reparacionesService.terminar(id).subscribe(() => {
+    this.reparacionesService.terminar(id).subscribe((data) => {
       this.getReparaciones(); // 🔥 refresca tabla
     });
   }
