@@ -66,14 +66,14 @@ export class ModalViewReparaciones implements OnInit {
     return this.fb.group({
       idProducto: [null, Validators.required],
       cantidad: [1, [Validators.required, Validators.min(1)]],
-      valorVenta: [0]
+      valorVenta: [0, [Validators.required, Validators.min(1)]]
     });
   }
 
   // 🔹 PRODUCTOS 
   getProductos(): void {
     this.productoService.getAll().subscribe((data: any) => {
-      this.productos = data.content;
+      this.productos = data.productosView.content;
       this.productosLoaded = true;
     });
   }
@@ -113,74 +113,112 @@ export class ModalViewReparaciones implements OnInit {
   }
 
   handleCreate(): void {
-const payload = this.buildPayload();
-  console.log('CREATE', payload);
+    const payload = this.buildPayload();
 
-  Swal.fire({
-    icon: 'success',
-    title: 'OK',
-    text: 'Reparación creada correctamente'
-  });
+    this.reparacionesService.create(payload).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'OK',
+          text: 'Reparación creada'
+        });
 
-  this.submitted.emit(payload);
-  this.closed.emit();
-}
-
-handleEdit(): void {
-  const payload = this.buildPayload(true);
-  console.log('EDIT', payload);
-
-  Swal.fire({
-    icon: 'success',
-    title: 'OK',
-    text: 'Reparación editada correctamente'
-  });
-
-  this.submitted.emit(payload);
-  this.closed.emit();
-}
-
-handleDelete(): void {
-  Swal.fire({
-    icon: 'warning',
-    title: 'Eliminar',
-    text: '¿Seguro que querés eliminar?',
-    showCancelButton: true
-  }).then(result => {
-    if (result.isConfirmed) {
-      console.log('DELETE', this.reparacion?.id);
-
-      this.closed.emit();
-    }
-  });
-}
-
-handleTerminar(): void {
-  Swal.fire({
-    icon: 'success',
-    title: 'Reparación terminada'
-  });
-
-  console.log('TERMINAR', this.reparacion?.id);
-
-  this.closed.emit();
-}
-
-buildPayload(includeId: boolean = false): any {
-  const payload: any = {
-    estadoReparacion: this.form.value.estadoReparacion,
-    valorTotal: this.totalCalculado,
-    valorManoDeObra: this.form.value.valorManoDeObra,
-    fechaConfirmada: this.form.value.fechaConfirmada,
-    detalle: this.detalleFormArray.value
-  };
-
-  if (includeId && this.reparacion) {
-    payload.id = this.reparacion.id;
+        this.submitted.emit(payload);
+        this.closed.emit();
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo crear'
+        });
+      }
+    });
   }
 
-  return payload;
-}
+  handleEdit(): void {
+    const payload = this.buildPayload(true);
+
+    this.reparacionesService.update(this.reparacion!.id, payload).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'OK',
+          text: 'Reparación actualizada'
+        });
+
+        this.submitted.emit(payload);
+        this.closed.emit();
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo actualizar'
+        });
+      }
+    });
+  }
+
+  handleDelete(): void {
+    if (!this.reparacion?.id) return;
+
+    this.reparacionesService.delete(this.reparacion.id).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Eliminado'
+        });
+
+        this.closed.emit();
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar'
+        });
+      }
+    });
+  }
+
+  handleTerminar(): void {
+    if (!this.reparacion?.id) return;
+
+    this.reparacionesService.terminar(this.reparacion.id).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Reparación terminada'
+        });
+
+        this.closed.emit();
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo terminar'
+        });
+      }
+    });
+  }
+
+  buildPayload(includeId: boolean = false): any {
+    const payload: any = {
+      estadoReparacion: this.form.value.estadoReparacion,
+      valorTotal: this.totalCalculado,
+      valorManoDeObra: this.form.value.valorManoDeObra,
+      fechaConfirmada: this.form.value.fechaConfirmada,
+      detalle: this.detalleFormArray.value
+    };
+
+    if (includeId && this.reparacion) {
+      payload.id = this.reparacion.id;
+    }
+
+    return payload;
+  }
 
   onProductoChange(index: number): void {
     const control = this.detalleFormArray.at(index);
