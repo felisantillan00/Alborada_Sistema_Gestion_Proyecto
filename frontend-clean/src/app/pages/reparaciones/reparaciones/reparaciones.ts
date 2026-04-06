@@ -45,24 +45,30 @@ export class Reparaciones implements OnInit {
       headerName: 'Acciones',
       colId: 'actions',
       maxWidth: 200,
-      cellRenderer: () => `
-      <div class="d-flex gap-2 justify-content-center">
-        <button class="btn btn-sm btn-outline-primary" data-action="view">
-          <i class="bi bi-eye"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-secondary" data-action="edit">
-          <i class="bi bi-pencil"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-danger" data-action="delete">
-          <i class="bi bi-trash"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-success" data-action="terminar">
-          <i class="bi bi-check-lg"></i>
-        </button>
-      </div>
-    `
-    }
-  ];
+      cellRenderer: (params: any) => {
+        const disabled = params.data.estadoReparacion === 'TERMINADO';
+
+        return `
+          <div class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-sm btn-outline-primary" data-action="view">
+              <i class="bi bi-eye"></i>
+            </button>
+
+            <button class="btn btn-sm btn-outline-secondary" data-action="edit" ${disabled ? 'disabled' : ''}>
+              <i class="bi bi-pencil"></i>
+            </button>
+
+            <button class="btn btn-sm btn-outline-danger" data-action="delete" ${disabled ? 'disabled' : ''}>
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <button class="btn btn-sm btn-outline-success" data-action="terminar" ${disabled ? 'disabled' : ''}>
+              <i class="bi bi-check-lg"></i>
+            </button>
+          </div>
+        `;
+      }
+  }  ];
 
   constructor(private reparacionesService: ReparacionesService,
     private cdr: ChangeDetectorRef) { }
@@ -144,14 +150,14 @@ export class Reparaciones implements OnInit {
     this.gridApi = params.api;
   }
 
-modalOpen = false;
-modalMode: 'create' | 'view' | 'edit' | 'delete' = 'create';
-selectedReparacion: ReparacionView | null = null;
+  modalOpen = false;
+  modalMode: 'create' | 'view' | 'edit' | 'delete' = 'create';
+  selectedReparacion: ReparacionView | null = null;
 
-onNewReparacion(): void {
-  this.modalOpen = true;
-  this.modalMode = 'create';
-}
+  onNewReparacion(): void {
+    this.modalOpen = true;
+    this.modalMode = 'create';
+  }
 
 
 
@@ -174,4 +180,10 @@ onNewReparacion(): void {
     this.getReparaciones();
   }
 
+  getRowClass = (params: any) => {
+    if (params.data.estadoReparacion === 'TERMINADO') {
+      return 'fila-terminada';
+    }
+    return '';
+  };
 }

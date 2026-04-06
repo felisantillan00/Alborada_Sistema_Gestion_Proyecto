@@ -7,6 +7,7 @@ import { ReparacionView, ReparacionRequest } from '../../../core/models/reparaci
 import { ReparacionesService } from '../../../core/services/reparaciones/reparaciones-service';
 import { ProductoView } from '../../../core/models/producto';
 import { ProductoService } from '../../../core/services/producto/producto-service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal-reparacion',
@@ -112,10 +113,14 @@ export class ModalViewReparaciones implements OnInit {
   }
 
   handleCreate(): void {
-  const payload = this.buildPayload();
+const payload = this.buildPayload();
   console.log('CREATE', payload);
 
-  // this.reparacionesService.create(payload)
+  Swal.fire({
+    icon: 'success',
+    title: 'OK',
+    text: 'Reparación creada correctamente'
+  });
 
   this.submitted.emit(payload);
   this.closed.emit();
@@ -125,24 +130,38 @@ handleEdit(): void {
   const payload = this.buildPayload(true);
   console.log('EDIT', payload);
 
-  // this.reparacionesService.update(payload)
+  Swal.fire({
+    icon: 'success',
+    title: 'OK',
+    text: 'Reparación editada correctamente'
+  });
 
   this.submitted.emit(payload);
   this.closed.emit();
 }
 
 handleDelete(): void {
-  console.log('DELETE', this.reparacion?.id);
+  Swal.fire({
+    icon: 'warning',
+    title: 'Eliminar',
+    text: '¿Seguro que querés eliminar?',
+    showCancelButton: true
+  }).then(result => {
+    if (result.isConfirmed) {
+      console.log('DELETE', this.reparacion?.id);
 
-  // this.reparacionesService.delete(this.reparacion?.id)
-
-  this.closed.emit();
+      this.closed.emit();
+    }
+  });
 }
 
 handleTerminar(): void {
-  console.log('TERMINAR', this.reparacion?.id);
+  Swal.fire({
+    icon: 'success',
+    title: 'Reparación terminada'
+  });
 
-  // this.reparacionesService.terminar(this.reparacion?.id)
+  console.log('TERMINAR', this.reparacion?.id);
 
   this.closed.emit();
 }
