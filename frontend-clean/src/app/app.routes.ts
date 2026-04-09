@@ -42,7 +42,7 @@ export const routes: Routes = [
             {
                 path: 'reparaciones',
                 loadComponent: () =>
-                    import('./pages/reparaciones/reparaciones')
+                    import('./pages/reparaciones/reparaciones/reparaciones')
                         .then(m => m.Reparaciones)
             },
 
