@@ -11,7 +11,6 @@ export class ReparacionesService extends Api<ReparacionView, ReparacionRequest> 
     super(http, 'reparaciones');
   }
 
-  // 🔹 SOLO método extra
   terminar(id: number): Observable<ReparacionView> {
     return this.http.put<ReparacionView>(`${this.baseUrl}/${id}`, {
       estadoReparacion: 'LISTO_PARA_ENTREGA'
