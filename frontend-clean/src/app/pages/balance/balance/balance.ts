@@ -4,7 +4,7 @@ import { BalanceService } from '../../../core/services/balance/balance-service';
 import { BalanceView } from '../../../core/models/balance';
 import { ChartData, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import Swal from 'sweetalert2';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-balance',
@@ -19,8 +19,9 @@ export class Balance implements OnInit {
   loadingReparaciones = false;
   loadingPie = false;
   loadingTotales = false;
-  totalVentas: number=0;
-  totalReparaciones: number=0;
+  loadingBar = false;
+  totalVentas: number = 0;
+  totalReparaciones: number = 0;
 
   reparacionesChartData: ChartData<'line'> = {
     labels: [],
@@ -77,6 +78,37 @@ export class Balance implements OnInit {
     }
   };
 
+  barChartData: ChartData<'bar'> = {
+    labels: [],
+    datasets: [{
+      label: 'Ventas',
+      data: [],
+      backgroundColor: '#198754',
+      borderColor: '#198754',
+      borderWidth: 1,
+      borderRadius: 6,
+    },
+    {
+      label: 'Compras',
+      data: [],
+      backgroundColor: 'rgba(220, 53, 69, 0.8)',
+      borderColor: '#dc3545',
+      borderWidth: 1,
+      borderRadius: 6,
+    }]
+  }
+
+  barChartOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: 'bottom' }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  };
+
   constructor(private balanceService: BalanceService) { }
 
   ngOnInit(): void {
@@ -84,6 +116,7 @@ export class Balance implements OnInit {
     this.getReparacionesMensuales()
     this.getPie()
     this.getTotalesActuales()
+    this.getIngresosVSGastos()
   }
 
   getEstadisticas(): void {
@@ -154,6 +187,36 @@ export class Balance implements OnInit {
         this.loadingTotales = false;
       }
     });
+  }
+
+  getIngresosVSGastos(): void {
+    this.loadingBar = true;
+    forkJoin({
+      ventas: this.balanceService.getVentasMensuales(),
+      compras: this.balanceService.getComprasMensuales()
+    }).subscribe({
+      next: ({ ventas, compras }) => {
+        this.barChartData = {
+          ...this.barChartData,
+          labels: ventas.map(v => v.mes),
+          datasets: [
+            {
+              ...this.barChartData.datasets[0],
+              data: ventas.map(v => v.total)
+            },
+            {
+              ...this.barChartData.datasets[1],
+              data: compras.map(c => c.total)
+            }
+          ]
+        };
+        this.loadingBar = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener ingresos vs gastos:', err);
+        this.loadingBar = false;
+      }
+    })
   }
 
   get margen(): number {
