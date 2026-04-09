@@ -42,6 +42,10 @@ export class ModalViewReparaciones implements OnInit {
   ngOnInit(): void {
     this.getProductos();
     this.addDetalle(); // arranca con una fila
+
+    if (this.mode === 'view') {
+      this.form.disable();
+    }
   }
 
   // 🔹 FORM ARRAY
@@ -67,7 +71,7 @@ export class ModalViewReparaciones implements OnInit {
 
   // 🔹 PRODUCTOS 
   getProductos(): void {
-    this.productoService.getAll().subscribe((data:any) => {
+    this.productoService.getAll().subscribe((data: any) => {
       this.productos = data.content;
       this.productosLoaded = true;
     });
@@ -92,19 +96,72 @@ export class ModalViewReparaciones implements OnInit {
       return;
     }
 
-    const payload: ReparacionRequest = {
-      estadoReparacion: this.form.value.estadoReparacion!,
-      valorTotal: this.totalCalculado,
-      valorManoDeObra: this.form.value.valorManoDeObra!,
-      fechaConfirmada: this.form.value.fechaConfirmada ?? '',
-      detalle: this.detalleFormArray.value
-    };
+    switch (this.mode) {
+      case 'create':
+        this.handleCreate();
+        break;
 
-    this.reparacionesService.create(payload).subscribe(() => {
-      this.submitted.emit(payload);
-      this.closed.emit();
-    });
+      case 'edit':
+        this.handleEdit();
+        break;
+
+      case 'delete':
+        this.handleDelete();
+        break;
+    }
   }
+
+  handleCreate(): void {
+  const payload = this.buildPayload();
+  console.log('CREATE', payload);
+
+  // this.reparacionesService.create(payload)
+
+  this.submitted.emit(payload);
+  this.closed.emit();
+}
+
+handleEdit(): void {
+  const payload = this.buildPayload(true);
+  console.log('EDIT', payload);
+
+  // this.reparacionesService.update(payload)
+
+  this.submitted.emit(payload);
+  this.closed.emit();
+}
+
+handleDelete(): void {
+  console.log('DELETE', this.reparacion?.id);
+
+  // this.reparacionesService.delete(this.reparacion?.id)
+
+  this.closed.emit();
+}
+
+handleTerminar(): void {
+  console.log('TERMINAR', this.reparacion?.id);
+
+  // this.reparacionesService.terminar(this.reparacion?.id)
+
+  this.closed.emit();
+}
+
+buildPayload(includeId: boolean = false): any {
+  const payload: any = {
+    estadoReparacion: this.form.value.estadoReparacion,
+    valorTotal: this.totalCalculado,
+    valorManoDeObra: this.form.value.valorManoDeObra,
+    fechaConfirmada: this.form.value.fechaConfirmada,
+    detalle: this.detalleFormArray.value
+  };
+
+  if (includeId && this.reparacion) {
+    payload.id = this.reparacion.id;
+  }
+
+  return payload;
+}
 
   onProductoChange(index: number): void {
     const control = this.detalleFormArray.at(index);
