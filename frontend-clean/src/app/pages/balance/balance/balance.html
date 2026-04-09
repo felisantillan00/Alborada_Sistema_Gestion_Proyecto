@@ -1,11 +1,95 @@
 <section class="container-fluid py-3 px-2 px-md-3 mt-2">
   <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
-    <h2 class="h3 mb-0 fw-bold text-dark" style="letter-spacing: -0.5px;">
-      Balance
-    </h2>
+    <div>
+      <h2 class="h3 mb-0 fw-bold text-dark" style="letter-spacing: -0.5px;">Balance </h2>
+      <small class="text-muted">Análisis de ingresos, gastos y rentabilidad</small>
+    </div>
   </div>
 
-  <div class="row g-3">
-    <!-- Contenido futuro: cards, charts, etc. -->
+ <div class="row g-3 mb-4">
+
+    <!-- Ingresos Totales -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="text-muted small fw-medium">Ingresos Totales</span>
+            <i class="bi bi-graph-up-arrow text-success fs-5"></i>
+          </div>
+          <div *ngIf="!loadingEstadisticas; else loadingTpl">
+            <h3 class="fw-bold text-success mb-1">
+              ${{ estadisticas?.ingresosSemestrales | number:'1.0-0' }}
+            </h3>
+            <small class="text-muted">Últimos 6 meses</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gastos Totales -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="text-muted small fw-medium">Gastos Totales</span>
+            <i class="bi bi-graph-down-arrow text-danger fs-5"></i>
+          </div>
+          <div *ngIf="!loadingEstadisticas; else loadingTpl">
+            <h3 class="fw-bold text-danger mb-1">
+              ${{ estadisticas?.gastosSemestrales | number:'1.0-0' }}
+            </h3>
+            <small class="text-muted">Últimos 6 meses</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ganancia Neta -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="text-muted small fw-medium">Ganancia Neta</span>
+            <i class="bi bi-currency-dollar text-success fs-5"></i>
+          </div>
+          <div *ngIf="!loadingEstadisticas; else loadingTpl">
+            <h3 class="fw-bold text-dark mb-1">
+              ${{ estadisticas?.gananciasSemestrales | number:'1.0-0' }}
+            </h3>
+            <small class="text-success fw-medium">
+              +{{ margen }}% margen
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promedio Mensual -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="text-muted small fw-medium">Promedio Mensual</span>
+            <i class="bi bi-calendar3 text-primary fs-5"></i>
+          </div>
+          <div *ngIf="!loadingEstadisticas; else loadingTpl">
+            <h3 class="fw-bold text-dark mb-1">
+              ${{ estadisticas?.promedioGananciasSemestrales | number:'1.0-0' }}
+            </h3>
+            <small class="text-muted">En ganancias</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
 </section>
+
+<!-- Template de loading reutilizable -->
+<ng-template #loadingTpl>
+  <div class="placeholder-glow">
+    <span class="placeholder col-8 mb-1" style="height: 2rem; border-radius: 8px;"></span>
+    <span class="placeholder col-5" style="height: 0.8rem; border-radius: 8px;"></span>
+  </div>
+</ng-template>
