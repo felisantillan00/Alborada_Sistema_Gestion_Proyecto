@@ -38,6 +38,7 @@
         [paginationPageSize]="10"
         (gridReady)="onGridReady($event)"
         (rowClicked)="onRowClicked($event)"
+        [getRowClass]="getRowClass"
       >
       </ag-grid-angular>
 
