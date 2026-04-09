@@ -45,3 +45,13 @@
   </div>
 
 </section>
+
+@if (modalOpen) {
+  <app-modal-reparacion
+    [mode]="modalMode"
+    [reparacion]="selectedReparacion"
+    (closed)="closeModal()"
+    (submitted)="onModalSubmit($event)">
+  </app-modal-reparacion>
+}
+
