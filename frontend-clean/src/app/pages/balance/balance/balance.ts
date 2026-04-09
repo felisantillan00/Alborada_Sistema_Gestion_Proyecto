@@ -17,6 +17,7 @@ export class Balance implements OnInit {
   estadisticas: BalanceView | null = null;
   loadingEstadisticas = false;
   loadingReparaciones = false;
+  loadingPie = false;
 
   reparacionesChartData: ChartData<'line'> = {
     labels: [],
@@ -44,11 +45,41 @@ export class Balance implements OnInit {
     }
   };
 
+  pieChartData: ChartData<'pie'> = {
+    labels: ['Ventas', 'Reparaciones'],
+    datasets: [{
+      data: [],
+      backgroundColor: ['#198754', '#212529'],
+      hoverBackgroundColor: ['#157347', '#343a40'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  }
+
+  pieChartOptions: ChartOptions<'pie'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const value = ctx.parsed;
+            const total = (ctx.dataset.data as number[]).reduce((a, b) => a + b, 0);
+            const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+            return ` $${value.toLocaleString()} (${pct}%)`;
+          }
+        }
+      }
+    }
+  };
+
   constructor(private balanceService: BalanceService) { }
 
   ngOnInit(): void {
     this.getEstadisticas()
     this.getReparacionesMensuales()
+    this.getPie()
   }
 
   getEstadisticas(): void {
@@ -82,6 +113,26 @@ export class Balance implements OnInit {
       error: (err) => {
         console.error('Error al obtener reparaciones:', err);
         this.loadingReparaciones = false;
+      }
+    });
+  }
+
+  getPie(): void {
+    this.loadingPie = true;
+    this.balanceService.getPie().subscribe({
+      next: (data) => {
+        this.pieChartData = {
+          ...this.pieChartData,
+          datasets: [{
+            ...this.pieChartData.datasets[0],
+            data: [data.totalVentas, data.totalReparaciones]
+          }]
+        };
+        this.loadingPie = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener datos del pie chart:', err);
+        this.loadingPie = false;
       }
     });
   }

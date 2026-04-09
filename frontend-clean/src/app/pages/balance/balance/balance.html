@@ -84,24 +84,42 @@
 
   </div>
 
-  <div class="row g-3 mb-4">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+   <div class="row g-3 mb-4">
+
+    <!-- Line Chart: Reparaciones -->
+    <div class="col-12 col-lg-7">
+      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
         <div class="card-body p-4">
           <h6 class="fw-bold text-dark mb-1">Ingresos por Reparaciones</h6>
           <small class="text-muted d-block mb-3">Cantidad mensual — últimos 6 meses</small>
-
-          <div *ngIf="!loadingReparaciones; else loadingTpl" style="height: 280px;">
+          <div *ngIf="!loadingReparaciones; else loadingTpl" style="height: 260px;">
             <canvas baseChart
               [data]="reparacionesChartData"
               [options]="reparacionesChartOptions"
               [type]="'line'">
             </canvas>
           </div>
-
         </div>
       </div>
     </div>
+
+    <!-- Pie Chart: Ventas vs Reparaciones -->
+    <div class="col-12 col-lg-5">
+      <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
+        <div class="card-body p-4">
+          <h6 class="fw-bold text-dark mb-1">Distribución de Ingresos</h6>
+          <small class="text-muted d-block mb-3">Ventas vs Reparaciones</small>
+          <div *ngIf="!loadingPie; else loadingTpl" style="height: 260px;">
+            <canvas baseChart
+              [data]="pieChartData"
+              [options]="pieChartOptions"
+              [type]="'pie'">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </section>
