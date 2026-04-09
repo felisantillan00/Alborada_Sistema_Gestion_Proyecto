@@ -48,9 +48,14 @@ export const routes: Routes = [
 
             {
                 path: '',
-                redirectTo: 'dashboard',
+                redirectTo: 'inventario',
                 pathMatch: 'full'
-            }
+          },
+          {
+            path: '**',
+            redirectTo: 'inventario',
+            pathMatch: 'full'
+          }
         ]
     }
 ];
