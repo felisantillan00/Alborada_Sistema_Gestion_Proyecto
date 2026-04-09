@@ -12,10 +12,10 @@ export class ReparacionesService extends Api<ReparacionView, ReparacionRequest> 
   }
 
   terminar(id: number): Observable<ReparacionView> {
-    return this.http.put<ReparacionView>(`${this.baseUrl}/${id}`, {
-      estadoReparacion: 'LISTO_PARA_ENTREGA'
-    }, {
-      headers: this.getHeaders()
-    });
+    return this.http.put<ReparacionView>(
+      `${this.baseUrl}/${id}/terminar`,
+      {},
+      { headers: this.getHeaders() }
+    );
   }
 }

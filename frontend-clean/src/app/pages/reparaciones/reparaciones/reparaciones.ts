@@ -113,23 +113,23 @@ export class Reparaciones implements OnInit {
 
     if (!action || !event.data) return;
 
-    switch (action) {
-      case 'view':
-        console.log('VER', event.data);
-        break;
+switch (action) {
+  case 'view':
+    this.openModal('view', event.data);
+    break;
 
-      case 'edit':
-        console.log('EDIT', event.data);
-        break;
+  case 'edit':
+    this.openModal('edit', event.data);
+    break;
 
-      case 'delete':
-        console.log('DELETE', event.data);
-        break;
+  case 'delete':
+    this.openModal('delete', event.data);
+    break;
 
-      case 'terminar':
-        this.terminarReparacion(event.data.id);
-        break;
-    }
+  case 'terminar':
+    this.terminarReparacion(event.data.id);
+    break;
+}
   }
 
   terminarReparacion(id: number): void {
@@ -172,10 +172,7 @@ export class Reparaciones implements OnInit {
     this.selectedReparacion = null;
   }
 
-  onModalSubmit(data: any): void {
-    console.log('DATA FORM', data);
-
-    // después lo conectamos con backend
+  onModalSubmit(data : any): void {
     this.closeModal();
     this.getReparaciones();
   }

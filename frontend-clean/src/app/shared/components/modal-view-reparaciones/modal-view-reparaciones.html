@@ -49,6 +49,9 @@
             <div class="col-md-3">
               <label class="form-label fw-semibold">Valor del producto</label>
               <input type="number" class="form-control" formControlName="valorVenta" placeholder="Ej: 15000" />
+              <div class="text-danger small" *ngIf="d.get('valorVenta')?.touched && d.get('valorVenta')?.invalid">
+                El precio debe ser mayor a 0
+              </div>
             </div>
 
             <!-- BOTÓN ELIMINAR -->
