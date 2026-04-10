@@ -10,6 +10,10 @@ import com.example.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import com.example.backend.model.*;
 import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import com.example.backend.service.VentaService;
+import com.example.backend.dto.request.VentaRequestDTO;
+import com.example.backend.dto.request.DetalleVentaRequestDTO;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +24,8 @@ public class DataInitializer implements CommandLineRunner {
     private final CategoriaRepository categoriaRepository;
     private final ProductoRepository productoRepository;
     private final OrdenServicioRepository ordenServicioRepository;
+    private final VentaRepository ventaRepository;
+    private final VentaService ventaService;
 
     @Override
     @Transactional
@@ -165,6 +171,30 @@ public class DataInitializer implements CommandLineRunner {
                 ordenServicioRepository.save(reparacion);
 
                 log.info("Carga de órdenes finalizada con éxito.");
+        // 5. Cargamos Ventas de prueba
+        if (ventaRepository.count() == 0) {
+            log.info("Cargando ventas iniciales de prueba...");
+            
+            //Traigo todos los productos para obtener sus IDs y crear ventas de prueba.
+            List<Producto> productos = productoRepository.findAll();
+            
+            if (productos.size() >= 2) {
+                Producto prod1 = productos.get(0);
+                Producto prod2 = productos.get(1);
+
+                //Creo una venta de prueba con 2 productos (1 unidad del primero y 2 unidades del segundo)
+                VentaRequestDTO ventaPrueba = new VentaRequestDTO(
+                    "EFECTIVO", 
+                    "Prueba de venta", 
+                    "Lionel Messi", 
+                    List.of(
+                        new DetalleVentaRequestDTO(prod1.getId(), 1),
+                        new DetalleVentaRequestDTO(prod2.getId(), 2)
+                    )
+                );
+
+                ventaService.create(ventaPrueba);
+                log.info("Ventas de prueba cargadas con éxito.");
             }
         }
     }
