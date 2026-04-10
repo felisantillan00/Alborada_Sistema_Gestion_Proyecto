@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/compra")
