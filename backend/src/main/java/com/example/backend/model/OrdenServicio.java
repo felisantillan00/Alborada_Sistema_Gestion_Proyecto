@@ -1,22 +1,14 @@
 package com.example.backend.model;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import lombok.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.backend.enums.EstadoOrden;
-
-import lombok.Data;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orden_servicio")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
 public class OrdenServicio {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
