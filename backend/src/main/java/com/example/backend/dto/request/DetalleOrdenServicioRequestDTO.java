@@ -1,11 +1,8 @@
 package com.example.backend.dto.request;
-import java.math.BigDecimal;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record DetalleOrdenServicioRequestDTO(
-
     @NotNull(message = "El id del producto es obligatorio")
     Long idProducto,
 
