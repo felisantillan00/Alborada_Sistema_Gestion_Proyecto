@@ -1,11 +1,10 @@
 package com.example.backend.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 import com.example.backend.enums.FormaPago;
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.util.List;
+import lombok.*;
 
 @Entity
 @Table(name = "venta")

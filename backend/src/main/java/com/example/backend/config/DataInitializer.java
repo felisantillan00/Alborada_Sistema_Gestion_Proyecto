@@ -1,9 +1,9 @@
 package com.example.backend.config;
-import com.example.backend.dto.request.DetalleVentaRequestDTO;
-import com.example.backend.dto.request.VentaRequestDTO;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import com.example.backend.service.VentaService;
+import com.example.backend.enums.EstadoOrden;
+import com.example.backend.dto.request.*;
 import jakarta.transaction.Transactional;
 import com.example.backend.repository.*;
 import lombok.RequiredArgsConstructor;
