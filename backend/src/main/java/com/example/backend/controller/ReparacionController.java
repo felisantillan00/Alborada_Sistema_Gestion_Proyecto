@@ -1,20 +1,14 @@
 package com.example.backend.controller;
-
-import com.example.backend.dto.request.OrdenServicioRequestDTO;
 import com.example.backend.dto.response.OrdenServicioResponseDTO;
-import com.example.backend.model.EstadoOrden;
+import com.example.backend.dto.request.OrdenServicioRequestDTO;
 import com.example.backend.service.OrdenServicioService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
-
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
+import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/reparacion")

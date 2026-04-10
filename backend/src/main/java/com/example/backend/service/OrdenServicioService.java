@@ -1,34 +1,22 @@
 package com.example.backend.service;
-
-import com.example.backend.dto.request.OrdenServicioRequestDTO;
-import com.example.backend.dto.request.DetalleOrdenServicioRequestDTO;
-import com.example.backend.dto.response.DetalleOrdenServicioResponseDTO;
-import com.example.backend.dto.response.OrdenServicioResponseDTO;
-import com.example.backend.exception.NegocioException;
-import com.example.backend.model.DetalleOrdenServicio;
-import com.example.backend.model.OrdenServicio;
-import com.example.backend.model.Producto;
-import com.example.backend.model.EstadoOrden;
-import com.example.backend.repository.OrdenServicioRepository;
-import com.example.backend.repository.ProductoRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.backend.exception.NegocioException;
+import org.springframework.stereotype.Service;
+import com.example.backend.dto.response.*;
+import com.example.backend.dto.request.*;
 import org.springframework.data.domain.*;
-
-import java.math.BigDecimal;
+import com.example.backend.repository.*;
+import lombok.RequiredArgsConstructor;
+import com.example.backend.model.*;
+import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class OrdenServicioService {
-
     private final OrdenServicioRepository repository;
     private final ProductoRepository productoRepository;
     private final ProductoService productoService;

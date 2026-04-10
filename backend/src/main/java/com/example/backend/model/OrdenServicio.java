@@ -1,16 +1,12 @@
 package com.example.backend.model;
-
-import com.example.backend.model.DetalleOrdenServicio;
-import com.example.backend.model.EstadoOrden;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
 
 @Entity
 @Table(name = "orden_servicio")
@@ -18,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrdenServicio {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,14 +53,11 @@ public class OrdenServicio {
         this.fechaCreacion = LocalDateTime.now();
 
         if (Boolean.TRUE.equals(this.isReparacion)) { //caso reparación
-            
             if (this.estadoReparacion == null) {
                 this.estadoReparacion = EstadoOrden.Aprobado_Presupuesto; 
             }
-            
         } 
         else {  //caso presupuesto
-            
             if (this.estadoReparacion == null) {
                 this.estadoReparacion = EstadoOrden.Pendiente_Aprobacion; 
             }
