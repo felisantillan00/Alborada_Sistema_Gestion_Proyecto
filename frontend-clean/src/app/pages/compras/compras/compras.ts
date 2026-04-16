@@ -42,9 +42,14 @@ export class Compras implements OnInit {
 
   readonly columnDefs: ColDef<CompraView>[] = [
     // { field: 'Id', headerName: 'ID', maxWidth: 120 },
-    { field: 'PrecioTotal', headerName: 'Precio Total' },
-    { field: 'NombreProveedor', headerName: 'Proveedor', minWidth: 200 },
-    { field: 'Fecha', headerName: 'Fecha' },
+{
+      field: 'total',
+      headerName: 'Precio Total',
+      valueFormatter: (params) => {
+        return params.value != null ? '$ ' + params.value : '';
+      }
+    },    { field: 'nombreProveedor', headerName: 'Proveedor', minWidth: 200 },
+    { field: 'fecha', headerName: 'Fecha' },
     {
       headerName: 'Actions',
       colId: 'actions',
@@ -98,7 +103,9 @@ export class Compras implements OnInit {
       });
   }
 
-  getRowId = (params: any) => params.data.Id.toString();
+getRowId = (params: any) => {
+  return params.data?.id ? String(params.data.id) : String(Math.random());
+};
 
   onNewCompra(): void {
     this.openModal('create', null);
@@ -218,18 +225,6 @@ export class Compras implements OnInit {
     return this.currentFilter !== 'all';
   };
 
-  doesExternalFilterPass = (node: any): boolean => {
-    switch (this.currentFilter) {
-      case 'lowStock':
-        // Consideramos "Stock bajo" entre 1 y 5 unidades
-        return node.data.stock > 0 && node.data.stock <= 5;
-      case 'noStock':
-        // Sin stock
-        return node.data.stock === 0;
-      default:
-        return true;
-    }
-  };
 
 
 

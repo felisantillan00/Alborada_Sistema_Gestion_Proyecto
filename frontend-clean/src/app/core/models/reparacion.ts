@@ -1,9 +1,11 @@
 export interface ReparacionRequest {
-    estadoReparacion: string;
+    nombreCliente: string;
+    estado: string;
     valorTotal: number;
     valorManoDeObra: number;
     fechaConfirmada?: string;
-    detalle: {
+    observacion?: string;
+    detalles: {
         idProducto: number;
         cantidad: number;
         valorVenta: number;
@@ -11,11 +13,13 @@ export interface ReparacionRequest {
 }
 export interface ReparacionView {
     id: number;
-    estadoReparacion: string;
+    nombreCliente: string;
+    estado: string;
     valorTotal: number;
     valorManoDeObra: number;
     fechaConfirmada?: string;
-    detalle: {
+    observacion?: string;
+    detalles: {
         id: number;
         nombreProducto: string;
         valorVenta: number;

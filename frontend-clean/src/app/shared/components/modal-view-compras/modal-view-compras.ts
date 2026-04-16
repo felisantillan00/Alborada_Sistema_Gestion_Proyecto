@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CompraView } from '../../../core/models/compra';
@@ -25,32 +25,35 @@ export class ModalViewCompras implements OnChanges {
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
+
   private fb = inject(FormBuilder);
   private productService = inject(ProductoService);
   private comprasService = inject(ComprasService);
+  private cdr = inject(ChangeDetectorRef);
+
 
   ngOnInit(): void {
     this.getProductos();
   }
 
   form = this.fb.group({
-    PrecioTotal: [0, [Validators.required, Validators.min(1)]],
-    NombreProveedor: ['', Validators.required],
-    Fecha: [''],
-    Producto: this.fb.array<FormGroup>([]),
+    total: [0, [Validators.required, Validators.min(1)]],
+    nombreProveedor: ['', Validators.required],
+    fecha: [''],
+    Productos: this.fb.array<FormGroup>([]),
   });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['compra'] || changes['mode']) {
       this.loadForm();
-      if (this.productosLoaded) {
+      if (this.compra && this.productosLoaded) {
         this.setProductosEnFormArray();
       }
     }
   }
 
   get productoFormArray(): FormArray<FormGroup> {
-    return this.form.get('Producto') as FormArray<FormGroup>;
+    return this.form.get('Productos') as FormArray<FormGroup>;
   }
 
   get precioLabel(): string {
@@ -104,7 +107,7 @@ export class ModalViewCompras implements OnChanges {
   handleEdit(): void {
     const payload = this.buildPayload(true);
 
-    this.comprasService.update(this.compra!.Id, payload).subscribe({
+    this.comprasService.update(this.compra!.id, payload).subscribe({
       next: () => {
         this.showSuccess('Compra editada correctamente');
         this.closed.emit();
@@ -116,9 +119,9 @@ export class ModalViewCompras implements OnChanges {
   }
 
   handleDelete(): void {
-    if (!this.compra?.Id) return;
+    if (!this.compra?.id) return;
 
-    this.comprasService.delete(this.compra.Id).subscribe({
+    this.comprasService.delete(this.compra.id).subscribe({
       next: () => {
         this.showSuccess('Compra eliminada correctamente');
         this.closed.emit();
@@ -132,18 +135,18 @@ export class ModalViewCompras implements OnChanges {
   buildPayload(includeId: boolean = false): any {
     const v = this.form.value;
     const payload: any = {
-      proveedor: v.NombreProveedor,
-      precioTotal: v.PrecioTotal,
-      fecha: v.Fecha,
-      productos: (v.Producto || []).map((p: any) => ({
-        id: p.Id,
-        cantidad: p.Cantidad,
-        precioCompra: p.PrecioCompra
+      proveedor: v.nombreProveedor,
+      precioTotal: v.total,
+      fecha: v.fecha,
+      productos: (v.Productos || []).map((p: any) => ({
+        id: p.idProducto,
+        cantidad: p.cantidad,
+        precioCompra: p.precioCompra
       }))
     };
 
     if (includeId) {
-      payload.id = this.compra?.Id;
+      payload.id = this.compra?.id;
     }
 
     return payload;
@@ -151,7 +154,7 @@ export class ModalViewCompras implements OnChanges {
 
   getProductos(): void {
     this.productService.getAll().subscribe(data => {
-      this.productos = data;
+      this.productos = Array.isArray(data) ? data : (data as any).content || [];
       this.productosLoaded = true;
 
       if (this.compra) {
@@ -161,26 +164,35 @@ export class ModalViewCompras implements OnChanges {
   }
 
   private setProductosEnFormArray(): void {
-    if (!this.compra?.Producto) return;
+    if (!this.compra?.Productos) return;
 
     this.productoFormArray.clear();
 
-    this.compra.Producto.forEach((producto) => {
+    this.compra.Productos.forEach((producto) => {
+      const idNumerico = producto.id ? Number(producto.id) : null;
+
       this.productoFormArray.push(
         this.createProductoGroup(
-          producto.Id,
+          idNumerico,
           producto.Cantidad,
-          producto.Precio
+          producto.Precio,
+          producto.Nombre
         )
       );
     });
+
+    if (this.mode === 'view') {
+      this.productoFormArray.disable();
+    }
+
+    this.cdr.detectChanges();
   }
 
   private loadForm(): void {
     this.form.patchValue({
-      PrecioTotal: this.compra?.PrecioTotal ?? 0,
-      NombreProveedor: this.compra?.NombreProveedor ?? '',
-      Fecha: this.compra?.Fecha ?? '',
+      total: this.compra?.total ?? 0,
+      nombreProveedor: this.compra?.nombreProveedor ?? '',
+      fecha: this.compra?.fecha ?? '',
     });
 
     this.productoFormArray.clear();
@@ -188,17 +200,25 @@ export class ModalViewCompras implements OnChanges {
     if (!this.compra) {
       this.addProducto();
     }
+
+    if (this.mode === 'view') {
+      this.form.disable();
+    } else {
+      this.form.enable();
+    }
   }
 
   private createProductoGroup(
-    id: string = '',
+    id: number | string | null = null,
     cantidad: number = 1,
-    precioCompra: number | null = null
+    precioCompra: number | null = null,
+    nombre: string = ''
   ): FormGroup {
     return this.fb.group({
-      Id: [id],
-      Cantidad: [cantidad, [Validators.required, Validators.min(1)]],
-      PrecioCompra: [precioCompra, Validators.required],
+      idProducto: [id],
+      nombre: [nombre],
+      cantidad: [cantidad, [Validators.required, Validators.min(1)]],
+      precioCompra: [precioCompra, Validators.required],
     });
   }
 

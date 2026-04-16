@@ -20,6 +20,76 @@
         "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
         "nombreMarca": "Marca B"
+      },
+      {
+        "id": 3,
+        "nombre": "Teclado Redragon",
+        "precioCosto": 25,
+        "precioVenta": 45,
+        "stock": 20,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
+      },
+      {
+        "id": 4,
+        "nombre": "Monitor Samsung 24",
+        "precioCosto": 85,
+        "precioVenta": 120,
+        "stock": 30,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
+      },
+      {
+        "id": 5,
+        "nombre": "Auriculares Sony",
+        "precioCosto": 25,
+        "precioVenta": 40,
+        "stock": 25,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
+      },
+      {
+        "id": 8,
+        "nombre": "Disco SSD Kingston 480GB",
+        "precioCosto": 25,
+        "precioVenta": 35,
+        "stock": 40,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Componentes",
+        "nombreMarca": "Marca B"
+      },
+      {
+        "id": 9,
+        "nombre": "Memoria RAM Corsair 8GB",
+        "precioCosto": 20,
+        "precioVenta": 30,
+        "stock": 35,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Componentes",
+        "nombreMarca": "Marca B"
+      },
+      {
+        "id": 13,
+        "nombre": "Webcam Logitech HD",
+        "precioCosto": 30,
+        "precioVenta": 40,
+        "stock": 15,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
+      },
+      {
+        "id": 15,
+        "nombre": "Parlantes Genius",
+        "precioCosto": 20,
+        "precioVenta": 30,
+        "stock": 10,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
       }
     ],
     "totalElements": 15,
@@ -59,8 +129,9 @@
         "id": "V-001",
         "nombreCliente": "Juan Perez",
         "total": 190,
-        "fechaVenta": "2026-03-20",
+        "fechaVenta": "20-03-2026",
         "formaPago": "Efectivo",
+        "observacion": "Cliente frecuente, descuento por compra múltiple",
         "Productos": [
           {
             "id": "2",
@@ -84,10 +155,11 @@
       },
       {
         "id": "V-002",
-        "NombreCliente": "Maria Gomez",
-        "PrecioTotal": 410,
-        "Fecha": "2026-03-21",
-        "FormaDePago": "Tarjeta",
+        "nombreCliente": "Maria Gomez",
+        "total": 410,
+        "fechaVenta": "21-03-2026",
+        "formaPago": "Tarjeta",
+        "observacion": "Pago realizado con tarjeta de crédito",
         "Productos": [
           {
             "id": "1",
@@ -112,10 +184,10 @@
     "content": [
       {
         "id": "C-001",
-        "PrecioTotal": 520,
-        "NombreProveedor": "TechSupplier",
-        "Fecha": "2026-03-20",
-        "Producto": [
+        "total": 520,
+        "nombreProveedor": "TechSupplier",
+        "fecha": "20-03-2026",
+        "Productos": [
           {
             "id": "4",
             "Nombre": "Monitor Samsung 24\"",
@@ -138,10 +210,10 @@
       },
       {
         "id": "C-002",
-        "PrecioTotal": 400,
-        "NombreProveedor": "AudioTech",
-        "Fecha": "2026-03-21",
-        "Producto": [
+        "total": 400,
+        "nombreProveedor": "AudioTech",
+        "fecha": "21-03-2026",
+        "Productos": [
           {
             "id": "5",
             "Nombre": "Auriculares Sony",
@@ -246,15 +318,39 @@
     "content": [
       {
         "id": 1,
-        "estadoReparacion": "EN_REPARACION",
+        "nombreCliente": "Carlos Ramirez",
+        "estado": "Aprobado_Presupuesto",
         "valorTotal": 15000,
         "valorManoDeObra": 5000,
-        "fechaConfirmada": "2026-03-20",
-        "detalle": [
+        "fechaConfirmada": "20-03-2026",
+        "detalles": [
           {
             "id": 1,
-            "nombreProducto": "Pantalla Samsung",
+            "nombre": "Notebook Lenovo",
             "valorVenta": 10000,
+            "cantidad": 1
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "nombreCliente": "Ana Torres",
+        "estado": "Finalizado",
+        "valorTotal": 22000,
+        "valorManoDeObra": 7000,
+        "fechaConfirmada": "25-03-2026",
+        "observacion": "Cambio de batería y limpieza general",
+        "detalles": [
+          {
+            "id": 2,
+            "nombre": "Mouse Logitech",
+            "valorVenta": 12000,
+            "cantidad": 1
+          },
+          {
+            "id": 3,
+            "nombre": "Teclado Redragon",
+            "valorVenta": 3000,
             "cantidad": 1
           }
         ]
@@ -264,101 +360,100 @@
     "totalPages": 1,
     "number": 0
   },
-    "balance": {
-      "content": [
-        {
-          "ingresosSemestrales": 104600,
-          "gastosSemestrales": 55400,
-          "gananciasSemestrales": 49200,
-          "promedioGananciasSemestrales": 17433
-        }
-      ]
+  "balance": {
+    "content": [
+      {
+        "ingresosSemestrales": 104600,
+        "gastosSemestrales": 55400,
+        "gananciasSemestrales": 49200,
+        "promedioGananciasSemestrales": 17433
+      }
+    ]
+  },
+  "reparacionesMensuales": [
+    {
+      "mes": "Enero",
+      "total": 15
     },
-    "reparacionesMensuales": [
-      {
-        "mes": "Enero",
-        "total": 15
-      },
-      {
-        "mes": "Febrero",
-        "total": 20
-      },
-      {
-        "mes": "Marzo",
-        "total": 18
-      },
-      {
-        "mes": "Abril",
-        "total": 25
-      },
-      {
-        "mes": "Mayo",
-        "total": 22
-      },
-      {
-        "mes": "Junio",
-        "total": 30
-      }
-    ],
-    "pie": {
-      "totalVentas": 45230,
-      "totalReparaciones": 18500
+    {
+      "mes": "Febrero",
+      "total": 20
     },
-    "ventasMensuales": [
-      {
-        "mes": "Enero",
-        "total": 14200
-      },
-      {
-        "mes": "Febrero",
-        "total": 16500
-      },
-      {
-        "mes": "Marzo",
-        "total": 18000
-      },
-      {
-        "mes": "Abril",
-        "total": 15800
-      },
-      {
-        "mes": "Mayo",
-        "total": 20100
-      },
-      {
-        "mes": "Junio",
-        "total": 20000
-      }
-    ],
-    "comprasMensuales": [
-      {
-        "mes": "Enero",
-        "total": 8000
-      },
-      {
-        "mes": "Febrero",
-        "total": 9500
-      },
-      {
-        "mes": "Marzo",
-        "total": 10200
-      },
-      {
-        "mes": "Abril",
-        "total": 8700
-      },
-      {
-        "mes": "Mayo",
-        "total": 9800
-      },
-      {
-        "mes": "Junio",
-        "total": 9200
-      }
-    ],
-    "totalesActuales": {
-      "ventas": 20000,
-      "reparaciones": 4800
+    {
+      "mes": "Marzo",
+      "total": 18
+    },
+    {
+      "mes": "Abril",
+      "total": 25
+    },
+    {
+      "mes": "Mayo",
+      "total": 22
+    },
+    {
+      "mes": "Junio",
+      "total": 30
     }
+  ],
+  "pie": {
+    "totalVentas": 45230,
+    "totalReparaciones": 18500
+  },
+  "ventasMensuales": [
+    {
+      "mes": "Enero",
+      "total": 14200
+    },
+    {
+      "mes": "Febrero",
+      "total": 16500
+    },
+    {
+      "mes": "Marzo",
+      "total": 18000
+    },
+    {
+      "mes": "Abril",
+      "total": 15800
+    },
+    {
+      "mes": "Mayo",
+      "total": 20100
+    },
+    {
+      "mes": "Junio",
+      "total": 20000
+    }
+  ],
+  "comprasMensuales": [
+    {
+      "mes": "Enero",
+      "total": 8000
+    },
+    {
+      "mes": "Febrero",
+      "total": 9500
+    },
+    {
+      "mes": "Marzo",
+      "total": 10200
+    },
+    {
+      "mes": "Abril",
+      "total": 8700
+    },
+    {
+      "mes": "Mayo",
+      "total": 9800
+    },
+    {
+      "mes": "Junio",
+      "total": 9200
+    }
+  ],
+  "totalesActuales": {
+    "ventas": 20000,
+    "reparaciones": 4800
   }
-
+}

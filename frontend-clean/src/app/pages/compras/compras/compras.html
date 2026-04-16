@@ -34,32 +34,10 @@
           <li>
             <h6 class="dropdown-header text-success fw-bold">Ordenar por</h6>
           </li>
-          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('nombre', 'asc')"><i
-                class="bi bi-sort-alpha-down me-2"></i>Nombre (A - Z)</a></li>
-          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('nombre', 'desc')"><i
-                class="bi bi-sort-alpha-up me-2"></i>Nombre (Z - A)</a></li>
-          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('precioVenta', 'asc')"><i
+          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('total', 'asc')"><i
                 class="bi bi-sort-numeric-down me-2"></i>Menor Precio</a></li>
-          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('precioVenta', 'desc')"><i
+          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('total', 'desc')"><i
                 class="bi bi-sort-numeric-up-alt me-2"></i>Mayor Precio</a></li>
-
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-
-          <li>
-            <h6 class="dropdown-header text-success fw-bold">Filtrar por</h6>
-          </li>
-          <li><a class="dropdown-item py-2 d-flex justify-content-between align-items-center" href="javascript:void(0)"
-              (click)="applyFilter('lowStock')">
-              <span><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Stock Bajo (1-5)</span>
-              <i *ngIf="currentFilter === 'lowStock'" class="bi bi-check2 text-success"></i>
-            </a></li>
-          <li><a class="dropdown-item py-2 d-flex justify-content-between align-items-center" href="javascript:void(0)"
-              (click)="applyFilter('noStock')">
-              <span><i class="bi bi-x-octagon me-2 text-danger"></i>Sin Stock</span>
-              <i *ngIf="currentFilter === 'noStock'" class="bi bi-check2 text-success"></i>
-            </a></li>
 
           <li>
             <hr class="dropdown-divider">
