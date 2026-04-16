@@ -46,8 +46,8 @@ public class EstadisticasService {
         //Ganancia neta = Ingresos - Gastos
         BigDecimal gananciasMensuales = ingresosMensuales.subtract(gastosMensuales);
         
-        //Promedio = Ganancia Total / Cant de dias del mes
-        BigDecimal promedioGananciasMensuales = gananciasMensuales.divide(new BigDecimal(LocalDate.now().lengthOfMonth()), 2, RoundingMode.HALF_UP);
+        // CORRECCIÓN 1: Promedio = Ganancia Total / Día actual del mes (getDayOfMonth)
+        BigDecimal promedioGananciasMensuales = gananciasMensuales.divide(new BigDecimal(LocalDate.now().getDayOfMonth()), 2, RoundingMode.HALF_UP);
 
         return GetEstadisticasDTO.builder()
                 .ingresosMensuales(ingresosMensuales)
@@ -90,7 +90,9 @@ public class EstadisticasService {
         List<MetricaMensualDTO> listaFinal = new ArrayList<>();
         for (Object[] fila : resultados) {
             int numeroMes = (Integer) fila[0];
-            BigDecimal total = new BigDecimal(fila[1].toString());
+            
+            //El total puede ser null si no hubo ventas/reparaciones/compras en ese mes, así que lo manejamos con un ternario
+            BigDecimal total = (fila[1] != null) ? new BigDecimal(fila[1].toString()) : BigDecimal.ZERO;
             
             // Obtiene el nombre del mes en español
             String nombreMes = java.time.Month.of(numeroMes)
