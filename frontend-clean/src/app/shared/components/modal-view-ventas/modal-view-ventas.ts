@@ -85,6 +85,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   getProductos(): void {
     this.productService.getAll().subscribe(data => {
       this.productos = (data as any).content;
+      console.log(this.productos);
       this.productosLoaded = true;
       if (this.venta) {
         this.setDetallesEnFormArray();
@@ -94,6 +95,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   private loadForm(): void {
     // fecha ISO del backend → YYYY-MM-DD para el input date
+    console.log(this.venta);
     const fechaFormateada = this.venta?.fechaVenta
       ? this.venta.fechaVenta.substring(0, 10)  // toma solo "YYYY-MM-DD"
       : '';
@@ -127,7 +129,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     const productosArray = (this.venta as any).Productos || this.venta.detalles || [];
 
     productosArray.forEach((p: any) => {
-      const idNumerico = p.id ? Number(p.id) : Number(p.idProducto);
+      const idNumerico = Number(p.idProducto);
 
       this.detallesFormArray.push(
         this.createDetalleGroup(
