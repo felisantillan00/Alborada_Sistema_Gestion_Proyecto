@@ -136,7 +136,7 @@ public class DataInitializer implements CommandLineRunner {
                 OrdenServicio presupuesto = new OrdenServicio();
                 presupuesto.setObservacion("Cliente consultó por cambio de cubiertas.");
                 presupuesto.setIsReparacion(false);
-                presupuesto.setEstadoReparacion(EstadoOrden.Pendiente_Aprobacion);
+                presupuesto.setEstado(EstadoOrden.Pendiente_Aprobacion);
                 presupuesto.setValorManoObra(new BigDecimal("20000.00"));
 
                 DetalleOrdenServicio det1 = new DetalleOrdenServicio();
@@ -155,7 +155,7 @@ public class DataInitializer implements CommandLineRunner {
                 OrdenServicio reparacion = new OrdenServicio();
                 reparacion.setObservacion("Se reemplazó la transmisión vieja.");
                 reparacion.setIsReparacion(true);
-                reparacion.setEstadoReparacion(EstadoOrden.Finalizado);
+                reparacion.setEstado(EstadoOrden.Finalizado);
                 reparacion.setValorManoObra(new BigDecimal("25000.00"));
                 reparacion.setFechaConfirmacion_reparacion(LocalDateTime.now().minusDays(2)); // Confirmada hace 2 días
 

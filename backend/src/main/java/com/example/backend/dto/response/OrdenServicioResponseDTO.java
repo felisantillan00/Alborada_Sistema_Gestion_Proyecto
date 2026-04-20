@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class OrdenServicioResponseDTO {
     private Long id;
-    private String estadoReparacion;
+    private String estado;
     private BigDecimal valorTotal;
     private BigDecimal valorManoDeObra;
     private LocalDateTime fechaCreacion;
