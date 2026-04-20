@@ -49,7 +49,14 @@
             <!-- FECHA -->
             <div class="col-md-4">
               <label class="form-label">Fecha</label>
-              <input class="form-control shadow-sm" type="text" formControlName="fechaVenta" />
+              <input class="form-control shadow-sm" type="date" formControlName="fechaVenta" [max]="today"
+                [attr.disabled]="mode === 'view' ? true : null" />
+              @if (form.get('fechaVenta')?.touched && form.get('fechaVenta')?.errors?.['required']) {
+              <div class="text-danger small mt-1">La fecha es obligatoria</div>
+              }
+              @if (form.get('fechaVenta')?.touched && form.get('fechaVenta')?.errors?.['fechaFutura']) {
+              <div class="text-danger small mt-1">La fecha no puede ser futura</div>
+              }
             </div>
 
             <!-- FORMA DE PAGO -->

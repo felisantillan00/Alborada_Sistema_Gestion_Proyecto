@@ -1,6 +1,7 @@
 export interface VentaRequest {
   nombreCliente: string;
   total: number;
+  fechaVenta: string;
   formaPago: string;
   observacion?: string;
   detalles: {
