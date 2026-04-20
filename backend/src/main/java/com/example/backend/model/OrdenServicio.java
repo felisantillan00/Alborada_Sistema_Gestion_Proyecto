@@ -25,8 +25,8 @@ public class OrdenServicio {
     private LocalDateTime fechaCreacion;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_reparacion", nullable = false)
-    private EstadoOrden estadoReparacion;
+    @Column(name = "estado", nullable = false)
+    private EstadoOrden estado;
 
     @Column(name = "valor_total")
     private BigDecimal valorTotal;
@@ -56,13 +56,13 @@ public class OrdenServicio {
         this.fechaCreacion = LocalDateTime.now();
 
         if (Boolean.TRUE.equals(this.isReparacion)) { //caso reparación
-            if (this.estadoReparacion == null) {
-                this.estadoReparacion = EstadoOrden.Aprobado_Presupuesto; 
+            if (this.estado == null) {
+                this.estado = EstadoOrden.Aprobado_Presupuesto; 
             }
         } 
         else {  //caso presupuesto
-            if (this.estadoReparacion == null) {
-                this.estadoReparacion = EstadoOrden.Pendiente_Aprobacion; 
+            if (this.estado == null) {
+                this.estado = EstadoOrden.Pendiente_Aprobacion; 
             }
             
         }

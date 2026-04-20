@@ -48,14 +48,14 @@ public class OrdenServicioService {
         if (flagReparacion == 1) {
             orden.setIsReparacion(true);
             orden.setFechaConfirmacion_reparacion(LocalDateTime.now());
-            orden.setEstadoReparacion(EstadoOrden.Aprobado_Presupuesto);
+            orden.setEstado(EstadoOrden.Aprobado_Presupuesto);
             
             // Al ser reparación directa, descontamos stock
             descuentoStock(orden);
             
         } else {
             orden.setIsReparacion(false);
-            orden.setEstadoReparacion(EstadoOrden.Pendiente_Aprobacion);
+            orden.setEstado(EstadoOrden.Pendiente_Aprobacion);
         }
 
         OrdenServicio guardada = repository.save(orden);
@@ -92,7 +92,7 @@ public class OrdenServicioService {
         }
 
         // Si el stock ya fue descontado (es reparación aprobada), lo reponemos antes de eliminar
-        if (orden.getEstadoReparacion() == EstadoOrden.Aprobado_Presupuesto) {
+        if (orden.getEstado() == EstadoOrden.Aprobado_Presupuesto) {
             log.info("Reponiendo stock antes de eliminar la Orden ID: {}", id);
             for (DetalleOrdenServicio detalle : orden.getDetalles()) {
                 if (detalle.getProducto() != null) {
@@ -114,8 +114,8 @@ public class OrdenServicioService {
         }
 
         // 1. IDENTIFICAR SI YA ESTÁ APROBADA
-        boolean stockYaDescontado = (orden.getEstadoReparacion() == EstadoOrden.Aprobado_Presupuesto || 
-                                     orden.getEstadoReparacion() == EstadoOrden.Finalizado);
+        boolean stockYaDescontado = (orden.getEstado() == EstadoOrden.Aprobado_Presupuesto || 
+                                     orden.getEstado() == EstadoOrden.Finalizado);
 
         //  MEMORIA DE PRECIOS HISTÓRICOS ---
         // Guardamos los precios de los productos que ya estaban en la orden (ID Producto -> Precio Congelado)
@@ -182,12 +182,12 @@ public class OrdenServicioService {
     OrdenServicio orden = repository.findById(id)
             .orElseThrow(() -> new NegocioException("Orden no encontrada con ID: " + id));
 
-    EstadoOrden estadoActual = orden.getEstadoReparacion();
+    EstadoOrden estadoActual = orden.getEstado();
 
     // PASO 1: De Presupuesto a Reparación en curso
     if (estadoActual == EstadoOrden.Pendiente_Aprobacion) {
         orden.setIsReparacion(true);
-        orden.setEstadoReparacion(EstadoOrden.Aprobado_Presupuesto);
+        orden.setEstado(EstadoOrden.Aprobado_Presupuesto);
         orden.setFechaConfirmacion_reparacion(LocalDateTime.now());
         
         // Es el momento de quitar las piezas del inventario
@@ -198,7 +198,7 @@ public class OrdenServicioService {
     // PASO 2: De Reparación en curso a Finalizada
     else if (estadoActual == EstadoOrden.Aprobado_Presupuesto) {
         // Aquí ya no tocamos el stock, solo marcamos que el trabajo terminó
-        orden.setEstadoReparacion(EstadoOrden.Finalizado);
+        orden.setEstado(EstadoOrden.Finalizado);
         log.info("Orden {}: Trabajo terminado -> Finalizada.", id);
     } 
     
@@ -258,7 +258,7 @@ public class OrdenServicioService {
 
         return OrdenServicioResponseDTO.builder()
                 .id(o.getId())
-                .estadoReparacion(o.getEstadoReparacion().name())
+                .estado(o.getEstado().name())
                 .valorTotal(o.getValorTotal())
                 .valorManoDeObra(o.getValorManoObra())
                 .fechaCreacion(o.getFechaCreacion())
