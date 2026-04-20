@@ -68,3 +68,9 @@
   color: #155724;
   font-weight: 500;
 }
+
+.badge-reparacion {
+  background-color: #ff9800; /* naranja lindo */
+  color: white;
+  font-weight: 600;
+}

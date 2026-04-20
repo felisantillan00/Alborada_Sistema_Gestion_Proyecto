@@ -179,7 +179,7 @@ export class ModalView implements OnInit {
   get title(): string {
     switch (this.mode) {
       case 'create': return 'Nuevo Producto';
-      case 'view': return 'Ver Producto';
+      case 'view': return 'Producto';
       case 'edit': return 'Editar Producto';
       case 'delete': return 'Borrar Producto';
       default: return 'Producto';

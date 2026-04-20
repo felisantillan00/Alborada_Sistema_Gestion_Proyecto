@@ -42,10 +42,16 @@ export class Ventas implements OnInit {
 
   readonly columnDefs: ColDef<VentaView>[] = [
     //  { field: 'id',            headerName: 'ID' },
-  { field: 'nombreCliente', headerName: 'Cliente',        minWidth: 200 },
-  { field: 'total',         headerName: 'Precio Total' },
-  { field: 'fechaVenta',    headerName: 'Fecha' },
-  { field: 'formaPago',     headerName: 'Forma de Pago' },
+    { field: 'nombreCliente', headerName: 'Cliente', minWidth: 200 },
+    {
+      field: 'total',
+      headerName: 'Precio Total',
+      valueFormatter: (params) => {
+        return params.value != null ? '$ ' + params.value : '';
+      }
+    },
+    { field: 'fechaVenta', headerName: 'Fecha' },
+    { field: 'formaPago', headerName: 'Forma de Pago' },
     {
       headerName: 'Actions',
       colId: 'actions',
@@ -200,39 +206,12 @@ export class Ventas implements OnInit {
     });
   }
 
-  applyFilter(filterType: 'all' | 'lowStock' | 'noStock') {
-    this.currentFilter = filterType;
-    if (this.gridApi) {
-      // Le avisamos a la grilla que algo cambió y debe volver a ejecutar doesExternalFilterPass
-      this.gridApi.onFilterChanged();
-    }
-  }
-
-  clearFiltersAndSort() {
-    this.applySort('', null); // Limpia orden
-    this.applyFilter('all');  // Limpia filtro de stock
-
-    // Opcional: limpiar también la barra de búsqueda si lo deseas
-    // this.searchText = '';
-    // if (this.gridApi) this.gridApi.setGridOption('quickFilterText', '');
-  }
 
   // Funciones requeridas por AG Grid para filtros externos (usamos arrow functions para no perder el contexto 'this')
   isExternalFilterPresent = (): boolean => {
     return this.currentFilter !== 'all';
   };
 
-  doesExternalFilterPass = (node: any): boolean => {
-    switch (this.currentFilter) {
-      case 'lowStock':
-        // Consideramos "Stock bajo" entre 1 y 5 unidades
-        return node.data.stock > 0 && node.data.stock <= 5;
-      case 'noStock':
-        // Sin stock
-        return node.data.stock === 0;
-      default:
-        return true;
-    }
-  };
+
 
 }

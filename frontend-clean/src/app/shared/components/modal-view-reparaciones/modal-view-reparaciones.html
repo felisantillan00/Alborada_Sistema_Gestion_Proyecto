@@ -1,85 +1,117 @@
 <div class="modal-backdrop fade show"></div>
 
 <div class="modal d-block">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content p-3">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
 
-      <h4>Nueva Reparación</h4>
+      <!-- HEADER -->
+      <div class="modal-header bg-light border-bottom">
+        <h5 class="modal-title fw-bold text-dark">
+          {{ title }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closed.emit()"></button>
+      </div>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- BODY -->
+      <div class="modal-body">
 
-        <!-- MANO DE OBRA -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Mano de obra</label>
-          <input type="number" class="form-control" formControlName="valorManoDeObra" placeholder="Ej: 5000" />
+        @if (mode === 'delete') {
 
-          <div class="text-danger small"
-            *ngIf="form.get('valorManoDeObra')?.touched && form.get('valorManoDeObra')?.invalid">
-            Ingresá un valor válido
+        <p class="mb-0">
+          ¿Seguro que deseas eliminar la reparación
+          <strong>{{ reparacion?.id ?? '' }}</strong>?
+        </p>
+
+        } @else {
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          <!-- MANO DE OBRA -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Mano de obra</label>
+            <input type="number" class="form-control shadow-sm" formControlName="valorManoDeObra" />
+
+            <div class="text-danger small"
+              *ngIf="form.get('valorManoDeObra')?.touched && form.get('valorManoDeObra')?.invalid">
+              Ingresá un valor válido
+            </div>
           </div>
-        </div>
 
-        <!-- DETALLE -->
-        <div formArrayName="detalle">
-          <div *ngFor="let d of detalleFormArray.controls; let i = index" [formGroupName]="i" class="border p-2 mb-2">
-
-            <!-- PRODUCTO -->
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Producto</label>
-              <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
-                (change)="onProductoChange(i)" placeholder="Seleccionar producto">
-              </ng-select>
-
-              <div class="text-danger small" *ngIf="d.get('idProducto')?.touched && d.get('idProducto')?.invalid">
-                Seleccioná un producto
-              </div>
-            </div>
-
-            <!-- CANTIDAD -->
-            <div class="col-md-3">
-              <label class="form-label fw-semibold">Cantidad</label>
-              <input type="number" class="form-control" formControlName="cantidad" placeholder="Ej: 2" />
-
-              <div class="text-danger small" *ngIf="d.get('cantidad')?.touched && d.get('cantidad')?.invalid">
-                La cantidad debe ser mayor a 0
-              </div>
-            </div>
-
-            <!-- PRECIO -->
-            <div class="col-md-3">
-              <label class="form-label fw-semibold">Valor del producto</label>
-              <input type="number" class="form-control" formControlName="valorVenta" placeholder="Ej: 15000" />
-              <div class="text-danger small" *ngIf="d.get('valorVenta')?.touched && d.get('valorVenta')?.invalid">
-                El precio debe ser mayor a 0
-              </div>
-            </div>
-
-            <!-- BOTÓN ELIMINAR -->
-            <div class="col-md-2 d-flex align-items-end">
-              <button class="btn btn-danger w-100" (click)="removeDetalle(i)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-
+          <!-- OBSERVACIÓN -->
+          <div class="mb-3">
+            <label class="form-label">Observación</label>
+            <textarea class="form-control" formControlName="observacion" [readonly]="mode === 'view'" rows="3">
+</textarea>
           </div>
+
+          <!-- DETALLE -->
+          <div formArrayName="detalles">
+            <div *ngFor="let d of detalleFormArray.controls; let i = index" [formGroupName]="i"
+              class="border rounded p-3 mb-3">
+
+              <div class="row g-3">
+
+                <div class="col-md-4">
+                  <label>Producto</label>
+                  <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
+                    (change)="onProductoChange(i)">
+                  </ng-select>
+                </div>
+
+                <div class="col-md-3">
+                  <label>Cantidad</label>
+                  <input type="number" class="form-control" formControlName="cantidad" />
+                </div>
+
+                <div class="col-md-3">
+                  <label>Valor</label>
+                  <input type="number" class="form-control" formControlName="valorVenta" />
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                  <button type="button" class="btn btn-outline-danger w-100" (click)="removeDetalle(i)">
+                    Quitar
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline-primary" (click)="addDetalle()">
+            Agregar Producto
+          </button>
+
+          <!-- TOTAL -->
+          <div class="bg-light rounded p-3 mt-3 border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted">Total</span>
+              <h3 class="fw-bold text-success mb-0">$ {{ totalCalculado }}</h3>
+            </div>
+          </div>
+
+        </form>
+
+        }
+
+        <!--BOTONES-->
+        <div class="mt-4 d-flex justify-content-end gap-2">
+
+          @if (mode === 'delete') {
+          <button type="button" class="btn btn-danger" (click)="onSubmit()">
+            Borrar
+          </button>
+          } @else if (mode === 'create' || mode === 'edit') {
+          <button type="submit" class="btn btn-success" form="form">
+            {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+          </button>
+          }
+
+          <button type="button" class="btn btn-secondary" (click)="closed.emit()">
+            Cancelar
+          </button>
         </div>
-
-        <button class="btn btn-outline-primary mt-2" (click)="addDetalle()">
-          <i class="bi bi-plus-lg"></i> Agregar producto
-        </button>
-
-        <!-- TOTAL -->
-        <div class="alert alert-success mt-3">
-          <strong>Total calculado:</strong> $ {{ totalCalculado }}
-        </div>
-
-        <!-- BOTONES -->
-        <div class="mt-3 d-flex gap-2">
-          <button type="submit" class="btn btn-success">Guardar</button>
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
-        </div>
-
-      </form>
+      </div>
 
     </div>
   </div>

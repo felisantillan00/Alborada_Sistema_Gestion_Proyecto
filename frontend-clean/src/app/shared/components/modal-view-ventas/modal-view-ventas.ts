@@ -4,7 +4,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import {
   Component, EventEmitter, inject, Input,
-  OnChanges, Output, SimpleChanges, OnInit
+  OnChanges, Output, SimpleChanges, OnInit,
+  ChangeDetectorRef
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VentaView, VentaRequest } from '../../../core/models/venta';
@@ -32,6 +33,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   private fb = inject(FormBuilder);
   private productService = inject(ProductoService);
   private ventasService = inject(VentasService);
+  private cdr = inject(ChangeDetectorRef);
 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
@@ -49,7 +51,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['venta'] || changes['mode']) {
       this.loadForm();
-      if (this.productosLoaded) {
+      if (this.venta && this.productosLoaded) {
         this.setDetallesEnFormArray();
       }
     }
@@ -69,7 +71,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   getProductos(): void {
     this.productService.getAll().subscribe(data => {
-      this.productos = data;
+      this.productos = (data as any).content;
       this.productosLoaded = true;
       if (this.venta) {
         this.setDetallesEnFormArray();
@@ -101,28 +103,40 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   private setDetallesEnFormArray(): void {
-    if (!this.venta?.detalles) return;
+    if (!this.venta) return;
 
     this.detallesFormArray.clear();
 
-    this.venta.detalles.forEach(d => {
+    const productosArray = (this.venta as any).Productos || this.venta.detalles || [];
+
+    productosArray.forEach((p: any) => {
+      const idNumerico = p.id ? Number(p.id) : Number(p.idProducto);
+
       this.detallesFormArray.push(
-        this.createDetalleGroup(d.idProducto, d.cantidad, d.precioUnitario)
+        this.createDetalleGroup(
+          idNumerico,           // id
+          p.Cantidad || p.cantidad,       // cantidad
+          p.PrecioVenta || p.precioUnitario || p.precioVenta,  // precio
+          p.Nombre || p.nombreProducto // nombre para mostrar en view
+        )
       );
     });
-
     if (this.mode === 'view') {
-      this.form.disable();
+      this.detallesFormArray.disable();
     }
+
+    this.cdr.detectChanges();
   }
 
   private createDetalleGroup(
     idProducto: number | null = null,
     cantidad: number = 1,
-    precioUnitario: number | null = null
+    precioUnitario: number | null = null,
+    nombre: string = ''
   ): FormGroup {
     return this.fb.group({
       idProducto: [idProducto, Validators.required],
+      nombre: [nombre], // solo para mostrar en view, no se envía al backend
       cantidad: [cantidad, [Validators.required, Validators.min(1)]],
       precioUnitario: [precioUnitario],   // solo lectura en view/edit
     });
@@ -194,7 +208,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
   get title(): string {
     const titles: Record<ModalMode, string> = {
       create: 'Nueva Venta',
-      view: 'Ver Venta',
+      view: 'Venta',
       edit: 'Editar Venta',
       delete: 'Borrar Venta',
     };

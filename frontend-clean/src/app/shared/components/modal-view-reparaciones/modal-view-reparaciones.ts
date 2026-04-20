@@ -34,15 +34,24 @@ export class ModalViewReparaciones implements OnInit {
 
   // 🔹 FORMULARIO 
   form = this.fb.group({
-    estadoReparacion: ['EN_REPARACION', Validators.required],
+    estado: ['EN_REPARACION', Validators.required],
     valorManoDeObra: [0, [Validators.required, Validators.min(1)]],
     fechaConfirmada: [''],
-    detalle: this.fb.array<FormGroup>([])
+    observacion: [''],
+    detalles: this.fb.array<FormGroup>([])
   });
 
   ngOnInit(): void {
     this.getProductos();
     this.addDetalle(); // arranca con una fila
+
+    if (this.reparacion) {
+      this.form.patchValue({
+        valorManoDeObra: this.reparacion.valorManoDeObra,
+        fechaConfirmada: this.reparacion.fechaConfirmada,
+        observacion: this.reparacion.observacion  // 👈 ESTA ES LA CLAVE
+      });
+    }
 
     if (this.mode === 'view') {
       this.form.disable();
@@ -51,7 +60,7 @@ export class ModalViewReparaciones implements OnInit {
 
   // 🔹 FORM ARRAY
   get detalleFormArray(): FormArray<FormGroup> {
-    return this.form.get('detalle') as FormArray<FormGroup>;
+    return this.form.get('detalles') as FormArray<FormGroup>;
   }
 
   addDetalle(): void {
@@ -73,7 +82,8 @@ export class ModalViewReparaciones implements OnInit {
   // 🔹 PRODUCTOS 
   getProductos(): void {
     this.productoService.getAll().subscribe((data: any) => {
-      this.productos = data.productosView.content;
+      console.log('DATA PRODUCTOS 👉', data);
+      this.productos = data.content;
       this.productosLoaded = true;
     });
   }
@@ -206,11 +216,12 @@ export class ModalViewReparaciones implements OnInit {
 
   buildPayload(includeId: boolean = false): any {
     const payload: any = {
-      estadoReparacion: this.form.value.estadoReparacion,
-      valorTotal: this.totalCalculado,
       valorManoDeObra: this.form.value.valorManoDeObra,
-      fechaConfirmada: this.form.value.fechaConfirmada,
-      detalle: this.detalleFormArray.value
+      observacion: this.form.value.observacion,
+      detalles: this.detalleFormArray.value.map((d: any) => ({
+        idProducto: d.idProducto,
+        cantidad: d.cantidad,
+      }))
     };
 
     if (includeId && this.reparacion) {
@@ -231,4 +242,20 @@ export class ModalViewReparaciones implements OnInit {
       });
     }
   }
+
+  get title(): string {
+    switch (this.mode) {
+      case 'create':
+        return 'Nueva Reparacion';
+      case 'view':
+        return `Reparación #${this.reparacion?.id}`;
+      case 'edit':
+        return `Editar reparación #${this.reparacion?.id}`;
+      case 'delete':
+        return `Editar reparación #${this.reparacion?.id}`;
+      default:
+        return 'Reparacion';
+    }
+  }
+
 }

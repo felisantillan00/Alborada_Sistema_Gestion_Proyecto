@@ -1,10 +1,10 @@
 export interface CompraView {
-  Id: string;
-  PrecioTotal: number;
-  NombreProveedor: string;
-  Fecha: string;
-  Producto: {
-    Id: string;
+  id: string;
+  total: number;
+  nombreProveedor: string;
+  fecha: string;
+  Productos: {
+    id: string;
     Nombre: string;
     Cantidad: number;
     Precio: number;
@@ -12,12 +12,12 @@ export interface CompraView {
 }
 
 export interface CompraRequest {
-  Id?: string;
-  PrecioTotal: number;
-  NombreProveedor: string;
-  Fecha?: string;
-  Producto: {
-    Id?: string;
+  id?: string;
+  total: number;
+  nombreProveedor: string;
+  fecha?: string;
+  Productos: {
+    id?: string;
     Cantidad: number;
     PrecioCompra: number;
   }[];
