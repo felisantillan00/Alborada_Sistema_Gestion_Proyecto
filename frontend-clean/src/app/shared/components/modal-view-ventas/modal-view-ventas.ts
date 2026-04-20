@@ -74,6 +74,10 @@ export class ModalViewVentas implements OnChanges, OnInit {
     return this.form.get('detalles') as FormArray<FormGroup>;
   }
 
+  get detallesControls(): FormGroup[] {
+  return this.detallesFormArray.controls as FormGroup[];
+}
+
   addDetalle(): void {
     this.detallesFormArray.push(this.createDetalleGroup());
   }
@@ -154,7 +158,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     nombre: string = ''
   ): FormGroup {
     return this.fb.group({
-      idProducto: [idProducto, Validators.required],
+      idProducto: [idProducto, [Validators.required, Validators.min(1)]],
       nombre: [nombre], // solo para mostrar en view, no se envía al backend
       cantidad: [cantidad, [Validators.required, Validators.min(1)]],
       precioUnitario: [precioUnitario],   // solo lectura en view/edit

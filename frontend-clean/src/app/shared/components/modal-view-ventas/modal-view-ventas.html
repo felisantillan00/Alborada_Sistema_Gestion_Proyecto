@@ -93,13 +93,17 @@
                 }
               </div>
 
-              @for (detalle of detallesFormArray.controls; track $index) {
+              @for (detalle of detallesControls; track $index) {
               <div class="border rounded p-3 mb-3" [formGroupName]="$index">
                 <div class="row g-3 align-items-end">
                   <div class="col-md-4">
                     <label class="form-label">Producto</label>
                     <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
-                      [clearable]="false" placeholder="Seleccionando producto..."> </ng-select>
+                      [clearable]="false" placeholder="Seleccioná un producto...">
+                    </ng-select>
+                    @if (detalle.get('idProducto')?.touched && detalle.get('idProducto')?.invalid) {
+                    <div class="text-danger small mt-1">Debe seleccionar un producto</div>
+                    }
                   </div>
 
                   <div class="col-md-3">
