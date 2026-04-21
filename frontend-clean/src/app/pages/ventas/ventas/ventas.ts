@@ -50,7 +50,12 @@ export class Ventas implements OnInit {
         return params.value != null ? '$ ' + params.value : '';
       }
     },
-    { field: 'fechaVenta', headerName: 'Fecha' },
+    {
+      field: 'fechaVenta', headerName: 'Fecha', valueFormatter: (params) => {
+        if (!params.value) return '';
+        return params.value.substring(0, 10); // muestra solo YYYY-MM-DD
+      }
+    },
     { field: 'formaPago', headerName: 'Forma de Pago' },
     {
       headerName: 'Actions',
@@ -134,8 +139,7 @@ export class Ventas implements OnInit {
   }
 
   onModalSubmit(mode: ModalMode): void {
-    // Placeholder for create/edit/delete integration.
-    console.log(`Modal submit action: ${mode}`);
+    this.getVentas();
     this.closeModal();
   }
 
