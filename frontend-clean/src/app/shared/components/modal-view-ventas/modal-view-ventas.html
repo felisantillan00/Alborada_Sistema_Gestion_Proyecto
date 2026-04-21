@@ -71,7 +71,13 @@
             <!-- OBSERVACIÓN -->
             <div class="col-12">
               <label class="form-label">Observación</label>
-              <textarea class="form-control" formControlName="observacion" rows="2"></textarea>
+              <textarea class="form-control" formControlName="observacion" rows="2" maxlength="255"></textarea>
+              @if (form.get('observacion')?.touched && form.get('observacion')?.errors?.['minlength']) {
+              <div class="text-danger small mt-1">La observación debe tener al menos 10 caracteres</div>
+              }
+              @if (form.get('observacion')?.touched && form.get('observacion')?.errors?.['maxlength']) {
+              <div class="text-danger small mt-1">La observación no puede superar los 255 caracteres</div>
+              }
             </div>
 
             <!-- DETALLES -->

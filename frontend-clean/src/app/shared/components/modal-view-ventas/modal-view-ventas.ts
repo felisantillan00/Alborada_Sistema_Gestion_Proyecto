@@ -53,7 +53,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     total: [0, [Validators.required, Validators.min(1)]],
     fechaVenta: ['', [Validators.required, noFechaFutura()]],
     formaPago: ['', Validators.required],
-    observacion: [''],
+    observacion: ['', [Validators.minLength(3), Validators.maxLength(255)]],
     detalles: this.fb.array<FormGroup>([]),
   });
 
