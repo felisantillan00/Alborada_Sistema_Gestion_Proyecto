@@ -35,13 +35,17 @@
             </div>
 
             <!-- PRECIO TOTAL -->
+            <!-- PRECIO TOTAL -->
             <div class="col-md-4">
               <label class="form-label">Precio Total</label>
               <div class="input-group shadow-sm">
                 <span class="input-group-text">$</span>
-                <input class="form-control" type="number" formControlName="total" />
+                <input class="form-control" type="number" formControlName="total" placeholder="Ej: 15000" min="1" />
               </div>
-              @if (form.get('total')?.touched && form.get('total')?.invalid) {
+              @if (form.get('total')?.touched && form.get('total')?.errors?.['required']) {
+              <div class="text-danger small mt-1">El precio es obligatorio</div>
+              }
+              @if (form.get('total')?.touched && form.get('total')?.errors?.['min']) {
               <div class="text-danger small mt-1">El precio debe ser mayor a 0</div>
               }
             </div>
@@ -108,7 +112,14 @@
 
                   <div class="col-md-3">
                     <label class="form-label">Cantidad</label>
-                    <input class="form-control" type="number" formControlName="cantidad" [readonly]="mode === 'view'" />
+                    <input class="form-control" type="number" formControlName="cantidad" placeholder="Ej: 2" min="1"
+                      [readonly]="mode === 'view'" />
+                    @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.errors?.['required']) {
+                    <div class="text-danger small mt-1">La cantidad es obligatoria</div>
+                    }
+                    @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.errors?.['min']) {
+                    <div class="text-danger small mt-1">La cantidad debe ser mayor a 0</div>
+                    }
                   </div>
 
                   @if (venta !== null || mode === 'view') {
