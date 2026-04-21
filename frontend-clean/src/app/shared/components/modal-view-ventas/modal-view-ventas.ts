@@ -10,9 +10,20 @@ import {
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VentaView, VentaRequest } from '../../../core/models/venta';
 import { VentasService } from '../../../core/services/ventas/ventas-service';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+
+export function noFechaFutura(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) return null;
+    const hoy = new Date();
+    hoy.setHours(23, 59, 59, 999);
+    const fechaIngresada = new Date(control.value);
+    return fechaIngresada > hoy ? { fechaFutura: true } : null;
+  };
+}
 
 @Component({
   selector: 'app-modal-view-ventas',
@@ -35,10 +46,12 @@ export class ModalViewVentas implements OnChanges, OnInit {
   private ventasService = inject(VentasService);
   private cdr = inject(ChangeDetectorRef);
 
+  today: string = new Date().toISOString().split('T')[0];
+
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
     total: [0, [Validators.required, Validators.min(1)]],
-    fechaVenta: [''],
+    fechaVenta: ['', [Validators.required, noFechaFutura()]],
     formaPago: ['', Validators.required],
     observacion: [''],
     detalles: this.fb.array<FormGroup>([]),
@@ -80,17 +93,21 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   private loadForm(): void {
+    // fecha ISO del backend → YYYY-MM-DD para el input date
+    const fechaFormateada = this.venta?.fechaVenta
+      ? this.venta.fechaVenta.substring(0, 10)  // toma solo "YYYY-MM-DD"
+      : '';
+
     this.form.patchValue({
       nombreCliente: this.venta?.nombreCliente ?? '',
       total: this.venta?.total ?? 0,
-      fechaVenta: this.venta?.fechaVenta ?? '',
+      fechaVenta: fechaFormateada,
       formaPago: this.venta?.formaPago ?? '',
       observacion: this.venta?.observacion ?? '',
     });
 
     this.detallesFormArray.clear();
 
-    // En create, arrancamos con una fila vacía
     if (!this.venta) {
       this.addDetalle();
     }
@@ -147,6 +164,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     const payload: VentaRequest = {
       nombreCliente: v.nombreCliente!,
       total: v.total!,
+      fechaVenta: v.fechaVenta!,
       formaPago: v.formaPago!,
       observacion: v.observacion ?? '',
       detalles: (v.detalles ?? []).map((d: any) => ({
