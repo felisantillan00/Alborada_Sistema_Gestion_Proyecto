@@ -72,23 +72,20 @@ export class ModalViewCompras implements OnChanges {
   }
 
   onSubmit(): void {
+    this.productoFormArray.controls.forEach(group => group.markAllAsTouched());
+    this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) return;
 
     switch (this.mode) {
-      case 'create':
-        this.handleCreate();
+      case 'create': 
+        this.handleCreate(); 
         break;
-
-      case 'edit':
-        this.handleEdit();
+      case 'edit': 
+        this.handleEdit(); 
         break;
-
-      case 'delete':
-        this.handleDelete();
+      case 'delete': 
+        this.handleDelete(); 
         break;
     }
   }

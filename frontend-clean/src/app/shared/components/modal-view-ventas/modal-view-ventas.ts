@@ -83,8 +83,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   get detallesControls(): FormGroup[] {
-  return this.detallesFormArray.controls as FormGroup[];
-}
+    return this.detallesFormArray.controls as FormGroup[];
+  }
 
   addDetalle(): void {
     this.detallesFormArray.push(this.createDetalleGroup());
@@ -188,10 +188,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    this.detallesFormArray.controls.forEach(group => group.markAllAsTouched());
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) return;
+
     switch (this.mode) {
       case 'create': this.handleCreate(); break;
       case 'edit': this.handleEdit(); break;
