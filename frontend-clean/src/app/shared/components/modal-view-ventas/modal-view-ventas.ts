@@ -25,6 +25,14 @@ export function noFechaFutura(): ValidatorFn {
   };
 }
 
+// Validator: rechaza strings que sean solo espacios en blanco
+export function noSoloEspacios(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) return null; // deja pasar vacío (es opcional)
+    return control.value.trim().length === 0 ? { soloEspacios: true } : null;
+  };
+}
+
 @Component({
   selector: 'app-modal-view-ventas',
   standalone: true,
@@ -53,7 +61,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     total: [null as number | null, [Validators.required, Validators.min(1)]],
     fechaVenta: ['', [Validators.required, noFechaFutura()]],
     formaPago: ['', Validators.required],
-    observacion: ['', [Validators.minLength(3), Validators.maxLength(255)]],
+    observacion: ['', [Validators.minLength(3), Validators.maxLength(255), noSoloEspacios()]],
     detalles: this.fb.array<FormGroup>([]),
   });
 

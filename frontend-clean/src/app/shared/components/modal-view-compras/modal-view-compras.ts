@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { CompraView, FORMAS_PAGO, FormaPago} from '../../../core/models/compra';
+import { CompraView, FORMAS_PAGO, FormaPago } from '../../../core/models/compra';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
@@ -168,6 +168,10 @@ export class ModalViewCompras implements OnChanges {
     });
   }
 
+  get productosControls(): FormGroup[] {
+    return this.productoFormArray.controls as FormGroup[];
+  }
+
   private setProductosEnFormArray(): void {
     if (!this.compra?.Productos) return;
 
@@ -195,7 +199,7 @@ export class ModalViewCompras implements OnChanges {
 
   private loadForm(): void {
     //normalizo
-    const formaPagoNormalizada = this.compra?.formaPago?(this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago): null 
+    const formaPagoNormalizada = this.compra?.formaPago ? (this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago) : null
     this.form.patchValue({
       total: this.compra?.total ?? 0,
       nombreProveedor: this.compra?.nombreProveedor ?? '',
@@ -223,7 +227,7 @@ export class ModalViewCompras implements OnChanges {
     nombre: string = ''
   ): FormGroup {
     return this.fb.group({
-      idProducto: [id],
+      idProducto: [id, Validators.required],
       nombre: [nombre],
       cantidad: [cantidad, [Validators.required, Validators.min(1)]],
       precioCompra: [precioCompra, Validators.required],
