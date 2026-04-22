@@ -42,14 +42,16 @@ export class Compras implements OnInit {
 
   readonly columnDefs: ColDef<CompraView>[] = [
     // { field: 'Id', headerName: 'ID', maxWidth: 120 },
-{
+    {
       field: 'total',
       headerName: 'Precio Total',
       valueFormatter: (params) => {
         return params.value != null ? '$ ' + params.value : '';
       }
-    },    { field: 'nombreProveedor', headerName: 'Proveedor', minWidth: 200 },
+    }, 
+    { field: 'nombreProveedor', headerName: 'Proveedor', minWidth: 200 },
     { field: 'fecha', headerName: 'Fecha' },
+    { field: 'formaPago', headerName: 'Forma de Pago' },
     {
       headerName: 'Actions',
       colId: 'actions',
@@ -103,9 +105,9 @@ export class Compras implements OnInit {
       });
   }
 
-getRowId = (params: any) => {
-  return params.data?.id ? String(params.data.id) : String(Math.random());
-};
+  getRowId = (params: any) => {
+    return params.data?.id ? String(params.data.id) : String(Math.random());
+  };
 
   onNewCompra(): void {
     this.openModal('create', null);

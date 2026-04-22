@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { CompraView } from '../../../core/models/compra';
+import { CompraView, FORMAS_PAGO, FormaPago} from '../../../core/models/compra';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
 import Swal from 'sweetalert2';
+
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -22,6 +23,7 @@ export class ModalViewCompras implements OnChanges {
 
   productos: ProductoView[] = [];
   productosLoaded = false;
+  formasPago = FORMAS_PAGO;
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
@@ -39,7 +41,8 @@ export class ModalViewCompras implements OnChanges {
   form = this.fb.group({
     total: [0, [Validators.required, Validators.min(1)]],
     nombreProveedor: ['', Validators.required],
-    fecha: [''],
+    fecha: ['', Validators.required],
+    formaPago: [null as FormaPago | null, Validators.required],
     Productos: this.fb.array<FormGroup>([]),
   });
 
@@ -138,6 +141,7 @@ export class ModalViewCompras implements OnChanges {
       proveedor: v.nombreProveedor,
       precioTotal: v.total,
       fecha: v.fecha,
+      formaPago: v.formaPago,
       productos: (v.Productos || []).map((p: any) => ({
         id: p.idProducto,
         cantidad: p.cantidad,
@@ -193,6 +197,7 @@ export class ModalViewCompras implements OnChanges {
       total: this.compra?.total ?? 0,
       nombreProveedor: this.compra?.nombreProveedor ?? '',
       fecha: this.compra?.fecha ?? '',
+      formaPago: this.compra?.formaPago ?? null,
     });
 
     this.productoFormArray.clear();

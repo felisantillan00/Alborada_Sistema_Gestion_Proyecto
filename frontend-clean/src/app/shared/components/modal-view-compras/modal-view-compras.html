@@ -51,9 +51,25 @@
             </div>
 
             <!-- FECHA -->
-            <div class="col-md-4">
-              <label class="form-label">Fecha</label>
-              <input class="form-control" type="text" formControlName="fecha" />
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Fecha</label>
+              <input type="date" class="form-control" formControlName="fecha"
+                [class.is-invalid]="form.get('fecha')?.invalid && form.get('fecha')?.touched" />
+              <div class="invalid-feedback">La fecha es requerida.</div>
+            </div>
+
+            <!-- Forma de pago -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Forma de pago</label>
+              <ng-select formControlName="formaPago" [items]="formasPago" bindLabel="label" bindValue="value"
+                placeholder="Seleccionar forma de pago"
+                [class.is-invalid]="form.get('formaPago')?.invalid && form.get('formaPago')?.touched"
+                [readonly]="mode === 'view'">
+              </ng-select>
+              <div *ngIf="form.get('formaPago')?.invalid && form.get('formaPago')?.touched"
+                class="text-danger small mt-1">
+                La forma de pago es requerida.
+              </div>
             </div>
 
             <!-- PRODUCTOS -->
@@ -74,8 +90,7 @@
                   <div class="col-md-4">
                     <label class="form-label">Producto</label>
 
-                    <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
-                      >
+                    <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto">
                     </ng-select>
 
                   </div>
