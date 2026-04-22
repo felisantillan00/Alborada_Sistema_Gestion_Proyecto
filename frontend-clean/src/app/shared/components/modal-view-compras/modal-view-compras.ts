@@ -137,11 +137,12 @@ export class ModalViewCompras implements OnChanges {
 
   buildPayload(includeId: boolean = false): any {
     const v = this.form.value;
+    const raw = this.form.getRawValue();
     const payload: any = {
       proveedor: v.nombreProveedor,
       precioTotal: v.total,
       fecha: v.fecha,
-      formaPago: v.formaPago,
+      formaPago: raw.formaPago,
       productos: (v.Productos || []).map((p: any) => ({
         id: p.idProducto,
         cantidad: p.cantidad,
@@ -193,11 +194,13 @@ export class ModalViewCompras implements OnChanges {
   }
 
   private loadForm(): void {
+    //normalizo
+    const formaPagoNormalizada = this.compra?.formaPago?(this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago): null 
     this.form.patchValue({
       total: this.compra?.total ?? 0,
       nombreProveedor: this.compra?.nombreProveedor ?? '',
       fecha: this.compra?.fecha ?? '',
-      formaPago: this.compra?.formaPago ?? null,
+      formaPago: formaPagoNormalizada,
     });
 
     this.productoFormArray.clear();
