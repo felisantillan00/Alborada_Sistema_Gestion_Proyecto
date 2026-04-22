@@ -43,14 +43,34 @@ export class ModalViewReparaciones implements OnInit {
 
   ngOnInit(): void {
     this.getProductos();
-    this.addDetalle(); // arranca con una fila
+  }
+
+  initForm(): void {
 
     if (this.reparacion) {
+
+      this.detalleFormArray.clear();
+
+      this.reparacion.detalles.forEach(d => {
+        const group = this.createDetalleGroup();
+
+        group.patchValue({
+          idProducto: d.id,
+          cantidad: d.cantidad,
+          valorVenta: d.valorVenta
+        });
+
+        this.detalleFormArray.push(group);
+      });
+
       this.form.patchValue({
         valorManoDeObra: this.reparacion.valorManoDeObra,
         fechaConfirmada: this.reparacion.fechaConfirmada,
-        observacion: this.reparacion.observacion  // 👈 ESTA ES LA CLAVE
+        observacion: this.reparacion.observacion
       });
+
+    } else {
+      this.addDetalle();
     }
 
     if (this.mode === 'view') {
@@ -85,6 +105,8 @@ export class ModalViewReparaciones implements OnInit {
       console.log('DATA PRODUCTOS 👉', data);
       this.productos = data.content;
       this.productosLoaded = true;
+
+      this.initForm();
     });
   }
 

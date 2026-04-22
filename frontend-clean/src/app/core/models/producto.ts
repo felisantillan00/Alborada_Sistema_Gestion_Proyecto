@@ -1,3 +1,4 @@
+import { DetalleReparacion } from './detalle-reparacion';
 export interface ProductoRequest {
   id: number;
   nombre: string;
@@ -17,4 +18,5 @@ export interface ProductoView {
   nombreProveedor: string;
   nombreCategoria: string;
   nombreMarca: string;
+  detalle: DetalleReparacion;
 }
