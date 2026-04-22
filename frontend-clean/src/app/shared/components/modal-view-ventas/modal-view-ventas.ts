@@ -50,7 +50,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
-    total: [0, [Validators.required, Validators.min(1)]],
+    total: [null as number | null, [Validators.required, Validators.min(1)]],
     fechaVenta: ['', [Validators.required, noFechaFutura()]],
     formaPago: ['', Validators.required],
     observacion: ['', [Validators.minLength(3), Validators.maxLength(255)]],
@@ -106,7 +106,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
     this.form.patchValue({
       nombreCliente: this.venta?.nombreCliente ?? '',
-      total: this.venta?.total ?? 0,
+      total: this.venta?.total ?? null,
       fechaVenta: fechaFormateada,
       formaPago: this.venta?.formaPago ?? '',
       observacion: this.venta?.observacion ?? '',
@@ -153,7 +153,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   private createDetalleGroup(
     idProducto: number | null = null,
-    cantidad: number = 1,
+    cantidad: number | null = null,
     precioUnitario: number | null = null,
     nombre: string = ''
   ): FormGroup {
