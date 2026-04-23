@@ -88,13 +88,13 @@ export class ModalView implements OnInit {
     const p = this.product;
 
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      stock: [0, [Validators.required, Validators.min(0)]],
-      precioCosto: [0, [Validators.required, Validators.min(1)]],
-      precioVenta: [0, [Validators.required, Validators.min(1)]],
+      nombre:      ['', Validators.required],
+      stock:       [null, [Validators.required, Validators.min(0)]],
+      precioCosto: [null, [Validators.required, Validators.min(1)]],
+      precioVenta: [null, [Validators.required, Validators.min(1)]],
       proveedorId: [null, Validators.required],
       categoriaId: [null, Validators.required],
-      marcaId: [null, Validators.required],
+      marcaId:     [null, Validators.required],
     });
   }
 

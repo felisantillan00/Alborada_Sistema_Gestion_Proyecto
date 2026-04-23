@@ -1,8 +1,10 @@
+import { FormaPago } from "./compra";
+
 export interface VentaRequest {
   nombreCliente: string;
   total: number;
   fechaVenta: string;
-  formaPago: string;
+  formaPago: FormaPago;
   observacion?: string;
   detalles: {
     idProducto: number;

@@ -39,7 +39,7 @@ export class ModalViewCompras implements OnChanges {
   }
 
   form = this.fb.group({
-    total: [0, [Validators.required, Validators.min(1)]],
+    total: [null as number | null, [Validators.required, Validators.min(1)]],
     nombreProveedor: ['', Validators.required],
     fecha: ['', Validators.required],
     formaPago: [null as FormaPago | null, Validators.required],
@@ -75,30 +75,46 @@ export class ModalViewCompras implements OnChanges {
     this.productoFormArray.controls.forEach(group => group.markAllAsTouched());
     this.form.markAllAsTouched();
 
+    console.log('Form válido:', this.form.valid);
+    console.log('Form errors:', this.form.errors);
+    console.log('Valores:', this.form.getRawValue());
+    // ver qué control específico está fallando
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      if (control?.invalid) {
+        console.log(`Campo inválido: ${key}`, control.errors);
+      }
+    });
+
     if (this.form.invalid) return;
 
     switch (this.mode) {
-      case 'create': 
-        this.handleCreate(); 
+      case 'create':
+        this.handleCreate();
         break;
-      case 'edit': 
-        this.handleEdit(); 
+      case 'edit':
+        this.handleEdit();
         break;
-      case 'delete': 
-        this.handleDelete(); 
+      case 'delete':
+        this.handleDelete();
         break;
     }
   }
 
   handleCreate(): void {
     const payload = this.buildPayload();
+    console.log('PAYLOAD COMPRA:', JSON.stringify(payload, null, 2)); // 👈
 
     this.comprasService.create(payload).subscribe({
       next: () => {
         this.showSuccess('Compra creada correctamente');
         this.closed.emit();
       },
-      error: () => {
+      error: (err) => {
+        console.log('ERROR STATUS:', err.status);
+        console.log('ERROR BODY:', err.error);
+        console.log('ERROR COMPLETO:', JSON.stringify(err.error, null, 2)); // 👈
+
         this.showError();
       }
     });
@@ -133,17 +149,15 @@ export class ModalViewCompras implements OnChanges {
   }
 
   buildPayload(includeId: boolean = false): any {
-    const v = this.form.value;
     const raw = this.form.getRawValue();
     const payload: any = {
-      proveedor: v.nombreProveedor,
-      precioTotal: v.total,
-      fecha: v.fecha,
+      nombreProveedor: raw.nombreProveedor,  // 👈 era "proveedor"
+      precioTotal: raw.total,
+      fecha: raw.fecha,
       formaPago: raw.formaPago,
-      productos: (v.Productos || []).map((p: any) => ({
-        id: p.idProducto,
+      detalles: raw.Productos.map((p: any) => ({  // 👈 era "productos"
+        idProducto: p.idProducto,                // 👈 era "id"
         cantidad: p.cantidad,
-        precioCompra: p.precioCompra
       }))
     };
 
@@ -219,7 +233,7 @@ export class ModalViewCompras implements OnChanges {
 
   private createProductoGroup(
     id: number | string | null = null,
-    cantidad: number = 1,
+    cantidad: number | null = null,
     precioCompra: number | null = null,
     nombre: string = ''
   ): FormGroup {
@@ -227,7 +241,7 @@ export class ModalViewCompras implements OnChanges {
       idProducto: [id, Validators.required],
       nombre: [nombre],
       cantidad: [cantidad, [Validators.required, Validators.min(1)]],
-      precioCompra: [precioCompra, Validators.required],
+      precioCompra: [precioCompra],
     });
   }
 
