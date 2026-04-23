@@ -134,10 +134,12 @@ public class DataInitializer implements CommandLineRunner {
 
                 // --- 5.1 Creamos un Presupuesto de Prueba ---
                 OrdenServicio presupuesto = new OrdenServicio();
+                presupuesto.setNombreCliente("Cristiano Ronaldo");
                 presupuesto.setObservacion("Cliente consultó por cambio de cubiertas.");
                 presupuesto.setIsReparacion(false);
                 presupuesto.setEstado(EstadoOrden.Pendiente_Aprobacion);
                 presupuesto.setValorManoObra(new BigDecimal("20000.00"));
+                
 
                 DetalleOrdenServicio det1 = new DetalleOrdenServicio();
                 det1.setProducto(cubierta);
@@ -153,11 +155,12 @@ public class DataInitializer implements CommandLineRunner {
 
                 // --- 5.2 Creamos una Reparación Finalizada de Prueba ---
                 OrdenServicio reparacion = new OrdenServicio();
+                reparacion.setNombreCliente("Lionel Messi");
                 reparacion.setObservacion("Se reemplazó la transmisión vieja.");
                 reparacion.setIsReparacion(true);
                 reparacion.setEstado(EstadoOrden.Finalizado);
                 reparacion.setValorManoObra(new BigDecimal("25000.00"));
-                reparacion.setFechaConfirmacion_reparacion(LocalDateTime.now().minusDays(2)); // Confirmada hace 2 días
+                reparacion.setFechaConfirmada(LocalDateTime.now().minusDays(2)); // Confirmada hace 2 días
 
                 DetalleOrdenServicio det2 = new DetalleOrdenServicio();
                 det2.setProducto(cassette);

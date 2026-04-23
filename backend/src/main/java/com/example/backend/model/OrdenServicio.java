@@ -21,6 +21,9 @@ public class OrdenServicio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nombre_cliente", nullable = false) 
+    private String nombreCliente;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
@@ -37,8 +40,8 @@ public class OrdenServicio {
     @Column(name = "valor_mano_obra")
     private BigDecimal valorManoObra;
 
-    @Column(name = "fecha_confirmacion_reparacion")
-    private LocalDateTime fechaConfirmacion_reparacion;
+    @Column(name = "fecha_confirmada")
+    private LocalDateTime fechaConfirmada;
 
     // Flag: 0 = Presupuesto, 1 = Reparación
     @Column(name = "is_reparacion", nullable = false)

@@ -26,6 +26,7 @@ public class OrdenServicioService {
     // --> CREATE
     public OrdenServicioResponseDTO create(OrdenServicioRequestDTO request, Integer flagReparacion) {
         OrdenServicio orden = new OrdenServicio();
+        orden.setNombreCliente(request.nombreCliente());
         orden.setObservacion(request.observacion());
         BigDecimal manoObra = request.valorManoDeObra() != null ? request.valorManoDeObra() : BigDecimal.ZERO;
         orden.setValorManoObra(manoObra);
@@ -47,7 +48,7 @@ public class OrdenServicioService {
         // REGLA DE NEGOCIO: Configuración según Flag
         if (flagReparacion == 1) {
             orden.setIsReparacion(true);
-            orden.setFechaConfirmacion_reparacion(LocalDateTime.now());
+            orden.setFechaConfirmada(LocalDateTime.now());
             orden.setEstado(EstadoOrden.Aprobado_Presupuesto);
             
             // Al ser reparación directa, descontamos stock
@@ -139,6 +140,7 @@ public class OrdenServicioService {
         orden.getDetalles().clear(); 
 
         // 3. ACTUALIZAR DATOS BÁSICOS (Con validación de nulos)
+        orden.setNombreCliente(request.nombreCliente());
         orden.setObservacion(request.observacion());
         BigDecimal manoObra = request.valorManoDeObra() != null ? request.valorManoDeObra() : BigDecimal.ZERO;
         orden.setValorManoObra(manoObra);
@@ -153,8 +155,8 @@ public class OrdenServicioService {
                 
                 // Si la orden ya era un presupuesto y el producto ya existía antes de la edición,
                 // pisamos el precio nuevo con el precio histórico congelado.
-                if (stockYaDescontado && preciosHistoricos.containsKey(detDto.idProducto())) {
-                    detalle.setValorUnitario(preciosHistoricos.get(detDto.idProducto()));
+                if (stockYaDescontado && preciosHistoricos.containsKey(detDto.id())) {
+                    detalle.setValorUnitario(preciosHistoricos.get(detDto.id()));
                 }
 
                 orden.addDetalle(detalle);
@@ -188,7 +190,7 @@ public class OrdenServicioService {
     if (estadoActual == EstadoOrden.Pendiente_Aprobacion) {
         orden.setIsReparacion(true);
         orden.setEstado(EstadoOrden.Aprobado_Presupuesto);
-        orden.setFechaConfirmacion_reparacion(LocalDateTime.now());
+        orden.setFechaConfirmada(LocalDateTime.now());
         
         // Es el momento de quitar las piezas del inventario
         descuentoStock(orden);
@@ -258,11 +260,12 @@ public class OrdenServicioService {
 
         return OrdenServicioResponseDTO.builder()
                 .id(o.getId())
+                .nombreCliente(o.getNombreCliente())
                 .estado(o.getEstado().name())
                 .valorTotal(o.getValorTotal())
                 .valorManoDeObra(o.getValorManoObra())
                 .fechaCreacion(o.getFechaCreacion())
-                .fechaConfirmada_reparacion(o.getFechaConfirmacion_reparacion())
+                .fechaConfirmada(o.getFechaConfirmada())
                 .observacion(o.getObservacion())
                 .detalles(detallesArray) 
                 .build();
@@ -270,16 +273,16 @@ public class OrdenServicioService {
 
     private DetalleOrdenServicioResponseDTO mapDetalleToDTO(DetalleOrdenServicio d) {
         return DetalleOrdenServicioResponseDTO.builder()
-                .idProducto(d.getProducto().getId())
-                .nombreProducto(d.getProducto().getNombre()) 
+                .id(d.getProducto().getId())
+                .nombreProducto(d.getProducto().getNombre())    
                 .cantidad(d.getCantidad())
                 .valorVenta(d.getValorUnitario())
                 .build();
     }
 
     private DetalleOrdenServicio mapearDetalle(DetalleOrdenServicioRequestDTO dto) {
-        Producto producto = productoRepository.findById(dto.idProducto())
-                .orElseThrow(() -> new NegocioException("Producto ID " + dto.idProducto() + " no existe"));
+        Producto producto = productoRepository.findById(dto.id())
+                .orElseThrow(() -> new NegocioException("Producto ID " + dto.id() + " no existe"));
         
         DetalleOrdenServicio detalle = new DetalleOrdenServicio();
         detalle.setProducto(producto);
