@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Positive;
 
 public record DetalleOrdenServicioRequestDTO(
     @NotNull(message = "El id del producto es obligatorio")
-    Long idProducto,
+    Long id,
 
     @NotNull(message = "La cantidad es obligatoria")
     @Positive(message = "La cantidad debe ser mayor a 0")

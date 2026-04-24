@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetalleOrdenServicioResponseDTO {
-    private Long idProducto;
+    private Long id;
     private String nombreProducto;
     private BigDecimal valorVenta;
     private Integer cantidad;
