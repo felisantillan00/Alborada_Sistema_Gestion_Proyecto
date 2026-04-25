@@ -1,11 +1,7 @@
 package com.example.backend.model;
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
+import lombok.*;
 
 @Entity
 @Table(name = "detalle_orden_servicio")

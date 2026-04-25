@@ -16,7 +16,6 @@ import java.util.List;
 @Transactional
 public class ProveedorService {
     private final ProveedorRepository proveedorRepository;
-    // private final ProductoRepository productoRepository;
 
     public ProveedorDTO create(ProveedorDTO dto) {
         // 1. Validar nombre obligatorio

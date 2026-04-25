@@ -1,18 +1,13 @@
 package com.example.backend.repository;
-
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.*;
 import com.example.backend.model.Venta;
-
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Long> {
-    
     //Total del mes actual
     @Query("SELECT SUM(v.total) FROM Venta v WHERE MONTH(v.fechaVenta) = :mes AND YEAR(v.fechaVenta) = :anio")
     BigDecimal sumVentasPorMes(@Param("mes") int mes, @Param("anio") int anio);

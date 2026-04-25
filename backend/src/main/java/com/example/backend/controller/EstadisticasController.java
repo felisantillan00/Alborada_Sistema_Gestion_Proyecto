@@ -1,16 +1,10 @@
 package com.example.backend.controller;
-
-import com.example.backend.dto.response.GetEstadisticasDTO;
-import com.example.backend.dto.response.MetricaMensualDTO;
-import com.example.backend.dto.response.PieChartDTO;
 import com.example.backend.service.EstadisticasService;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import com.example.backend.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
@@ -18,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class EstadisticasController {
-
     private final EstadisticasService estadisticasService;
 
     @GetMapping

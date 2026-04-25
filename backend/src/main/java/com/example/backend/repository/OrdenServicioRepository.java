@@ -1,13 +1,11 @@
 package com.example.backend.repository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.data.jpa.repository.*;
 import com.example.backend.model.OrdenServicio;
 import org.springframework.data.domain.*;
-import java.util.List;
 import java.math.BigDecimal;
 import java.util.Optional; 
+import java.util.List;
 
 public interface OrdenServicioRepository extends JpaRepository<OrdenServicio, Long> {
     Optional<OrdenServicio> findById(Long id);
