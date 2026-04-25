@@ -7,6 +7,7 @@ import { Pagina } from '../../core/models/pagina';
 import { PresupuestoView } from '../../core/models/presupuesto';
 import { CommonModule } from '@angular/common';
 import { ModalViewPresupuesto } from '../../shared/components/modal-view-presupuestos/modal-view-presupuestos';
+import Swal from 'sweetalert2';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -93,7 +94,11 @@ export class Presupuestos implements OnInit {
       sortable: false,
       filter: false,
       maxWidth: 180,
-      cellRenderer: () => `
+      cellRenderer: (params: any) => {
+        const estado = params.data?.estado;
+        const isDisabled = (estado === 'Aprobado_Presupuesto' || estado === 'Rechazado') ? 'disabled' : '';
+
+        return `
         <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
           <button class="btn btn-sm btn-outline-primary" data-action="view">
             <i class="bi bi-eye"></i>
@@ -109,6 +114,7 @@ export class Presupuestos implements OnInit {
           </button>
         </div>
       `
+      }
     }
   ];
 
@@ -175,6 +181,10 @@ export class Presupuestos implements OnInit {
 
     if (!action || !event.data) return;
 
+    // Prevenir acciones si el botón está deshabilitado
+    const button = target?.closest('[data-action]') as HTMLButtonElement;
+    if (button?.disabled) return;
+
     switch (action) {
       case 'view':
         this.openModal('view', event.data);
@@ -191,9 +201,36 @@ export class Presupuestos implements OnInit {
     }
   }
 
-  aprobarPresupuesto(id: number): void {
-    this.presupuestosService.aprobar(id).subscribe(() => {
-      this.getPresupuestos();
+aprobarPresupuesto(id: number): void {
+    // 🔹 1. SweetAlert de Confirmación
+    Swal.fire({
+      title: '¿Aprobar presupuesto?',
+      text: "El presupuesto será marcado como aprobado y pasará a la lista de reparaciones.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#198754', 
+      cancelButtonColor: '#6c757d',  
+      confirmButtonText: 'Sí, aprobar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      
+      if (result.isConfirmed) {
+        console.log('EJECUTANDO APROBAR - ID 👉', id);
+
+        // Métodos API comentados
+        /*
+        this.presupuestosService.aprobar(id).subscribe(() => {
+          this.getPresupuestos(); 
+        });
+        */
+
+        //Simular que desaparece del grid filtrando el array localmente
+        this.presupuestos = this.presupuestos.filter(p => p.id !== id);
+        this.gridApi.setGridOption('rowData', this.presupuestos); 
+
+        // SweetAlert de Éxito
+        Swal.fire('¡Aprobado!', 'El presupuesto ha sido aprobado (SIMULADO).', 'success');
+      }
     });
   }
 
