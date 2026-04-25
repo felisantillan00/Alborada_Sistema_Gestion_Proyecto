@@ -1,7 +1,5 @@
 package com.example.backend.dto.request;
-
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 public record DetalleVentaRequestDTO(
     @NotNull(message = "El ID del producto es obligatorio")
