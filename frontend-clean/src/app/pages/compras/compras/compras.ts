@@ -43,13 +43,13 @@ export class Compras implements OnInit {
   readonly columnDefs: ColDef<CompraView>[] = [
     // { field: 'Id', headerName: 'ID', maxWidth: 120 },
     {
-      field: 'total',
+      field: 'totalCompra',
       headerName: 'Precio Total',
       valueFormatter: (params) => {
         return params.value != null ? '$ ' + params.value : '';
       }
     }, 
-    { field: 'nombreProveedor', headerName: 'Proveedor', minWidth: 200 },
+    { field: 'proveedorNombre', headerName: 'Proveedor', minWidth: 200 },
     { field: 'fecha', headerName: 'Fecha' },
     { field: 'formaPago', headerName: 'Forma de Pago' },
     {
@@ -100,6 +100,7 @@ export class Compras implements OnInit {
       )
       .subscribe((data) => {
         this.compras = data.content;
+        console.log('Compras obtenidas:', this.compras);
         this.loadingCompras = false;
         this.cdr.detectChanges();
       });

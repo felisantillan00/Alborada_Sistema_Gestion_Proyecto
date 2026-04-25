@@ -66,16 +66,25 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
-
   getProveedores(): void {
     this.proveedoresService.getAll().subscribe(data => {
       this.proveedores = Array.isArray(data)
         ? data
         : (data as any).content || [];
 
-      this.loadForm();
+      // 👇 Parcheamos SOLO el proveedor si tenemos una compra cargada (modo edición/vista)
+      if (this.compra?.proveedorNombre) {
+        const proveedor = this.proveedores.find(
+          p => p.nombre === this.compra?.proveedorNombre
+        );
+
+        if (proveedor) {
+          this.form.patchValue({ nombreProveedor: proveedor.id });
+        }
+      }
     });
   }
+
   get productoFormArray(): FormArray<FormGroup> {
     return this.form.get('Productos') as FormArray<FormGroup>;
   }
@@ -171,14 +180,20 @@ export class ModalViewCompras implements OnChanges {
 
   buildPayload(includeId: boolean = false): any {
     const raw = this.form.getRawValue();
+
+    const proveedorSeleccionado = this.proveedores.find(
+      p => p.id === raw.nombreProveedor
+    );
+
     const payload: any = {
-      nombreProveedor: raw.nombreProveedor,
-      precioTotal: raw.total,
+      proveedorNombre: proveedorSeleccionado ? proveedorSeleccionado.nombre : null,
+      totalCompra: raw.total,
       fecha: raw.fecha,
       formaPago: raw.formaPago,
       detalles: raw.Productos.map((p: any) => ({
-        idProducto: p.idProducto,
+        producto: { id: p.idProducto },
         cantidad: p.cantidad,
+        precioCompra: p.precioCompra
       }))
     };
 
@@ -205,11 +220,11 @@ export class ModalViewCompras implements OnChanges {
   }
 
   private setProductosEnFormArray(): void {
-    if (!this.compra?.Productos) return;
+    if (!this.compra?.productos) return;
 
     this.productoFormArray.clear();
 
-    this.compra.Productos.forEach((producto) => {
+    this.compra.productos.forEach((producto) => {
       const idNumerico = producto.id ? Number(producto.id) : null;
 
       this.productoFormArray.push(
@@ -217,7 +232,7 @@ export class ModalViewCompras implements OnChanges {
           idNumerico,
           producto.Cantidad,
           producto.Precio,
-          producto.Nombre
+          producto.nombre
         )
       );
     });
@@ -234,11 +249,11 @@ export class ModalViewCompras implements OnChanges {
     const formaPagoNormalizada = this.compra?.formaPago ? (this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago) : null
 
     const proveedor = this.proveedores.find(
-      p => p.nombre === this.compra?.nombreProveedor
+      p => p.nombre === this.compra?.proveedorNombre
     );
 
     this.form.patchValue({
-      total: this.compra?.total ?? 0,
+      total: this.compra?.totalCompra ?? null,
       nombreProveedor: proveedor?.id ?? null, // ✅ ahora sí coincide con bindValue="id"
       fecha: this.compra?.fecha ?? '',
       formaPago: formaPagoNormalizada,

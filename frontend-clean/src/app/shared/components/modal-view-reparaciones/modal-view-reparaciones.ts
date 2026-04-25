@@ -244,7 +244,7 @@ export class ModalViewReparaciones implements OnInit {
       valorManoDeObra: formValue.valorManoDeObra,
       observacion: formValue.observacion,
       detalles: this.detalleFormArray.value.map((d: any) => ({
-        idProducto: d.idProducto,
+        id: d.idProducto,
         cantidad: d.cantidad,
         valorVenta: d.valorVenta
       }))

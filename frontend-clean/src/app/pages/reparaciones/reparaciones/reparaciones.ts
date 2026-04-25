@@ -94,7 +94,7 @@ export class Reparaciones implements OnInit {
       colId: 'actions',
       sortable: false,
       filter: false,
-      maxWidth: 150,
+      maxWidth: 180,
       cellRenderer: () => `
         <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
       <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" title="Ver">
@@ -106,6 +106,9 @@ export class Reparaciones implements OnInit {
       <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
         <i class="bi bi-trash"></i>
       </button>
+      <button class="btn btn-sm btn-outline-success" data-action="aprobado">
+            <i class="bi bi-check"></i>
+          </button>
     </div>
       `,
     },

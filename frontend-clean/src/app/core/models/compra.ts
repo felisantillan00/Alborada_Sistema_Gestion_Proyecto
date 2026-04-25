@@ -1,12 +1,12 @@
 export interface CompraView {
   id: string;
-  total: number;
-  nombreProveedor: string;
+  totalCompra: number;
+  proveedorNombre: string;
   fecha: string;
   formaPago: FormaPago;
-  Productos: {
+  productos: {
     id: string;
-    Nombre: string;
+    nombre: string;
     Cantidad: number;
     Precio: number;
   }[];
