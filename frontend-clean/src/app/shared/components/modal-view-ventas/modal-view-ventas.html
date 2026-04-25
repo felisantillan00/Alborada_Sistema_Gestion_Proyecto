@@ -21,10 +21,16 @@
           <strong>{{ venta?.nombreCliente ?? '' }}</strong>?
         </p>
 
+        <div class="mt-4 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
+          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+        </div>
+
         } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
           <div class="row g-3">
+
             <!-- CLIENTE -->
             <div class="col-md-6">
               <label class="form-label">Cliente</label>
@@ -34,7 +40,6 @@
               }
             </div>
 
-            <!-- PRECIO TOTAL -->
             <!-- PRECIO TOTAL -->
             <div class="col-md-4">
               <label class="form-label">Precio Total</label>
@@ -53,8 +58,7 @@
             <!-- FECHA -->
             <div class="col-md-4">
               <label class="form-label">Fecha</label>
-              <input class="form-control shadow-sm" type="date" formControlName="fechaVenta" [max]="today"
-                [attr.disabled]="mode === 'view' ? true : null" />
+              <input class="form-control shadow-sm" type="date" formControlName="fechaVenta" [max]="today" />
               @if (form.get('fechaVenta')?.touched && form.get('fechaVenta')?.errors?.['required']) {
               <div class="text-danger small mt-1">La fecha es obligatoria</div>
               }
@@ -63,10 +67,13 @@
               }
             </div>
 
+            
             <!-- FORMA DE PAGO -->
             <div class="col-md-6">
               <label class="form-label">Forma de Pago</label>
-              <input class="form-control shadow-sm" type="text" formControlName="formaPago" />
+              <ng-select formControlName="formaPago" [items]="formasPago" bindLabel="label" bindValue="value"
+                placeholder="Seleccionar forma de pago" [readonly]="mode === 'view'">
+              </ng-select>
               @if (form.get('formaPago')?.touched && form.get('formaPago')?.invalid) {
               <div class="text-danger small">La forma de pago es obligatoria</div>
               }
@@ -77,10 +84,13 @@
               <label class="form-label">Observación</label>
               <textarea class="form-control" formControlName="observacion" rows="2" maxlength="255"></textarea>
               @if (form.get('observacion')?.touched && form.get('observacion')?.errors?.['minlength']) {
-              <div class="text-danger small mt-1">La observación debe tener al menos 10 caracteres</div>
+              <div class="text-danger small mt-1">La observación debe tener al menos 3 caracteres</div>
               }
               @if (form.get('observacion')?.touched && form.get('observacion')?.errors?.['maxlength']) {
               <div class="text-danger small mt-1">La observación no puede superar los 255 caracteres</div>
+              }
+              @if (form.get('observacion')?.touched && form.get('observacion')?.errors?.['soloEspacios']) {
+              <div class="text-danger small mt-1">La observación no puede contener solo espacios</div>
               }
             </div>
 
@@ -88,8 +98,6 @@
             <div class="col-12" formArrayName="detalles">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="form-label mb-0">Productos</label>
-
-                <!-- BOTÓN AGREGAR: SOLO se muestra en create y edit -->
                 @if (mode !== 'view') {
                 <button type="button" class="btn btn-sm btn-outline-primary" (click)="addDetalle()">
                   Agregar
@@ -100,6 +108,7 @@
               @for (detalle of detallesControls; track $index) {
               <div class="border rounded p-3 mb-3" [formGroupName]="$index">
                 <div class="row g-3 align-items-end">
+
                   <div class="col-md-4">
                     <label class="form-label">Producto</label>
                     <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
@@ -141,34 +150,26 @@
                     </button>
                   </div>
                   }
+
                 </div>
               </div>
               }
             </div>
+
           </div>
+
+          <!-- BOTONES -->
+          <div class="mt-4 d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-success">
+              {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+          </div>
+
         </form>
         }
 
-        <!--BOTONES-->
-        <div class="mt-4 d-flex justify-content-end gap-2">
-
-          @if (mode === 'delete') {
-          <button type="button" class="btn btn-danger" (click)="onSubmit()">
-            Borrar
-          </button>
-          } @else if (mode === 'create' || mode === 'edit') {
-          <button type="submit" class="btn btn-success">
-            {{ mode === 'create' ? 'Crear' : 'Guardar' }}
-          </button>
-          }
-
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">
-            Cancelar
-          </button>
-        </div>
       </div>
     </div>
   </div>
 </div>
-
-<div class="modal-backdrop fade show"></div>

@@ -12,6 +12,7 @@ import { VentaView, VentaRequest } from '../../../core/models/venta';
 import { VentasService } from '../../../core/services/ventas/ventas-service';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { FormaPago, FORMAS_PAGO } from '../../../core/models/compra';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -25,6 +26,14 @@ export function noFechaFutura(): ValidatorFn {
   };
 }
 
+// Validator: rechaza strings que sean solo espacios en blanco
+export function noSoloEspacios(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) return null; // deja pasar vacío (es opcional)
+    return control.value.trim().length === 0 ? { soloEspacios: true } : null;
+  };
+}
+
 @Component({
   selector: 'app-modal-view-ventas',
   standalone: true,
@@ -32,6 +41,7 @@ export function noFechaFutura(): ValidatorFn {
   templateUrl: './modal-view-ventas.html',
 })
 export class ModalViewVentas implements OnChanges, OnInit {
+  formasPago = FORMAS_PAGO;
   @Input() mode: ModalMode = 'create';
   @Input() venta: VentaView | null = null;
 
@@ -52,8 +62,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
     nombreCliente: ['', Validators.required],
     total: [null as number | null, [Validators.required, Validators.min(1)]],
     fechaVenta: ['', [Validators.required, noFechaFutura()]],
-    formaPago: ['', Validators.required],
-    observacion: ['', [Validators.minLength(3), Validators.maxLength(255)]],
+    formaPago: [null as FormaPago | null, Validators.required],
+    observacion: ['', [Validators.minLength(3), Validators.maxLength(255), noSoloEspacios()]],
     detalles: this.fb.array<FormGroup>([]),
   });
 
@@ -75,8 +85,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   get detallesControls(): FormGroup[] {
-  return this.detallesFormArray.controls as FormGroup[];
-}
+    return this.detallesFormArray.controls as FormGroup[];
+  }
 
   addDetalle(): void {
     this.detallesFormArray.push(this.createDetalleGroup());
@@ -102,11 +112,15 @@ export class ModalViewVentas implements OnChanges, OnInit {
       ? this.venta.fechaVenta.substring(0, 10)  // toma solo "YYYY-MM-DD"
       : '';
 
+    const formaPagoNormalizada = this.venta?.formaPago
+    ? (this.venta.formaPago.trim().toUpperCase() as FormaPago)
+    : null; // 👈
+
     this.form.patchValue({
       nombreCliente: this.venta?.nombreCliente ?? '',
       total: this.venta?.total ?? null,
       fechaVenta: fechaFormateada,
-      formaPago: this.venta?.formaPago ?? '',
+      formaPago: formaPagoNormalizada,
       observacion: this.venta?.observacion ?? '',
     });
 
@@ -131,14 +145,16 @@ export class ModalViewVentas implements OnChanges, OnInit {
     const productosArray = (this.venta as any).Productos || this.venta.detalles || [];
 
     productosArray.forEach((p: any) => {
-      const idNumerico = Number(p.idProducto);
+      const idProducto = p.idProducto ? Number(p.idProducto) : null;
+      const productoEncontrado = this.productos.find(prod => prod.id === idProducto);
+      const nombreProducto = productoEncontrado ? productoEncontrado.nombre : p.nombre || '';
 
       this.detallesFormArray.push(
         this.createDetalleGroup(
-          idNumerico,           // id
-          p.Cantidad || p.cantidad,       // cantidad
-          p.PrecioVenta || p.precioUnitario || p.precioVenta,  // precio
-          p.Nombre || p.nombreProducto // nombre para mostrar en view
+          idProducto,           // id
+          p.Cantidad ?? p.cantidad,
+          p.PrecioVenta ?? p.precioUnitario ?? p.precioVenta,
+          nombreProducto // nombre para mostrar en view
         )
       );
     });
@@ -165,10 +181,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   private buildPayload(includeId = false): VentaRequest {
     const v = this.form.getRawValue();
+    const fechaISO = v.fechaVenta ? `${v.fechaVenta}T00:00:00` : '';
     const payload: VentaRequest = {
       nombreCliente: v.nombreCliente!,
       total: v.total!,
-      fechaVenta: v.fechaVenta!,
+      fechaVenta: fechaISO,
       formaPago: v.formaPago!,
       observacion: v.observacion ?? '',
       detalles: (v.detalles ?? []).map((d: any) => ({
@@ -180,10 +197,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    this.detallesFormArray.controls.forEach(group => group.markAllAsTouched());
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) return;
+
     switch (this.mode) {
       case 'create': this.handleCreate(); break;
       case 'edit': this.handleEdit(); break;
@@ -193,13 +211,17 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   handleCreate(): void {
     const payload = this.buildPayload();
+     console.log('PAYLOAD ENVIADO:', JSON.stringify(payload, null, 2));
     this.ventasService.create(payload).subscribe({
       next: () => {
         this.showSuccess('Venta creada correctamente');
         this.submitted.emit('create');
         this.closed.emit();
       },
-      error: () => this.showError(),
+      error: (err) => {
+        console.log('Error al crear venta:', err.error);
+        this.showError();
+      }
     });
   }
 

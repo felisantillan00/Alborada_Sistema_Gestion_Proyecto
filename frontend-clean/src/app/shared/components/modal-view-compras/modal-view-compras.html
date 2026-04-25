@@ -21,18 +21,24 @@
           <strong>{{ compra?.id ?? '' }}</strong>?
         </p>
 
+        <div class="mt-4 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
+          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+        </div>
+
         } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
           <div class="row g-3">
+
             <!-- PROVEEDOR -->
             <div class="col-md-4">
               <label class="form-label">Proveedor</label>
-              <input class="form-control" type="text" formControlName="nombreProveedor" />
+              <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
+                formControlName="nombreProveedor">
+              </ng-select> 
               @if (form.get('nombreProveedor')?.touched && form.get('nombreProveedor')?.invalid) {
-              <div class="text-danger small">
-                El proveedor es obligatorio
-              </div>
+              <div class="text-danger small">*El campo proveedor es obligatorio</div>
               }
             </div>
 
@@ -43,40 +49,36 @@
                 <span class="input-group-text">$</span>
                 <input class="form-control" type="number" formControlName="total" />
               </div>
-              @if (form.get('PrecioTotal')?.touched && form.get('PrecioTotal')?.invalid) {
-              <div class="text-danger small mt-1">
-                El precio total debe ser mayor a 0
-              </div>
+              @if (form.get('total')?.touched && form.get('total')?.invalid) {
+              <div class="text-danger small mt-1">El precio total debe ser mayor a 0</div>
               }
             </div>
 
             <!-- FECHA -->
-            <div class="mb-3">
+            <div class="col-md-4">
               <label class="form-label fw-semibold">Fecha</label>
               <input type="date" class="form-control" formControlName="fecha"
                 [class.is-invalid]="form.get('fecha')?.invalid && form.get('fecha')?.touched" />
               <div class="invalid-feedback">La fecha es requerida.</div>
             </div>
 
-            <!-- Forma de pago -->
-            <div class="mb-3">
+            <!-- FORMA DE PAGO -->
+            <div class="col-md-4">
               <label class="form-label fw-semibold">Forma de pago</label>
               <ng-select formControlName="formaPago" [items]="formasPago" bindLabel="label" bindValue="value"
                 placeholder="Seleccionar forma de pago"
                 [class.is-invalid]="form.get('formaPago')?.invalid && form.get('formaPago')?.touched"
                 [readonly]="mode === 'view'">
               </ng-select>
-              <div *ngIf="form.get('formaPago')?.invalid && form.get('formaPago')?.touched"
-                class="text-danger small mt-1">
-                La forma de pago es requerida.
-              </div>
+              @if (form.get('formaPago')?.touched && form.get('formaPago')?.invalid) {
+              <div class="text-danger small mt-1">La forma de pago es requerida.</div>
+              }
             </div>
 
             <!-- PRODUCTOS -->
             <div class="col-12" formArrayName="Productos">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label mb-0">Producto</label>
-
+                <label class="form-label mb-0">Productos</label>
                 @if (mode !== 'view') {
                 <button type="button" class="btn btn-sm btn-outline-primary" (click)="addProducto()">
                   Agregar
@@ -84,20 +86,29 @@
                 }
               </div>
 
-              @for (producto of productoFormArray.controls; track $index) {
+              @for (producto of productosControls; track $index) {
               <div class="border rounded p-3 mb-3" [formGroupName]="$index">
                 <div class="row g-3 align-items-end">
+
                   <div class="col-md-4">
                     <label class="form-label">Producto</label>
-
-                    <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto">
+                    <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
+                      placeholder="Seleccioná un producto...">
                     </ng-select>
-
+                    @if (producto.get('idProducto')?.touched && producto.get('idProducto')?.invalid) {
+                    <div class="text-danger small mt-1">Debe seleccionar un producto</div>
+                    }
                   </div>
 
                   <div class="col-md-3">
                     <label class="form-label">Cantidad</label>
                     <input class="form-control" type="number" formControlName="cantidad" />
+                    @if (producto.get('cantidad')?.touched && producto.get('cantidad')?.errors?.['required']) {
+                    <div class="text-danger small mt-1">La cantidad es obligatoria</div>
+                    }
+                    @if (producto.get('cantidad')?.touched && producto.get('cantidad')?.errors?.['min']) {
+                    <div class="text-danger small mt-1">La cantidad debe ser mayor a 0</div>
+                    }
                   </div>
 
                   @if (compra !== null || mode === 'view') {
@@ -119,40 +130,26 @@
                     </button>
                   </div>
                   }
+
                 </div>
               </div>
               }
             </div>
+
           </div>
+
+          <!-- BOTONES -->
+          <div class="mt-4 d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-success">
+              {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+          </div>
+
         </form>
         }
 
-        <!-- BOTONES -->
-        <div class="mt-4 d-flex justify-content-end gap-2">
-
-          @if (mode === 'delete') {
-          <button type="button" class="btn btn-danger" (click)="onSubmit()">
-            Borrar
-          </button>
-          } @else if (mode === 'create' || mode === 'edit') {
-          <button type="submit" class="btn btn-success">
-            {{ mode === 'create' ? 'Crear' : 'Guardar' }}
-          </button>
-          }
-
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">
-            Cancelar
-          </button>
-
-        </div>
-
-
       </div>
-
-
-
     </div>
   </div>
 </div>
-
-<div class="modal-backdrop fade show"></div>
