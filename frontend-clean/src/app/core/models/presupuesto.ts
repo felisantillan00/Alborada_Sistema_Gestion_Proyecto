@@ -3,12 +3,12 @@ export interface PresupuestoRequest {
     estado: string;
     valorManoDeObra: number;
     fechaCreacion: string;
-    fechaConfirmada: string;
+    fechaConfirmada: string | '';
     observacion: string;
     detalles: {
         idProducto: number;
         cantidad: number;
-        precioUnitario: number;
+        valorVenta: number;
     }[];
 }
 
@@ -19,12 +19,12 @@ export interface PresupuestoView {
     valorTotal: number;
     valorManoDeObra: number;
     fechaCreacion: string;
-    fechaConfirmada: string;
+    fechaConfirmada: string | '';
     observacion: string;
     detalles: {
-        id: number;
+        idProducto: number;
         nombreProducto: string;
-        precioUnitario: number;
+        valorVenta: number;
         cantidad: number;
     }[];
 }

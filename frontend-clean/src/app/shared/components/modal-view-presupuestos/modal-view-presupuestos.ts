@@ -11,6 +11,7 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { color } from 'chart.js/helpers';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -38,12 +39,12 @@ export class ModalViewPresupuesto {
 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
-    estado: ['Aprodo_Presupuesto', Validators.required],
+    estado: ['Pendiente_Aprobacion', Validators.required],
     valorManoDeObra: [0, [Validators.required, Validators.min(0)]],
     fechaCreacion: ['', Validators.required],
     fechaConfirmada: [''],
     observacion: ['', Validators.required],
-    total: [{ value: 0, disabled: true }], // 👈 AGREGAR
+    total: [{ value: 0, disabled: true }],
     detalles: this.fb.array<FormGroup>([]),
   });
 
@@ -97,13 +98,13 @@ export class ModalViewPresupuesto {
     const productosArray = (this.presupuesto as any).Productos || this.presupuesto.detalles || [];
 
     productosArray.forEach((p: any) => {
-      const idNumerico = Number(p.idProducto);
+      const idProducto = Number(p.id);
 
       this.detallesFormArray.push(
         this.createDetalleGroup(
-          idNumerico,           // id
+          idProducto,           // id
           p.Cantidad || p.cantidad,       // cantidad
-          p.PrecioUnitario || p.precioUnitario || p.precioVenta,  // precio
+          p.ValorVenta || p.valorVenta || p.precioVenta,  // precio
           p.Nombre || p.nombreProducto // nombre para mostrar en view
         )
       );
@@ -136,7 +137,7 @@ export class ModalViewPresupuesto {
 
     if (producto) {
       detalle.patchValue({
-        precioUnitario: producto.precioVenta
+        valorVenta: producto.precioVenta
       });
 
     }
@@ -152,26 +153,48 @@ export class ModalViewPresupuesto {
 
 
   onSubmit(): void {
+    console.log('CLICK SUBMIT');
+    console.log('FORM INVALID?', this.form.invalid);
+    console.log('FORM VALUE', this.form.value);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+
     switch (this.mode) {
-      case 'create': this.handleCreate(); break;
-      case 'edit': this.handleEdit(); break;
-      case 'delete': this.handleDelete(); break;
+      case 'create':
+        this.handleCreate();
+        break;
+      case 'edit':
+        this.handleEdit();
+        break;
+      case 'delete':
+        this.handleDelete();
+        break;
     }
   }
 
   handleCreate(): void {
     const payload = this.buildPayload();
+    console.log('PAYLOAD >>>', payload);
+
     this.presupuestoService.create(payload).subscribe({
       next: () => {
         this.showSuccess('Presupuesto creado correctamente');
         this.submitted.emit('create');
         this.closed.emit();
       },
-      error: () => this.showError(),
+      error: (err) => {
+        console.error('ERROR BACK >>>', err);
+        console.error('ERRORS >>>', err.error?.errors);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error backend',
+          text: JSON.stringify(err.error?.errors)
+        });
+      },
     });
   }
 
@@ -201,22 +224,22 @@ export class ModalViewPresupuesto {
 
 
   private createDetalleGroup(
-    idProducto: number | null = null,
+    id: number | null = null,
     cantidad: number | null = null,
-    precioUnitario: number | null = null,
+    valorVenta: number | null = null,
     nombre: string = ''
   ): FormGroup {
     return this.fb.group({
-      idProducto: [idProducto, [Validators.required, Validators.min(1)]],
+      idProducto: [id, [Validators.required, Validators.min(1)]],
       nombre: [nombre], // solo para mostrar en view, no se envía al backend
       cantidad: [cantidad, [Validators.required, Validators.min(1)]],
-      precioUnitario: [precioUnitario],   // solo lectura en view/edit
+      valorVenta: [valorVenta, [Validators.required, Validators.min(1)]],   // solo lectura en view/edit
     });
   }
 
-   get totalCalculado(): number {
+  get totalCalculado(): number {
     const productosTotal = this.detallesFormArray.value.reduce(
-      (acc: number, d: any) => acc + (d.precioUnitario || 0) * (d.cantidad || 0),
+      (acc: number, d: any) => acc + (d.valorVenta || 0) * (d.cantidad || 0),
       0
     );
 
@@ -228,19 +251,28 @@ export class ModalViewPresupuesto {
 
   private buildPayload(includeId = false): PresupuestoRequest {
     const v = this.form.getRawValue();
+
+    //porque el back maneja la hora tambien
+    let fechaCreacionEnvio = v.fechaCreacion!;
+    if (fechaCreacionEnvio.length === 10) {
+      fechaCreacionEnvio += 'T00:00:00';
+    }
+
     const payload: PresupuestoRequest = {
       nombreCliente: v.nombreCliente!,
       estado: v.estado!,
-      fechaCreacion: v.fechaCreacion!,
-      fechaConfirmada: v.fechaConfirmada!,
+      fechaCreacion: fechaCreacionEnvio,
+      fechaConfirmada: v.fechaConfirmada || '',
       valorManoDeObra: v.valorManoDeObra!,
       observacion: v.observacion ?? '',
+
       detalles: (v.detalles ?? []).map((d: any) => ({
-        idProducto: d.idProducto,
-        cantidad: d.cantidad,
-        precioUnitario: d.precioUnitario,
+        idProducto: Number(d.idProducto),
+        cantidad: Number(d.cantidad),
+        valorVenta: Number(d.valorVenta),
       })),
     };
+
     return payload;
   }
 

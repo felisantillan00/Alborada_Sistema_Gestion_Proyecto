@@ -17,14 +17,14 @@
                 <p class="mb-0 fs-5 text-center py-4">
                     ¿Seguro que deseas eliminar el presupuesto de
                     <strong class="text-danger">{{ presupuesto?.id ?? '' }}</strong>?
-                </p> 
+                </p>
                 }
 
                 @else {
-                <form [formGroup]="form">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" id="form">
 
                     <div class="row g-4 mb-4">
-                        
+
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Cliente</label>
                             <input type="text" class="form-control shadow-sm" formControlName="nombreCliente" />
@@ -62,16 +62,26 @@
                                     <ng-select [items]="productos" bindLabel="nombre" bindValue="id"
                                         formControlName="idProducto" (change)="onProductoChange(i)">
                                     </ng-select>
+                                    <div class="text-danger small mt-1"
+                                        *ngIf="d.get('idProducto')?.touched && d.get('idProducto')?.invalid">
+                                        Seleccioná un producto
+                                    </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <label>Cantidad</label>
                                     <input type="number" class="form-control" formControlName="cantidad" />
+                                    <div *ngIf="d.get('cantidad')?.touched && d.get('cantidad')?.invalid">
+                                        Cantidad inválida
+                                    </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <label>Valor Unit.</label>
-                                    <input type="number" class="form-control" formControlName="precioUnitario" />
+                                    <input type="number" class="form-control" formControlName="valorVenta" />
+                                    <div *ngIf="d.get('valorVenta')?.touched && d.get('valorVenta')?.invalid">
+                                        Precio inválido
+                                    </div>
                                 </div>
 
                                 <div class="col-md-2">
@@ -113,7 +123,8 @@
                 </form>
                 }
 
-            </div> <div class="modal-footer bg-light px-4 py-3">
+            </div>
+            <div class="modal-footer bg-light px-4 py-3">
 
                 @if (mode === 'delete') {
                 <button type="button" class="btn btn-danger px-4" (click)="onSubmit()">
