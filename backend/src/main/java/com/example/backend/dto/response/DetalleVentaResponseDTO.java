@@ -1,5 +1,4 @@
 package com.example.backend.dto.response;
-
 import java.math.BigDecimal;
 
 public record DetalleVentaResponseDTO(

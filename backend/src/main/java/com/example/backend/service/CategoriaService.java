@@ -1,5 +1,6 @@
 package com.example.backend.service;
 import com.example.backend.repository.CategoriaRepository;
+import com.example.backend.exception.NegocioException;
 import org.springframework.stereotype.Service;
 import com.example.backend.dto.CategoriaDTO;
 import com.example.backend.model.Categoria;
@@ -20,7 +21,7 @@ public class CategoriaService {
         }
         String nombreLimpio = dto.getNombre().trim();
         if (categoriaRepository.existsByNombreIgnoreCase(nombreLimpio)) {
-            throw new RuntimeException("Ya existe una Categoria con el nombre: " + nombreLimpio);
+            throw new NegocioException("Ya existe una Categoria con el nombre: " + nombreLimpio);
         }
         String nombreBonito = capitalizarTexto(nombreLimpio);
         Categoria Categoria = new Categoria();
@@ -40,7 +41,7 @@ public class CategoriaService {
     // 3. Metodo Buscar
     public CategoriaDTO findById(Long id) {
         Categoria Categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada con ID: " + id));
+                .orElseThrow(() -> new NegocioException("Categoria no encontrada con ID: " + id));
         return mapToDTO(Categoria);
     }
 
@@ -48,7 +49,7 @@ public class CategoriaService {
     public CategoriaDTO update(Long id, CategoriaDTO dto) {
         // 1. Buscar la Categoria
         Categoria CategoriaExistente = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+                .orElseThrow(() -> new NegocioException("Categoria no encontrada"));
         // 2. Validar que venga nombre
         if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new IllegalArgumentException("El nombre es obligatorio");
@@ -58,7 +59,7 @@ public class CategoriaService {
         // 4. Validacion:
         if (!CategoriaExistente.getNombre().equalsIgnoreCase(nombreLimpio) && 
             categoriaRepository.existsByNombreIgnoreCase(nombreLimpio)) {
-            throw new RuntimeException("Ya existe otra Categoria con ese nombre");
+            throw new NegocioException("Ya existe otra Categoria con ese nombre");
         }
         // 5. Embellecer
         String nombreBonito = capitalizarTexto(nombreLimpio);
@@ -70,7 +71,7 @@ public class CategoriaService {
     // 5. Metodo Eliminar
     public void delete(Long id) {
         if (!categoriaRepository.existsById(id)) {
-            throw new RuntimeException("No se puede eliminar, ID no encontrado");
+            throw new NegocioException("No se puede eliminar, ID no encontrado");
         }
         categoriaRepository.deleteById(id);
     }
