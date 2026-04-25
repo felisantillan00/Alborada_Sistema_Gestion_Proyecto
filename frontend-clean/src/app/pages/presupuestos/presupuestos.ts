@@ -44,6 +44,7 @@ export class Presupuestos implements OnInit {
 
   readonly columnDefs: ColDef<PresupuestoView>[] = [
     { field: 'nombreCliente', headerName: 'Cliente' },
+
     {
       field: 'valorTotal',
       headerName: 'Precio Total',
@@ -52,6 +53,7 @@ export class Presupuestos implements OnInit {
       }
     },
     { field: 'valorManoDeObra', headerName: 'Mano de Obra' },
+    { field: 'observacion', headerName: 'Descripción' },
     { field: 'fechaCreacion', headerName: 'Fecha' },
     {
       field: 'estado',
@@ -83,6 +85,8 @@ export class Presupuestos implements OnInit {
         return `<span class="badge bg-${color} ${claseExtra}">${texto}</span>`;
       }
     },
+    { field: 'fechaConfirmada', headerName: 'Fecha Entrega' },
+
     {
       headerName: 'Actions',
       colId: 'actions',
@@ -117,27 +121,27 @@ export class Presupuestos implements OnInit {
   getPresupuestos(): void {
     this.loadingPresupuestos = true;
     this.presupuestosService.getPage()
-          .pipe(
-            catchError((error) => {
-              console.error('Error al obtener presupuestos:', error);
-              this.loadingPresupuestos = false;
-    
-              return of({
-                content: [],
-                totalElements: 0,
-                totalPages: 0,
-                number: 0
-              } as Pagina<PresupuestoView>);
-            })
-          )
-          .subscribe((data) => {
-            this.presupuestos = [...data.content];
-            this.totalElements = data.totalElements;
-            this.totalPages = data.totalPages;
-            this.number = data.number;
-    
-            this.loadingPresupuestos = false;
-          });
+      .pipe(
+        catchError((error) => {
+          console.error('Error al obtener presupuestos:', error);
+          this.loadingPresupuestos = false;
+
+          return of({
+            content: [],
+            totalElements: 0,
+            totalPages: 0,
+            number: 0
+          } as Pagina<PresupuestoView>);
+        })
+      )
+      .subscribe((data) => {
+        this.presupuestos = [...data.content];
+        this.totalElements = data.totalElements;
+        this.totalPages = data.totalPages;
+        this.number = data.number;
+
+        this.loadingPresupuestos = false;
+      });
 
   }
 
@@ -161,53 +165,53 @@ export class Presupuestos implements OnInit {
   }
 
   onRowClicked(event: RowClickedEvent<PresupuestoView>): void {
-  const target = event.event?.target as HTMLElement | null;
-  const action = target?.closest('[data-action]')?.getAttribute('data-action');
+    const target = event.event?.target as HTMLElement | null;
+    const action = target?.closest('[data-action]')?.getAttribute('data-action');
 
-  if (!action || !event.data) return;
+    if (!action || !event.data) return;
 
-  switch (action) {
-    case 'view':
-      this.openModal('view', event.data);
-      break;
-    case 'edit':
-      this.openModal('edit', event.data);
-      break;
-    case 'delete':
-      this.openModal('delete', event.data);
-      break;
-    case 'aprobado':
-      this.aprobarPresupuesto(event.data.id);
-      break;
+    switch (action) {
+      case 'view':
+        this.openModal('view', event.data);
+        break;
+      case 'edit':
+        this.openModal('edit', event.data);
+        break;
+      case 'delete':
+        this.openModal('delete', event.data);
+        break;
+      case 'aprobado':
+        this.aprobarPresupuesto(event.data.id);
+        break;
+    }
   }
-}
 
-aprobarPresupuesto(id: number): void {
-  this.presupuestosService.aprobar(id).subscribe(() => {
+  aprobarPresupuesto(id: number): void {
+    this.presupuestosService.aprobar(id).subscribe(() => {
+      this.getPresupuestos();
+    });
+  }
+
+  onNewPresupuesto(): void {
+    this.openModal('create', null);
+  }
+
+  private openModal(mode: ModalMode, presupuesto: PresupuestoView | null): void {
+    this.modalMode = mode;
+    this.selectedPresupuesto = presupuesto;
+    this.modalOpen = true;
+  }
+
+  closeModal(): void {
+    this.modalOpen = false;
+    this.selectedPresupuesto = null;
+    this.modalMode = 'create';
+  }
+
+  onModalSubmit(mode: ModalMode): void {
+    this.closeModal();
     this.getPresupuestos();
-  });
-}
-
-onNewPresupuesto(): void {
-  this.openModal('create', null);
-}
-
-private openModal(mode: ModalMode, presupuesto: PresupuestoView | null): void {
-  this.modalMode = mode;
-  this.selectedPresupuesto = presupuesto;
-  this.modalOpen = true;
-}
-
-closeModal(): void {
-  this.modalOpen = false;
-  this.selectedPresupuesto = null;
-  this.modalMode = 'create';
-}
-
-onModalSubmit(mode: ModalMode): void {
-  this.closeModal();
-  this.getPresupuestos();
-}
+  }
 
 
 }

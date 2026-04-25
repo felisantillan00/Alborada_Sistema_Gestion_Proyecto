@@ -4,7 +4,7 @@ export interface PresupuestoRequest {
     //valorTotal: number;
     valorManoDeObra: number;
     fechaCreacion: string;
-    fechaConfirmada_reparacion: string;
+    fechaConfirmada: string;
     observacion: string;
     detalles: {
         idProducto: number;
@@ -20,7 +20,7 @@ export interface PresupuestoView {
     valorTotal: number;
     valorManoDeObra: number;
     fechaCreacion: string;
-    fechaConfirmada_reparacion: string;
+    fechaConfirmada: string;
     observacion: string;
     detalles: {
         id: number;
