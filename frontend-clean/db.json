@@ -360,6 +360,54 @@
     "totalPages": 1,
     "number": 0
   },
+  "presupuestos": {
+    "content": [
+      {
+        "id": 1,
+        "nombreCliente": "Carlos Ramirez",
+        "estado": "Aprobado_Presupuesto",
+        "valorTotal": 15000,
+        "valorManoDeObra": 5000,
+        "fechaCreacion": "15-03-2026",
+        "fechaConfirmada_reparacion": "20-03-2026",
+        "observacion": "Presupuesto aprobado, reparación en proceso",
+        "detalles": [
+          {
+            "id": 1,
+            "nombre": "Notebook Lenovo",
+            "valorVenta": 10000,
+            "cantidad": 1
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "nombreCliente": "Ana Torres",
+        "estado": "Finalizado",
+        "valorTotal": 22000,
+        "valorManoDeObra": 7000,
+        "fechaConfirmada": "25-03-2026",
+        "observacion": "Cambio de batería y limpieza general",
+        "detalles": [
+          {
+            "id": 2,
+            "nombre": "Mouse Logitech",
+            "valorVenta": 12000,
+            "cantidad": 1
+          },
+          {
+            "id": 3,
+            "nombre": "Teclado Redragon",
+            "valorVenta": 3000,
+            "cantidad": 1
+          }
+        ]
+      }
+    ],
+    "totalElements": 1,
+    "totalPages": 1,
+    "number": 0
+  },
   "balance": {
     "content": [
       {

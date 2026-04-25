@@ -1,23 +1,27 @@
-export interface ReparacionRequest {
+export interface PresupuestoRequest {
     nombreCliente: string;
     estado: string;
+    //valorTotal: number;
     valorManoDeObra: number;
-    fechaConfirmada?: string;
-    observacion?: string;
+    fechaCreacion: string;
+    fechaConfirmada: string;
+    observacion: string;
     detalles: {
         idProducto: number;
         cantidad: number;
         valorVenta: number;
     }[];
 }
-export interface ReparacionView {
+
+export interface PresupuestoView {
     id: number;
     nombreCliente: string;
     estado: string;
     valorTotal: number;
     valorManoDeObra: number;
-    fechaConfirmada?: string;
-    observacion?: string;
+    fechaCreacion: string;
+    fechaConfirmada: string;
+    observacion: string;
     detalles: {
         id: number;
         nombreProducto: string;

@@ -1,0 +1,64 @@
+<section class="container-fluid py-3 px-2 px-md-3 mt-2">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+
+    <h2 class="h3 mb-0 fw-bold text-dark">Presupuestos</h2>
+
+    <div class="d-flex align-items-center gap-2 ms-auto">
+
+      <!-- BUSCADOR -->
+      <div class="search-wrapper shadow-sm" [class.expanded]="isSearchExpanded">
+        <input #searchInput type="text"
+          class="form-control search-input"
+          placeholder="Buscar presupuesto..."
+          [value]="searchText"
+          (input)="onSearchChange()">
+
+        <button class="btn search-icon-btn shadow-none" type="button" (click)="toggleSearch()">
+          <i class="bi" [ngClass]="(isSearchExpanded && searchText) ? 'bi-x-lg' : 'bi-search'"></i>
+        </button>
+      </div>
+
+      <!-- BOTÓN CREAR -->
+      <button
+        class="btn btn-success rounded-pill shadow-sm px-3 py-2 d-flex align-items-center gap-2 text-nowrap"
+        type="button"
+        (click)="onNewPresupuesto()">
+
+        <i class="bi bi-plus-lg"></i>
+        <span class="d-none d-sm-inline fw-medium">Nuevo Presupuesto</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px">
+    <div class="card-body p-0 p-md-3">
+
+      <ag-grid-angular
+        style="width: 100%; height: 60vh"
+        class="ag-theme-alpine"
+        [rowData]="presupuestos"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="10"
+        (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)">
+      </ag-grid-angular>
+
+    </div>
+  </div>
+
+</section>
+
+@if (modalOpen) {
+  <app-modal-presupuestos
+    [mode]="modalMode"
+    [presupuesto]="selectedPresupuesto"
+    (closed)="closeModal()"
+    (submitted)="onModalSubmit($event)">
+  </app-modal-presupuestos>
+}
