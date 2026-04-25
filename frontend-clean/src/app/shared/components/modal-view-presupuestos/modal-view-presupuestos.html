@@ -1,1 +1,135 @@
-<p>model-presupuestos works!</p>
+<div class="modal-backdrop fade show"></div>
+
+<div class="modal d-block">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+
+            <div class="modal-header bg-light border-bottom px-4 py-3">
+                <h5 class="modal-title fw-bold text-dark">
+                    {{ title }}
+                </h5>
+                <button type="button" class="btn-close" (click)="closed.emit()"></button>
+            </div>
+
+            <div class="modal-body p-4">
+
+                @if (mode === 'delete') {
+                <p class="mb-0 fs-5 text-center py-4">
+                    ¿Seguro que deseas eliminar el presupuesto de
+                    <strong class="text-danger">{{ presupuesto?.id ?? '' }}</strong>?
+                </p> 
+                }
+
+                @else {
+                <form [formGroup]="form">
+
+                    <div class="row g-4 mb-4">
+                        
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Cliente</label>
+                            <input type="text" class="form-control shadow-sm" formControlName="nombreCliente" />
+                            <div class="text-danger small mt-1"
+                                *ngIf="form.get('nombreCliente')?.touched && form.get('nombreCliente')?.invalid">
+                                Campo obligatorio
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Mano de obra</label>
+                            <input type="number" class="form-control shadow-sm" formControlName="valorManoDeObra" />
+                            <div class="text-danger small mt-1"
+                                *ngIf="form.get('valorManoDeObra')?.touched && form.get('valorManoDeObra')?.invalid">
+                                Ingresá un valor válido
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Observación</label>
+                            <textarea class="form-control shadow-sm" rows="2" formControlName="observacion"></textarea>
+                        </div>
+                    </div>
+
+                    <hr class="text-muted my-4">
+
+                    <div formArrayName="detalles">
+                        <div *ngFor="let d of detallesFormArray.controls; let i = index" [formGroupName]="i"
+                            class="bg-white border rounded p-3 mb-3 shadow-sm">
+
+                            <div class="row g-3 align-items-end">
+
+                                <div class="col-md-4">
+                                    <label>Producto</label>
+                                    <ng-select [items]="productos" bindLabel="nombre" bindValue="id"
+                                        formControlName="idProducto" (change)="onProductoChange(i)">
+                                    </ng-select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label>Cantidad</label>
+                                    <input type="number" class="form-control" formControlName="cantidad" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label>Valor Unit.</label>
+                                    <input type="number" class="form-control" formControlName="precioUnitario" />
+                                </div>
+
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger w-100"
+                                        (click)="removeDetalle(i)">
+                                        <i class="bi bi-trash"></i> Quitar
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-5 mt-3">
+                        <button type="button" class="btn btn-outline-primary shadow-sm" (click)="addDetalle()">
+                            + Agregar Producto
+                        </button>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Fecha de Creación</label>
+                            <input type="date" class="form-control shadow-sm" formControlName="fechaCreacion" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Fecha de Entrega</label>
+                            <input type="date" class="form-control shadow-sm" formControlName="fechaConfirmada" />
+                        </div>
+                    </div>
+
+                    <div class="bg-light rounded p-4 mt-4 border-start border-4 border-success shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-uppercase fw-bold text-muted tracking-wide">Total Presupuestado</span>
+                            <h2 class="fw-bold text-success mb-0">$ {{ totalCalculado }}</h2>
+                        </div>
+                    </div>
+
+                </form>
+                }
+
+            </div> <div class="modal-footer bg-light px-4 py-3">
+
+                @if (mode === 'delete') {
+                <button type="button" class="btn btn-danger px-4" (click)="onSubmit()">
+                    Borrar
+                </button>
+                } @else if (mode === 'create' || mode === 'edit') {
+                <button type="submit" class="btn btn-success px-4" form="form">
+                    {{ mode === 'create' ? 'Crear' : 'Guardar Cambios' }}
+                </button>
+                }
+
+                <button type="button" class="btn btn-secondary px-4" (click)="closed.emit()">
+                    Cancelar
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
