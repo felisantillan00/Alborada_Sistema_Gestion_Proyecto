@@ -47,6 +47,13 @@ export const routes: Routes = [
             },
 
             {
+                path: 'presupuestos',
+                loadComponent: () =>
+                    import('./pages/presupuestos/presupuestos')
+                        .then(m => m.Presupuestos)
+            },
+
+            {
                 path: '',
                 redirectTo: 'inventario',
                 pathMatch: 'full'

@@ -30,6 +30,7 @@ export class Sidebar implements OnInit {
     { name: 'Ventas', icon: 'bi-cart2', route: '/ventas' },
     { name: 'Compras', icon: 'bi-bag', route: '/compras' },
     { name: 'Reparaciones', icon: 'bi-tools', route: '/reparaciones' },
+    { name: 'Presupuestos', icon: 'bi bi-tools', route: '/presupuestos' },
     { name: 'Balance', icon: 'bi-graph-up', route: '/balance' }
   ];
 
