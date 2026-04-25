@@ -53,7 +53,7 @@ export class Presupuestos implements OnInit {
       }
     },
     { field: 'valorManoDeObra', headerName: 'Mano de Obra' },
-    { field: 'observacion', headerName: 'Descripción' },
+    // { field: 'observacion', headerName: 'Descripción' },
     { field: 'fechaCreacion', headerName: 'Fecha' },
     {
       field: 'estado',
@@ -85,7 +85,7 @@ export class Presupuestos implements OnInit {
         return `<span class="badge bg-${color} ${claseExtra}">${texto}</span>`;
       }
     },
-    { field: 'fechaConfirmada', headerName: 'Fecha Entrega' },
+    // { field: 'fechaConfirmada', headerName: 'Fecha Entrega' },
 
     {
       headerName: 'Actions',
@@ -168,7 +168,7 @@ export class Presupuestos implements OnInit {
   }
 
   getRowId = (params: any) => params.data.id.toString();
-  
+
   onRowClicked(event: RowClickedEvent<PresupuestoView>): void {
     const target = event.event?.target as HTMLElement | null;
     const action = target?.closest('[data-action]')?.getAttribute('data-action');

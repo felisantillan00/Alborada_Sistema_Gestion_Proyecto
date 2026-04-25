@@ -1,7 +1,6 @@
 export interface PresupuestoRequest {
     nombreCliente: string;
     estado: string;
-    //valorTotal: number;
     valorManoDeObra: number;
     fechaCreacion: string;
     fechaConfirmada: string;
@@ -9,7 +8,7 @@ export interface PresupuestoRequest {
     detalles: {
         idProducto: number;
         cantidad: number;
-        valorVenta: number;
+        precioUnitario: number;
     }[];
 }
 
@@ -25,7 +24,7 @@ export interface PresupuestoView {
     detalles: {
         id: number;
         nombreProducto: string;
-        valorVenta: number;
+        precioUnitario: number;
         cantidad: number;
     }[];
 }
