@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PresupuestosService } from '../../core/services/presupuestos/presupuesto-service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
@@ -112,7 +112,10 @@ export class Presupuestos implements OnInit {
     }
   ];
 
-  constructor(private presupuestosService: PresupuestosService) { }
+  constructor(
+    private presupuestosService: PresupuestosService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.getPresupuestos();
@@ -139,7 +142,7 @@ export class Presupuestos implements OnInit {
         this.totalElements = data.totalElements;
         this.totalPages = data.totalPages;
         this.number = data.number;
-
+        this.cdr.detectChanges();
         this.loadingPresupuestos = false;
       });
 
@@ -164,6 +167,8 @@ export class Presupuestos implements OnInit {
     this.gridApi.setGridOption('quickFilterText', this.searchText);
   }
 
+  getRowId = (params: any) => params.data.id.toString();
+  
   onRowClicked(event: RowClickedEvent<PresupuestoView>): void {
     const target = event.event?.target as HTMLElement | null;
     const action = target?.closest('[data-action]')?.getAttribute('data-action');
