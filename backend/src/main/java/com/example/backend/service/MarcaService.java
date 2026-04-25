@@ -1,5 +1,6 @@
 package com.example.backend.service;
 import com.example.backend.repository.MarcaRepository;
+import com.example.backend.exception.NegocioException;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 import com.example.backend.dto.MarcaDTO;
@@ -20,7 +21,7 @@ public class MarcaService {
         }
         String nombreLimpio = dto.getNombre().trim();
         if (marcaRepository.existsByNombreIgnoreCase(nombreLimpio)) {
-            throw new RuntimeException("Ya existe una marca con el nombre: " + nombreLimpio);
+            throw new NegocioException("Ya existe una marca con el nombre: " + nombreLimpio);
         }
         String nombreBonito = capitalizarTexto(nombreLimpio);
         Marca marca = new Marca();
@@ -40,7 +41,7 @@ public class MarcaService {
     // 3. Metodo Buscar
     public MarcaDTO findById(Long id) {
         Marca marca = marcaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marca no encontrada con ID: " + id));
+                .orElseThrow(() -> new NegocioException("Marca no encontrada con ID: " + id));
         return mapToDTO(marca);
     }
 
@@ -48,7 +49,7 @@ public class MarcaService {
     public MarcaDTO update(Long id, MarcaDTO dto) {
         // 1. Buscar la marca
         Marca marcaExistente = marcaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+                .orElseThrow(() -> new NegocioException("Marca no encontrada"));
         // 2. Validar que venga nombre
         if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new IllegalArgumentException("El nombre es obligatorio");
@@ -58,7 +59,7 @@ public class MarcaService {
         // 4. Validacion:
         if (!marcaExistente.getNombre().equalsIgnoreCase(nombreLimpio) && 
             marcaRepository.existsByNombreIgnoreCase(nombreLimpio)) {
-            throw new RuntimeException("Ya existe otra marca con ese nombre");
+            throw new NegocioException("Ya existe otra marca con ese nombre");
         }
         // 5. Embellecer
         String nombreBonito = capitalizarTexto(nombreLimpio);
@@ -70,7 +71,7 @@ public class MarcaService {
     // 5. Metodo Eliminar
     public void delete(Long id) {
         if (!marcaRepository.existsById(id)) {
-            throw new RuntimeException("No se puede eliminar, ID no encontrado");
+            throw new NegocioException("No se puede eliminar, ID no encontrado");
         }
         marcaRepository.deleteById(id);
     }

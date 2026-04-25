@@ -19,7 +19,6 @@ import java.util.*;
 @RequiredArgsConstructor 
 public class VentaService {
     private final VentaRepository ventaRepository;
-    private final ProductoService productoService; 
     private final ProductoRepository productoRepository;
 
     public Page<VentaResponseDTO> findAll(Pageable pageable) {
