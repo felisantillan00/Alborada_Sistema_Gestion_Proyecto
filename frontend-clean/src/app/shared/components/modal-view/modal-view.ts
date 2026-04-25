@@ -88,13 +88,13 @@ export class ModalView implements OnInit {
     const p = this.product;
 
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      stock: [0, [Validators.required, Validators.min(0)]],
-      precioCosto: [0, [Validators.required, Validators.min(0)]],
-      precioVenta: [0, [Validators.required, Validators.min(0)]],
+      nombre:      ['', Validators.required],
+      stock:       [null, [Validators.required, Validators.min(0)]],
+      precioCosto: [null, [Validators.required, Validators.min(1)]],
+      precioVenta: [null, [Validators.required, Validators.min(1)]],
       proveedorId: [null, Validators.required],
       categoriaId: [null, Validators.required],
-      marcaId: [null, Validators.required],
+      marcaId:     [null, Validators.required],
     });
   }
 
@@ -187,18 +187,33 @@ export class ModalView implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.mode !== 'delete') {
+      this.form.markAllAsTouched();
+      // AGREGA ESTOS CONSOLE.LOG PARA DEBUGGEAR
+      console.log('¿Formulario válido?', this.form.valid);
+      console.log('Valores del formulario:', this.form.value);
+
+      if (this.form.invalid) {
+        console.warn('El formulario no se envía porque es inválido. Revisa si falta algún campo obligatorio (Categoría, Marca, Proveedor).');
+        return; 
+      }
+    }
+
     switch (this.mode) {
-      case 'create': this.handleCreate(); break;
-      case 'edit': this.handleEdit(); break;
-      case 'delete': this.handleDelete(); break;
+      case 'create': 
+        this.handleCreate(); 
+        break;
+      case 'edit': 
+        this.handleEdit(); 
+        break;
+      case 'delete': 
+        this.handleDelete(); 
+        break;
     }
   }
 
   private handleCreate(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    
     const payload = this.buildPayload();
     this.productoService.create(payload).pipe(
       catchError(err => {
@@ -219,10 +234,7 @@ export class ModalView implements OnInit {
   }
 
   private handleEdit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    
     const payload = this.buildPayload(true);
     //console.log('EDIT payload:', payload);  
     //console.log('form values:', this.form.getRawValue());
@@ -249,9 +261,9 @@ export class ModalView implements OnInit {
       catchError(err => {
         console.error('Error al eliminar producto', err);
         Swal.fire({
-          icon: 'error', 
-          title: 'Error', 
-          text: 'No se pudo eliminar el producto', 
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el producto',
           confirmButtonText: 'Aceptar'
         });
         return EMPTY;

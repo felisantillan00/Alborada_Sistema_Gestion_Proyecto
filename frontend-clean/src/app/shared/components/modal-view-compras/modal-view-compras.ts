@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { CompraView, FORMAS_PAGO, FormaPago} from '../../../core/models/compra';
+import { CompraView, FORMAS_PAGO, FormaPago } from '../../../core/models/compra';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
 import Swal from 'sweetalert2';
+import { ProveedoresService } from '../../../core/services/proveedores/proveedores-service';
+import { Proveedor } from '../../../core/models/proveedor';
 
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
@@ -22,6 +24,7 @@ export class ModalViewCompras implements OnChanges {
   @Input() compra: CompraView | null = null;
 
   productos: ProductoView[] = [];
+  proveedores: Proveedor[] = [];
   productosLoaded = false;
   formasPago = FORMAS_PAGO;
 
@@ -33,15 +36,23 @@ export class ModalViewCompras implements OnChanges {
   private comprasService = inject(ComprasService);
   private cdr = inject(ChangeDetectorRef);
 
+  constructor(
+    private proveedoresService: ProveedoresService,
+    private productoService: ProductoService
+  ) { }
 
   ngOnInit(): void {
     this.getProductos();
+    this.getProveedores();
+
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   form = this.fb.group({
-    total: [0, [Validators.required, Validators.min(1)]],
-    nombreProveedor: ['', Validators.required],
-    fecha: ['', Validators.required],
+    total: [null as number | null, [Validators.required, Validators.min(1)]],
+    nombreProveedor: [null as number | null, Validators.required], fecha: ['', Validators.required],
     formaPago: [null as FormaPago | null, Validators.required],
     Productos: this.fb.array<FormGroup>([]),
   });
@@ -55,6 +66,16 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
+
+  getProveedores(): void {
+    this.proveedoresService.getAll().subscribe(data => {
+      this.proveedores = Array.isArray(data)
+        ? data
+        : (data as any).content || [];
+
+      this.loadForm();
+    });
+  }
   get productoFormArray(): FormArray<FormGroup> {
     return this.form.get('Productos') as FormArray<FormGroup>;
   }
@@ -72,21 +93,29 @@ export class ModalViewCompras implements OnChanges {
   }
 
   onSubmit(): void {
+    this.productoFormArray.controls.forEach(group => group.markAllAsTouched());
+    this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    console.log('Form válido:', this.form.valid);
+    console.log('Form errors:', this.form.errors);
+    console.log('Valores:', this.form.getRawValue());
+    // ver qué control específico está fallando
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      if (control?.invalid) {
+        console.log(`Campo inválido: ${key}`, control.errors);
+      }
+    });
+
+    if (this.form.invalid) return;
 
     switch (this.mode) {
       case 'create':
         this.handleCreate();
         break;
-
       case 'edit':
         this.handleEdit();
         break;
-
       case 'delete':
         this.handleDelete();
         break;
@@ -95,13 +124,18 @@ export class ModalViewCompras implements OnChanges {
 
   handleCreate(): void {
     const payload = this.buildPayload();
+    console.log('PAYLOAD COMPRA:', JSON.stringify(payload, null, 2)); // 👈
 
     this.comprasService.create(payload).subscribe({
       next: () => {
         this.showSuccess('Compra creada correctamente');
         this.closed.emit();
       },
-      error: () => {
+      error: (err) => {
+        console.log('ERROR STATUS:', err.status);
+        console.log('ERROR BODY:', err.error);
+        console.log('ERROR COMPLETO:', JSON.stringify(err.error, null, 2)); // 👈
+
         this.showError();
       }
     });
@@ -136,16 +170,15 @@ export class ModalViewCompras implements OnChanges {
   }
 
   buildPayload(includeId: boolean = false): any {
-    const v = this.form.value;
+    const raw = this.form.getRawValue();
     const payload: any = {
-      proveedor: v.nombreProveedor,
-      precioTotal: v.total,
-      fecha: v.fecha,
-      formaPago: v.formaPago,
-      productos: (v.Productos || []).map((p: any) => ({
-        id: p.idProducto,
+      nombreProveedor: raw.nombreProveedor,
+      precioTotal: raw.total,
+      fecha: raw.fecha,
+      formaPago: raw.formaPago,
+      detalles: raw.Productos.map((p: any) => ({
+        idProducto: p.idProducto,
         cantidad: p.cantidad,
-        precioCompra: p.precioCompra
       }))
     };
 
@@ -165,6 +198,10 @@ export class ModalViewCompras implements OnChanges {
         this.setProductosEnFormArray();
       }
     });
+  }
+
+  get productosControls(): FormGroup[] {
+    return this.productoFormArray.controls as FormGroup[];
   }
 
   private setProductosEnFormArray(): void {
@@ -193,11 +230,18 @@ export class ModalViewCompras implements OnChanges {
   }
 
   private loadForm(): void {
+    //normalizo
+    const formaPagoNormalizada = this.compra?.formaPago ? (this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago) : null
+
+    const proveedor = this.proveedores.find(
+      p => p.nombre === this.compra?.nombreProveedor
+    );
+
     this.form.patchValue({
       total: this.compra?.total ?? 0,
-      nombreProveedor: this.compra?.nombreProveedor ?? '',
+      nombreProveedor: proveedor?.id ?? null, // ✅ ahora sí coincide con bindValue="id"
       fecha: this.compra?.fecha ?? '',
-      formaPago: this.compra?.formaPago ?? null,
+      formaPago: formaPagoNormalizada,
     });
 
     this.productoFormArray.clear();
@@ -215,15 +259,15 @@ export class ModalViewCompras implements OnChanges {
 
   private createProductoGroup(
     id: number | string | null = null,
-    cantidad: number = 1,
+    cantidad: number | null = null,
     precioCompra: number | null = null,
     nombre: string = ''
   ): FormGroup {
     return this.fb.group({
-      idProducto: [id],
+      idProducto: [id, Validators.required],
       nombre: [nombre],
       cantidad: [cantidad, [Validators.required, Validators.min(1)]],
-      precioCompra: [precioCompra, Validators.required],
+      precioCompra: [precioCompra],
     });
   }
 

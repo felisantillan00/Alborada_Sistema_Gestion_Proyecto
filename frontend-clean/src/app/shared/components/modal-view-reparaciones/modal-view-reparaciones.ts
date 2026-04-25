@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output, OnInit, inject } from '@angular
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-
 import { ReparacionView, ReparacionRequest } from '../../../core/models/reparacion';
 import { ReparacionesService } from '../../../core/services/reparaciones/reparaciones-service';
 import { ProductoView } from '../../../core/models/producto';
@@ -34,6 +33,7 @@ export class ModalViewReparaciones implements OnInit {
 
   // 🔹 FORMULARIO 
   form = this.fb.group({
+    nombreCliente: ['', Validators.required],
     estado: ['EN_REPARACION', Validators.required],
     valorManoDeObra: [0, [Validators.required, Validators.min(1)]],
     fechaConfirmada: [''],
@@ -64,6 +64,7 @@ export class ModalViewReparaciones implements OnInit {
       });
 
       this.form.patchValue({
+        nombreCliente: this.reparacion.nombreCliente,
         valorManoDeObra: this.reparacion.valorManoDeObra,
         fechaConfirmada: this.reparacion.fechaConfirmada,
         observacion: this.reparacion.observacion
@@ -237,12 +238,15 @@ export class ModalViewReparaciones implements OnInit {
   }
 
   buildPayload(includeId: boolean = false): any {
+    const formValue = this.form.value;
     const payload: any = {
-      valorManoDeObra: this.form.value.valorManoDeObra,
-      observacion: this.form.value.observacion,
+      nombreCliente: formValue.nombreCliente,
+      valorManoDeObra: formValue.valorManoDeObra,
+      observacion: formValue.observacion,
       detalles: this.detalleFormArray.value.map((d: any) => ({
         idProducto: d.idProducto,
         cantidad: d.cantidad,
+        valorVenta: d.valorVenta
       }))
     };
 
