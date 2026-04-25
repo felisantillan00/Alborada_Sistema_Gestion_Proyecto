@@ -1,0 +1,33 @@
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 44px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  border-radius: 30px;
+}
+
+.search-wrapper.expanded {
+  width: 260px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding-left: 40px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.search-wrapper.expanded .search-input {
+  opacity: 1;
+}
+
+.search-icon-btn {
+  position: absolute;
+  left: 6px;
+  border: none;
+  background: transparent;
+}

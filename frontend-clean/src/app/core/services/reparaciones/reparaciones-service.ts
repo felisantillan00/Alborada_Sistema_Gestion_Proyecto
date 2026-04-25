@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class ReparacionesService extends Api<ReparacionView, ReparacionRequest> {
 
   constructor(http: HttpClient) {
-    super(http, 'reparaciones');
+    super(http, 'reparacion');
   }
 
   terminar(id: number): Observable<ReparacionView> {

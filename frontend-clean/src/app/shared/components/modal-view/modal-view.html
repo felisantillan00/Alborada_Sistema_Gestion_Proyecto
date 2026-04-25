@@ -2,119 +2,115 @@
 
 <div class="modal d-block">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content border-0 shadow-lg">
 
-      <!-- HEADER -->
-      <div class="modal-header bg-light border-bottom">
+      <div class="modal-header bg-light border-bottom px-4 py-3">
         <h5 class="modal-title fw-bold text-dark">{{ title }}</h5>
         <button type="button" class="btn-close" (click)="closed.emit()"></button>
       </div>
 
-      <!-- BODY -->
-      <div class="modal-body">
+      <div class="modal-body p-4">
 
         @if (mode === 'delete') {
-        <p class="mb-0 fs-5">
+        <p class="mb-0 fs-5 text-center py-4">
           ¿Seguro que deseas eliminar el producto
-          <strong>{{ product?.nombre ?? 'este producto' }}</strong>?
+          <strong class="text-danger">{{ product?.nombre ?? 'este producto' }}</strong>?
         </p>
 
         <div class="mt-4 d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+          <button type="button" class="btn btn-danger px-4 shadow-sm" (click)="onSubmit()">Borrar</button>
+          <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">Cancelar</button>
         </div>
 
         } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-          <div class="row g-3">
+          <div class="row g-4">
 
-            <!-- NOMBRE -->
             <div class="col-md-8">
-              <label class="form-label">Nombre</label>
-              <input class="form-control" type="text" formControlName="nombre" />
+              <label class="form-label fw-semibold">Producto</label>
+              <input class="form-control shadow-sm" type="text" formControlName="nombre" placeholder="Nombre del producto"/>
               @if (Control['nombre'].hasError('required') && Control['nombre'].touched) {
-              <div class="text-danger small">*El campo nombre es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo nombre es obligatorio</div>
               }
             </div>
 
-            <!-- STOCK -->
             <div class="col-md-4">
-              <label class="form-label">Stock</label>
-              <input class="form-control shadow-sm" type="number" formControlName="stock" />
+              <label class="form-label fw-semibold">Stock</label>
+              <input class="form-control shadow-sm" type="number" formControlName="stock" placeholder="Ej: 10" />
               @if (Control['stock'].hasError('required') && Control['stock'].touched) {
-              <div class="text-danger small">*El campo Stock es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo Stock es obligatorio</div>
               }
               @if (Control['stock'].hasError('min') && Control['stock'].touched) {
-              <div class="text-danger small">*El stock no puede ser negativo</div>
+              <div class="text-danger small mt-1">* El stock no puede ser negativo</div>
               }
             </div>
 
-            <!-- PRECIO COSTO -->
             <div class="col-md-6">
-              <label class="form-label">Precio compra</label>
-              <input class="form-control shadow-sm" type="number" formControlName="precioCosto" />
+              <label class="form-label fw-semibold">Precio compra</label>
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-light">$</span>
+                <input class="form-control" type="number" formControlName="precioCosto" placeholder="0" />
+              </div>
               @if (Control['precioCosto'].hasError('required') && Control['precioCosto'].touched) {
-              <div class="text-danger small">*El campo precio de COSTO es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo precio de COSTO es obligatorio</div>
               }
               @if (Control['precioCosto'].hasError('min') && Control['precioCosto'].touched) {
-              <div class="text-danger small">*El precio de costo debe ser mayor a 0</div>
+              <div class="text-danger small mt-1">* El precio de costo debe ser mayor a 0</div>
               }
             </div>
 
-            <!-- PRECIO VENTA -->
             <div class="col-md-6">
-              <label class="form-label">Precio venta</label>
-              <input class="form-control shadow-sm" type="number" formControlName="precioVenta" />
+              <label class="form-label fw-semibold">Precio venta</label>
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-light">$</span>
+                <input class="form-control" type="number" formControlName="precioVenta" placeholder="0" />
+              </div>
               @if (Control['precioVenta'].hasError('required') && Control['precioVenta'].touched) {
-              <div class="text-danger small">*El campo precio de VENTA es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo precio de VENTA es obligatorio</div>
               }
               @if (Control['precioVenta'].hasError('min') && Control['precioVenta'].touched) {
-              <div class="text-danger small">*El precio de venta debe ser mayor a 0</div>
+              <div class="text-danger small mt-1">* El precio de venta debe ser mayor a 0</div>
               }
             </div>
 
-            <!-- PROVEEDOR -->
             <div class="col-md-4">
-              <label class="form-label">Proveedor</label>
+              <label class="form-label fw-semibold">Proveedor</label>
               <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
-                formControlName="proveedorId">
+                formControlName="proveedorId" class="shadow-sm">
               </ng-select>
               @if (Control['proveedorId'].hasError('required') && Control['proveedorId'].touched) {
-              <div class="text-danger small">*El campo proveedor es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo proveedor es obligatorio</div>
               }
             </div>
 
-            <!-- CATEGORÍA -->
             <div class="col-md-4">
-              <label class="form-label">Categoría</label>
+              <label class="form-label fw-semibold">Categoría</label>
               <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
-                formControlName="categoriaId">
+                formControlName="categoriaId" class="shadow-sm">
               </ng-select>
               @if (Control['categoriaId'].hasError('required') && Control['categoriaId'].touched) {
-              <div class="text-danger small">*El campo categoría es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo categoría es obligatorio</div>
               }
             </div>
 
-            <!-- MARCA -->
             <div class="col-md-4">
-              <label class="form-label">Marca</label>
+              <label class="form-label fw-semibold">Marca</label>
               <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
-                formControlName="marcaId">
+                formControlName="marcaId" class="shadow-sm">
               </ng-select>
               @if (Control['marcaId'].hasError('required') && Control['marcaId'].touched) {
-              <div class="text-danger small">*El campo marca es obligatorio</div>
+              <div class="text-danger small mt-1">* El campo marca es obligatorio</div>
               }
             </div>
 
           </div>
 
-          <!-- BOTONES dentro del form -->
-          <div class="mt-4 d-flex justify-content-end gap-2">
-            <button type="submit" class="btn btn-success">
+          <div class="mt-5 d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="submit" class="btn btn-success px-4 shadow-sm">
               {{ mode === 'create' ? 'Crear' : 'Guardar' }}
             </button>
-            <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+            <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">Cancelar</button>
           </div>
 
         </form>
@@ -124,5 +120,3 @@
     </div>
   </div>
 </div>
-
-<div class="modal-backdrop fade show"></div>

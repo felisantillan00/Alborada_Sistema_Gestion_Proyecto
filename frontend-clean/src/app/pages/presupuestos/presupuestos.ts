@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { PresupuestosService } from '../../core/services/presupuestos/presupuesto-service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-community';
@@ -10,6 +10,8 @@ import { ModalViewPresupuesto } from '../../shared/components/modal-view-presupu
 import Swal from 'sweetalert2';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+
+type PresupuestoEstado = 'all' | 'Pendiente_Aprobacion' | 'Aprobado_Presupuesto' | 'Rechazado';
 
 @Component({
   selector: 'app-presupuestos',
@@ -23,6 +25,9 @@ export class Presupuestos implements OnInit {
   searchText: string = '';
   isSearchExpanded = false;
   @ViewChild('searchInput') searchInput!: ElementRef;
+
+  //Variable para trackear el filtro actual
+  currentFilter: PresupuestoEstado = 'all';
 
   presupuestos: PresupuestoView[] = [];
   loadingPresupuestos = false;
@@ -135,6 +140,13 @@ export class Presupuestos implements OnInit {
           console.error('Error al obtener presupuestos:', error);
           this.loadingPresupuestos = false;
 
+          // Manejo de errores visual para el Grid
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudieron cargar los presupuestos. Verifique la conexión al servidor.'
+          });
+
           return of({
             content: [],
             totalElements: 0,
@@ -151,26 +163,65 @@ export class Presupuestos implements OnInit {
         this.cdr.detectChanges();
         this.loadingPresupuestos = false;
       });
-
   }
 
   onGridReady(params: GridReadyEvent): void {
     this.gridApi = params.api;
+
     this.gridApi.sizeColumnsToFit();
+    this.checkResponsiveColumns(window.innerWidth);
   }
 
-  toggleSearch(): void {
-    this.isSearchExpanded = !this.isSearchExpanded;
-    if (this.isSearchExpanded) {
-      setTimeout(() => this.searchInput.nativeElement.focus(), 0);
-    } else {
-      this.searchText = '';
-      this.gridApi.setGridOption('quickFilterText', '');
+  onSearchInput(event: any) {
+    this.searchText = event.target.value;
+    if (this.gridApi) {
+      this.gridApi.setGridOption('quickFilterText', this.searchText);
     }
   }
 
-  onSearchChange(): void {
-    this.gridApi.setGridOption('quickFilterText', this.searchText);
+  toggleSearch() {
+    if (this.isSearchExpanded && this.searchText) {
+      this.searchText = '';
+      if (this.gridApi) {
+        this.gridApi.setGridOption('quickFilterText', '');
+      }
+      this.isSearchExpanded = false;
+    } else {
+      this.isSearchExpanded = !this.isSearchExpanded;
+      if (this.isSearchExpanded) {
+        setTimeout(() => {
+          this.searchInput.nativeElement.focus();
+        }, 300);
+      }
+    }
+  }
+
+  // ==================== FILTRO Y ORDENAMIENTO ====================
+  applyFilter(filterType: PresupuestoEstado) {
+    this.currentFilter = filterType;
+    if (this.gridApi) this.gridApi.onFilterChanged();
+  }
+
+  clearFiltersAndSort() {
+    this.applySort('', null);
+    this.applyFilter('all');
+  }
+
+  isExternalFilterPresent = (): boolean => this.currentFilter !== 'all';
+
+  doesExternalFilterPass = (node: any): boolean => {
+    if (this.currentFilter === 'all') return true;
+    return node.data?.estado === this.currentFilter;
+  };
+
+  applySort(colId: string, sortDirection: 'asc' | 'desc' | null) {
+    if (!this.gridApi) return;
+    const state = sortDirection ? [{ colId: colId, sort: sortDirection }] : [];
+
+    this.gridApi.applyColumnState({
+      state: state,
+      defaultState: { sort: null }
+    });
   }
 
   getRowId = (params: any) => params.data.id.toString();
@@ -201,38 +252,40 @@ export class Presupuestos implements OnInit {
     }
   }
 
-aprobarPresupuesto(id: number): void {
-    // 🔹 1. SweetAlert de Confirmación
+  aprobarPresupuesto(id: number): void {
     Swal.fire({
       title: '¿Aprobar presupuesto?',
       text: "El presupuesto será marcado como aprobado y pasará a la lista de reparaciones.",
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#198754', 
-      cancelButtonColor: '#6c757d',  
+      confirmButtonColor: '#198754',
+      cancelButtonColor: '#6c757d',
       confirmButtonText: 'Sí, aprobar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
-      
+
       if (result.isConfirmed) {
-        console.log('EJECUTANDO APROBAR - ID 👉', id);
-
-        // Métodos API comentados
-        /*
-        this.presupuestosService.aprobar(id).subscribe(() => {
-          this.getPresupuestos(); 
+        // 🔹 2 y 3. Servicio real integrado y descomentado
+        this.presupuestosService.aprobar(id).subscribe({
+          next: () => {
+            // 🔹 5. UI actualizada automáticamente desde la base de datos
+            this.getPresupuestos();
+            Swal.fire('¡Aprobado!', 'El presupuesto ha sido aprobado correctamente.', 'success');
+          },
+          error: (error) => {
+            // 🔹 4. Manejo de errores
+            console.error('Error al aprobar:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Hubo un error al intentar aprobar el presupuesto.',
+            });
+          }
         });
-        */
-
-        //Simular que desaparece del grid filtrando el array localmente
-        this.presupuestos = this.presupuestos.filter(p => p.id !== id);
-        this.gridApi.setGridOption('rowData', this.presupuestos); 
-
-        // SweetAlert de Éxito
-        Swal.fire('¡Aprobado!', 'El presupuesto ha sido aprobado (SIMULADO).', 'success');
       }
     });
   }
+
 
   onNewPresupuesto(): void {
     this.openModal('create', null);
@@ -255,5 +308,25 @@ aprobarPresupuesto(id: number): void {
     this.getPresupuestos();
   }
 
+  getRowClass = (params: any) => {
+    return '';
+  };
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkResponsiveColumns(event.target.innerWidth);
+  }
+
+  private checkResponsiveColumns(width: number) {
+    if (!this.gridApi) return;
+
+    if (width < 768) {
+      this.gridApi.setColumnsVisible(['valorManoDeObra', 'fechaCreacion'], false);
+    } else {
+      this.gridApi.setColumnsVisible(['valorManoDeObra', 'fechaCreacion'], true);
+    }
+
+    this.gridApi.sizeColumnsToFit();
+  }
 
 }

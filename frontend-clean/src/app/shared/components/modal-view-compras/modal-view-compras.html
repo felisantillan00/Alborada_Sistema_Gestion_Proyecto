@@ -33,7 +33,7 @@
 
             <!-- PROVEEDOR -->
             <div class="col-md-4">
-              <label class="form-label">Proveedor</label>
+              <label class="form-label fw-semibold" >Proveedor</label>
               <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
                 formControlName="nombreProveedor">
               </ng-select> 
@@ -44,7 +44,7 @@
 
             <!-- PRECIO TOTAL -->
             <div class="col-md-4">
-              <label class="form-label">Precio Total</label>
+              <label class="form-label fw-semibold">Precio Total</label>
               <div class="input-group shadow-sm">
                 <span class="input-group-text">$</span>
                 <input class="form-control" type="number" formControlName="total" />
@@ -76,9 +76,9 @@
             </div>
 
             <!-- PRODUCTOS -->
-            <div class="col-12" formArrayName="Productos">
+            <div formArrayName="Productos">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label mb-0">Productos</label>
+                <label class="form-label mb-0 fw-semibold">Productos</label>
                 @if (mode !== 'view') {
                 <button type="button" class="btn btn-sm btn-outline-primary" (click)="addProducto()">
                   Agregar
@@ -102,7 +102,8 @@
 
                   <div class="col-md-3">
                     <label class="form-label">Cantidad</label>
-                    <input class="form-control" type="number" formControlName="cantidad" />
+                    <input class="form-control" type="number" formControlName="cantidad" placeholder="Ej: 2" min="1"
+                      [readonly]="mode === 'view'" />
                     @if (producto.get('cantidad')?.touched && producto.get('cantidad')?.errors?.['required']) {
                     <div class="text-danger small mt-1">La cantidad es obligatoria</div>
                     }
