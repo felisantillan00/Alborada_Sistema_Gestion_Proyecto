@@ -267,7 +267,7 @@ export class ModalViewPresupuesto {
       observacion: v.observacion ?? '',
 
       detalles: (v.detalles ?? []).map((d: any) => ({
-        idProducto: Number(d.idProducto),
+        id: Number(d.idProducto),
         cantidad: Number(d.cantidad),
         valorVenta: Number(d.valorVenta),
       })),

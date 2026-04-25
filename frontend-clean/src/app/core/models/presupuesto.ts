@@ -6,7 +6,7 @@ export interface PresupuestoRequest {
     fechaConfirmada: string | '';
     observacion: string;
     detalles: {
-        idProducto: number;
+        id: number;
         cantidad: number;
         valorVenta: number;
     }[];
@@ -22,7 +22,7 @@ export interface PresupuestoView {
     fechaConfirmada: string | '';
     observacion: string;
     detalles: {
-        idProducto: number;
+        id: number;
         nombreProducto: string;
         valorVenta: number;
         cantidad: number;
