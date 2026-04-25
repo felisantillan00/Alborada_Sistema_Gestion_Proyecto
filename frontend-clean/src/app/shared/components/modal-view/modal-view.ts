@@ -189,9 +189,6 @@ export class ModalView implements OnInit {
   onSubmit(): void {
     if (this.mode !== 'delete') {
       this.form.markAllAsTouched();
-      // AGREGA ESTOS CONSOLE.LOG PARA DEBUGGEAR
-      console.log('¿Formulario válido?', this.form.valid);
-      console.log('Valores del formulario:', this.form.value);
 
       if (this.form.invalid) {
         console.warn('El formulario no se envía porque es inválido. Revisa si falta algún campo obligatorio (Categoría, Marca, Proveedor).');
