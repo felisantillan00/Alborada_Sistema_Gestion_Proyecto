@@ -7,6 +7,8 @@ import { ProductoService } from '../../../core/services/producto/producto-servic
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
 import Swal from 'sweetalert2';
+import { ProveedoresService } from '../../../core/services/proveedores/proveedores-service';
+import { Proveedor } from '../../../core/models/proveedor';
 
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
@@ -22,6 +24,7 @@ export class ModalViewCompras implements OnChanges {
   @Input() compra: CompraView | null = null;
 
   productos: ProductoView[] = [];
+  proveedores: Proveedor[] = [];
   productosLoaded = false;
   formasPago = FORMAS_PAGO;
 
@@ -33,15 +36,23 @@ export class ModalViewCompras implements OnChanges {
   private comprasService = inject(ComprasService);
   private cdr = inject(ChangeDetectorRef);
 
+  constructor(
+    private proveedoresService: ProveedoresService,
+    private productoService: ProductoService
+  ) { }
 
   ngOnInit(): void {
     this.getProductos();
+    this.getProveedores();
+
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   form = this.fb.group({
     total: [null as number | null, [Validators.required, Validators.min(1)]],
-    nombreProveedor: ['', Validators.required],
-    fecha: ['', Validators.required],
+    nombreProveedor: [null as number | null, Validators.required], fecha: ['', Validators.required],
     formaPago: [null as FormaPago | null, Validators.required],
     Productos: this.fb.array<FormGroup>([]),
   });
@@ -55,6 +66,16 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
+
+  getProveedores(): void {
+    this.proveedoresService.getAll().subscribe(data => {
+      this.proveedores = Array.isArray(data)
+        ? data
+        : (data as any).content || [];
+
+      this.loadForm();
+    });
+  }
   get productoFormArray(): FormArray<FormGroup> {
     return this.form.get('Productos') as FormArray<FormGroup>;
   }
@@ -151,12 +172,12 @@ export class ModalViewCompras implements OnChanges {
   buildPayload(includeId: boolean = false): any {
     const raw = this.form.getRawValue();
     const payload: any = {
-      nombreProveedor: raw.nombreProveedor,  // 👈 era "proveedor"
+      nombreProveedor: raw.nombreProveedor,
       precioTotal: raw.total,
       fecha: raw.fecha,
       formaPago: raw.formaPago,
-      detalles: raw.Productos.map((p: any) => ({  // 👈 era "productos"
-        idProducto: p.idProducto,                // 👈 era "id"
+      detalles: raw.Productos.map((p: any) => ({
+        idProducto: p.idProducto,
         cantidad: p.cantidad,
       }))
     };
@@ -211,9 +232,14 @@ export class ModalViewCompras implements OnChanges {
   private loadForm(): void {
     //normalizo
     const formaPagoNormalizada = this.compra?.formaPago ? (this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago) : null
+
+    const proveedor = this.proveedores.find(
+      p => p.nombre === this.compra?.nombreProveedor
+    );
+
     this.form.patchValue({
       total: this.compra?.total ?? 0,
-      nombreProveedor: this.compra?.nombreProveedor ?? '',
+      nombreProveedor: proveedor?.id ?? null, // ✅ ahora sí coincide con bindValue="id"
       fecha: this.compra?.fecha ?? '',
       formaPago: formaPagoNormalizada,
     });
