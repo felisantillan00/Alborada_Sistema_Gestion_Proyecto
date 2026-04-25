@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
+import { Pagina } from '../models/pagina';
 
 @Injectable()
 export abstract class Api<TResponse, TRequest = TResponse> {
@@ -76,6 +77,21 @@ export abstract class Api<TResponse, TRequest = TResponse> {
   delete(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, {
       headers: this.getHeaders()
+    });
+  }
+
+  getPage(params?: any): Observable<Pagina<TResponse>> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach(key => {
+        httpParams = httpParams.set(key, params[key]);
+      });
+    }
+
+    return this.http.get<Pagina<TResponse>>(this.baseUrl, {
+      headers: this.getHeaders(),
+      params: httpParams
     });
   }
 }

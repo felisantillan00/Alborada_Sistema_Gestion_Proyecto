@@ -1,160 +1,507 @@
 {
-    "productosView": [
+  "productosView": {
+    "content": [
       {
         "id": 1,
         "nombre": "Notebook Lenovo",
-        "precioCompra": 500,
+        "precioCosto": 500,
         "precioVenta": 750,
         "stock": 10,
-        "nombreProveedor": "TechSupplier",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Electrónica",
-        "nombreMarca": "Lenovo"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 2,
         "nombre": "Mouse Logitech",
-        "precioCompra": 10,
+        "precioCosto": 10,
         "precioVenta": 20,
         "stock": 50,
-        "nombreProveedor": "Distribuidora Norte",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
-        "nombreMarca": "Logitech"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 3,
         "nombre": "Teclado Redragon",
-        "precioCompra": 25,
+        "precioCosto": 25,
         "precioVenta": 45,
-        "stock": 30,
-        "nombreProveedor": "GamingStore",
+        "stock": 20,
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
-        "nombreMarca": "Redragon"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 4,
-        "nombre": "Monitor Samsung 24\"",
-        "precioCompra": 120,
-        "precioVenta": 180,
-        "stock": 15,
-        "nombreProveedor": "TechSupplier",
-        "nombreCategoria": "Electrónica",
-        "nombreMarca": "Samsung"
+        "nombre": "Monitor Samsung 24",
+        "precioCosto": 85,
+        "precioVenta": 120,
+        "stock": 30,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
       },
       {
         "id": 5,
         "nombre": "Auriculares Sony",
-        "precioCompra": 40,
-        "precioVenta": 70,
+        "precioCosto": 25,
+        "precioVenta": 40,
         "stock": 25,
-        "nombreProveedor": "AudioTech",
-        "nombreCategoria": "Audio",
-        "nombreMarca": "Sony"
-      },
-      {
-        "id": 6,
-        "nombre": "Celular Xiaomi Redmi",
-        "precioCompra": 150,
-        "precioVenta": 230,
-        "stock": 20,
-        "nombreProveedor": "MobileWorld",
-        "nombreCategoria": "Electrónica",
-        "nombreMarca": "Xiaomi"
-      },
-      {
-        "id": 7,
-        "nombre": "Tablet Samsung Galaxy Tab",
-        "precioCompra": 200,
-        "precioVenta": 300,
-        "stock": 12,
-        "nombreProveedor": "TechSupplier",
-        "nombreCategoria": "Electrónica",
-        "nombreMarca": "Samsung"
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
       },
       {
         "id": 8,
         "nombre": "Disco SSD Kingston 480GB",
-        "precioCompra": 35,
-        "precioVenta": 60,
+        "precioCosto": 25,
+        "precioVenta": 35,
         "stock": 40,
-        "nombreProveedor": "StoragePlus",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Componentes",
-        "nombreMarca": "Kingston"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 9,
         "nombre": "Memoria RAM Corsair 8GB",
-        "precioCompra": 30,
-        "precioVenta": 55,
+        "precioCosto": 20,
+        "precioVenta": 30,
         "stock": 35,
-        "nombreProveedor": "StoragePlus",
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Componentes",
-        "nombreMarca": "Corsair"
-      },
-      {
-        "id": 10,
-        "nombre": "Placa de Video NVIDIA RTX 3060",
-        "precioCompra": 300,
-        "precioVenta": 450,
-        "stock": 8,
-        "nombreProveedor": "GamingStore",
-        "nombreCategoria": "Componentes",
-        "nombreMarca": "NVIDIA"
-      },
-      {
-        "id": 11,
-        "nombre": "Impresora HP DeskJet",
-        "precioCompra": 80,
-        "precioVenta": 130,
-        "stock": 18,
-        "nombreProveedor": "OfficeTech",
-        "nombreCategoria": "Oficina",
-        "nombreMarca": "HP"
-      },
-      {
-        "id": 12,
-        "nombre": "Router TP-Link",
-        "precioCompra": 25,
-        "precioVenta": 50,
-        "stock": 22,
-        "nombreProveedor": "NetSolutions",
-        "nombreCategoria": "Redes",
-        "nombreMarca": "TP-Link"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 13,
         "nombre": "Webcam Logitech HD",
-        "precioCompra": 20,
+        "precioCosto": 30,
         "precioVenta": 40,
-        "stock": 27,
-        "nombreProveedor": "Distribuidora Norte",
+        "stock": 15,
+        "nombreProveedor": "Proveedor X",
         "nombreCategoria": "Accesorios",
-        "nombreMarca": "Logitech"
-      },
-      {
-        "id": 14,
-        "nombre": "Silla Gamer",
-        "precioCompra": 90,
-        "precioVenta": 150,
-        "stock": 10,
-        "nombreProveedor": "GamingStore",
-        "nombreCategoria": "Muebles",
-        "nombreMarca": "DXRacer"
+        "nombreMarca": "Marca B"
       },
       {
         "id": 15,
         "nombre": "Parlantes Genius",
-        "precioCompra": 15,
+        "precioCosto": 20,
         "precioVenta": 30,
-        "stock": 45,
-        "nombreProveedor": "AudioTech",
-        "nombreCategoria": "Audio",
-        "nombreMarca": "Genius"
+        "stock": 10,
+        "nombreProveedor": "Proveedor X",
+        "nombreCategoria": "Accesorios",
+        "nombreMarca": "Marca B"
       }
     ],
-  "productosRequest": [
-    { "id": 1, "nombre": "Bici Montaña", "stock": 10, "precioCompra": 100, "precioVenta": 150, "proveedorId": 1, "categoriaId": 1, "marcaId": 1 },
-    { "id": 2, "nombre": "Casco", "stock": 2, "precioCompra": 20, "precioVenta": 40, "proveedorId": 1, "categoriaId": 2, "marcaId": 2 },
-    { "id": 3, "nombre": "Pedales", "stock": 4, "precioCompra": 15, "precioVenta": 30, "proveedorId": 2, "categoriaId": 3, "marcaId": 1 },
-    { "id": 4, "nombre": "Inflador", "stock": 15, "precioCompra": 10, "precioVenta": 25, "proveedorId": 2, "categoriaId": 4, "marcaId": 3 }
-  ]
+    "totalElements": 15,
+    "totalPages": 8,
+    "number": 0
+  },
+  "productosRequest": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Bici Montaña",
+        "stock": 10,
+        "precioCosto": 100,
+        "precioVenta": 150,
+        "proveedorid": 1,
+        "categoriaid": 1,
+        "marcaid": 1
+      },
+      {
+        "id": 2,
+        "nombre": "Casco",
+        "stock": 2,
+        "precioCosto": 20,
+        "precioVenta": 40,
+        "proveedorid": 1,
+        "categoriaid": 2,
+        "marcaid": 2
+      }
+    ],
+    "totalElements": 4,
+    "totalPages": 2,
+    "number": 0
+  },
+  "ventas": {
+    "content": [
+      {
+        "id": "V-001",
+        "nombreCliente": "Juan Perez",
+        "total": 190,
+        "fechaVenta": "20-03-2026",
+        "formaPago": "Efectivo",
+        "observacion": "Cliente frecuente, descuento por compra múltiple",
+        "Productos": [
+          {
+            "id": "2",
+            "Nombre": "Mouse Logitech",
+            "Cantidad": 2,
+            "PrecioVenta": 20
+          },
+          {
+            "id": "3",
+            "Nombre": "Teclado Redragon",
+            "Cantidad": 1,
+            "PrecioVenta": 45
+          },
+          {
+            "id": "15",
+            "Nombre": "Parlantes Genius",
+            "Cantidad": 3,
+            "PrecioVenta": 30
+          }
+        ]
+      },
+      {
+        "id": "V-002",
+        "nombreCliente": "Maria Gomez",
+        "total": 410,
+        "fechaVenta": "21-03-2026",
+        "formaPago": "Tarjeta",
+        "observacion": "Pago realizado con tarjeta de crédito",
+        "Productos": [
+          {
+            "id": "1",
+            "Nombre": "Notebook Lenovo",
+            "Cantidad": 1,
+            "PrecioVenta": 750
+          },
+          {
+            "id": "13",
+            "Nombre": "Webcam Logitech HD",
+            "Cantidad": 1,
+            "PrecioVenta": 40
+          }
+        ]
+      }
+    ],
+    "totalElements": 2,
+    "totalPages": 1,
+    "number": 0
+  },
+  "compra": {
+    "content": [
+      {
+        "id": "C-001",
+        "total": 520,
+        "nombreProveedor": "TechSupplier",
+        "fecha": "20-03-2026",
+        "Productos": [
+          {
+            "id": "4",
+            "Nombre": "Monitor Samsung 24\"",
+            "Cantidad": 2,
+            "Precio": 120
+          },
+          {
+            "id": "8",
+            "Nombre": "Disco SSD Kingston 480GB",
+            "Cantidad": 4,
+            "Precio": 35
+          },
+          {
+            "id": "9",
+            "Nombre": "Memoria RAM Corsair 8GB",
+            "Cantidad": 2,
+            "Precio": 30
+          }
+        ]
+      },
+      {
+        "id": "C-002",
+        "total": 400,
+        "nombreProveedor": "AudioTech",
+        "fecha": "21-03-2026",
+        "Productos": [
+          {
+            "id": "5",
+            "Nombre": "Auriculares Sony",
+            "Cantidad": 5,
+            "Precio": 40
+          },
+          {
+            "id": "15",
+            "Nombre": "Parlantes Genius",
+            "Cantidad": 10,
+            "Precio": 20
+          }
+        ]
+      }
+    ],
+    "totalElements": 2,
+    "totalPages": 1,
+    "number": 0
+  },
+  "categoria": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Bicicletas"
+      },
+      {
+        "id": 2,
+        "nombre": "Accesorios"
+      },
+      {
+        "id": 3,
+        "nombre": "Componentes"
+      },
+      {
+        "id": 4,
+        "nombre": "Herramientas"
+      },
+      {
+        "id": 5,
+        "nombre": "Muebles"
+      },
+      {
+        "id": 6,
+        "nombre": "Redes"
+      },
+      {
+        "id": 7,
+        "nombre": "Audio"
+      },
+      {
+        "id": 8,
+        "nombre": "Oficina"
+      },
+      {
+        "id": 9,
+        "nombre": "Electrónica"
+      }
+    ],
+    "totalElements": 9,
+    "totalPages": 3,
+    "number": 0
+  },
+  "marca": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Marca A"
+      },
+      {
+        "id": 2,
+        "nombre": "Marca B"
+      },
+      {
+        "id": 3,
+        "nombre": "Marca C"
+      }
+    ],
+    "totalElements": 9,
+    "totalPages": 3,
+    "number": 0
+  },
+  "proveedor": {
+    "content": [
+      {
+        "id": 1,
+        "nombre": "Proveedor X"
+      },
+      {
+        "id": 2,
+        "nombre": "Proveedor Y"
+      },
+      {
+        "id": 3,
+        "nombre": "Proveedor Z"
+      }
+    ],
+    "totalElements": 9,
+    "totalPages": 3,
+    "number": 0
+  },
+  "reparaciones": {
+    "content": [
+      {
+        "id": 1,
+        "nombreCliente": "Carlos Ramirez",
+        "estado": "Aprobado_Presupuesto",
+        "valorTotal": 15000,
+        "valorManoDeObra": 5000,
+        "fechaConfirmada": "20-03-2026",
+        "detalles": [
+          {
+            "id": 1,
+            "nombre": "Notebook Lenovo",
+            "valorVenta": 10000,
+            "cantidad": 1
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "nombreCliente": "Ana Torres",
+        "estado": "Finalizado",
+        "valorTotal": 22000,
+        "valorManoDeObra": 7000,
+        "fechaConfirmada": "25-03-2026",
+        "observacion": "Cambio de batería y limpieza general",
+        "detalles": [
+          {
+            "id": 2,
+            "nombre": "Mouse Logitech",
+            "valorVenta": 12000,
+            "cantidad": 1
+          },
+          {
+            "id": 3,
+            "nombre": "Teclado Redragon",
+            "valorVenta": 3000,
+            "cantidad": 1
+          }
+        ]
+      }
+    ],
+    "totalElements": 1,
+    "totalPages": 1,
+    "number": 0
+  },
+  "presupuestos": {
+    "content": [
+      {
+        "id": 1,
+        "nombreCliente": "Carlos Ramirez",
+        "estado": "Aprobado_Presupuesto",
+        "valorTotal": 15000,
+        "valorManoDeObra": 5000,
+        "fechaCreacion": "15-03-2026",
+        "fechaConfirmada_reparacion": "20-03-2026",
+        "observacion": "Presupuesto aprobado, reparación en proceso",
+        "detalles": [
+          {
+            "id": 1,
+            "nombre": "Notebook Lenovo",
+            "valorVenta": 10000,
+            "cantidad": 1
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "nombreCliente": "Ana Torres",
+        "estado": "Finalizado",
+        "valorTotal": 22000,
+        "valorManoDeObra": 7000,
+        "fechaConfirmada": "25-03-2026",
+        "observacion": "Cambio de batería y limpieza general",
+        "detalles": [
+          {
+            "id": 2,
+            "nombre": "Mouse Logitech",
+            "valorVenta": 12000,
+            "cantidad": 1
+          },
+          {
+            "id": 3,
+            "nombre": "Teclado Redragon",
+            "valorVenta": 3000,
+            "cantidad": 1
+          }
+        ]
+      }
+    ],
+    "totalElements": 1,
+    "totalPages": 1,
+    "number": 0
+  },
+  "balance": {
+    "content": [
+      {
+        "ingresosSemestrales": 104600,
+        "gastosSemestrales": 55400,
+        "gananciasSemestrales": 49200,
+        "promedioGananciasSemestrales": 17433
+      }
+    ]
+  },
+  "reparacionesMensuales": [
+    {
+      "mes": "Enero",
+      "total": 15
+    },
+    {
+      "mes": "Febrero",
+      "total": 20
+    },
+    {
+      "mes": "Marzo",
+      "total": 18
+    },
+    {
+      "mes": "Abril",
+      "total": 25
+    },
+    {
+      "mes": "Mayo",
+      "total": 22
+    },
+    {
+      "mes": "Junio",
+      "total": 30
+    }
+  ],
+  "pie": {
+    "totalVentas": 45230,
+    "totalReparaciones": 18500
+  },
+  "ventasMensuales": [
+    {
+      "mes": "Enero",
+      "total": 14200
+    },
+    {
+      "mes": "Febrero",
+      "total": 16500
+    },
+    {
+      "mes": "Marzo",
+      "total": 18000
+    },
+    {
+      "mes": "Abril",
+      "total": 15800
+    },
+    {
+      "mes": "Mayo",
+      "total": 20100
+    },
+    {
+      "mes": "Junio",
+      "total": 20000
+    }
+  ],
+  "comprasMensuales": [
+    {
+      "mes": "Enero",
+      "total": 8000
+    },
+    {
+      "mes": "Febrero",
+      "total": 9500
+    },
+    {
+      "mes": "Marzo",
+      "total": 10200
+    },
+    {
+      "mes": "Abril",
+      "total": 8700
+    },
+    {
+      "mes": "Mayo",
+      "total": 9800
+    },
+    {
+      "mes": "Junio",
+      "total": 9200
+    }
+  ],
+  "totalesActuales": {
+    "ventas": 20000,
+    "reparaciones": 4800
+  }
 }

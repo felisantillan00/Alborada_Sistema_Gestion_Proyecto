@@ -20,12 +20,49 @@ export const routes: Routes = [
                     import('./pages/inventario/inventario/inventario')
                         .then(m => m.Inventario)
             },
+            {
+                path: 'ventas',
+                loadComponent: () =>
+                    import('./pages/ventas/ventas/ventas')
+                        .then(m => m.Ventas)
+            },
+            {
+                path: 'compras',
+                loadComponent: () =>
+                    import('./pages/compras/compras/compras')
+                        .then(m => m.Compras)
+            },
+            {
+                path: 'balance',
+                loadComponent: () =>
+                    import('./pages/balance/balance/balance')
+                        .then(m => m.Balance)
+            },
+
+            {
+                path: 'reparaciones',
+                loadComponent: () =>
+                    import('./pages/reparaciones/reparaciones/reparaciones')
+                        .then(m => m.Reparaciones)
+            },
+
+            {
+                path: 'presupuestos',
+                loadComponent: () =>
+                    import('./pages/presupuestos/presupuestos')
+                        .then(m => m.Presupuestos)
+            },
 
             {
                 path: '',
-                redirectTo: 'dashboard',
+                redirectTo: 'inventario',
                 pathMatch: 'full'
-            }
+          },
+          {
+            path: '**',
+            redirectTo: 'inventario',
+            pathMatch: 'full'
+          }
         ]
     }
 ];

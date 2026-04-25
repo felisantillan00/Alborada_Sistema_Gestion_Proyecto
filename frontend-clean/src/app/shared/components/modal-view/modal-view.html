@@ -1,87 +1,122 @@
-<div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ title }}</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="closed.emit()"></button>
+<div class="modal-backdrop fade show"></div>
+
+<div class="modal d-block">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+
+      <div class="modal-header bg-light border-bottom px-4 py-3">
+        <h5 class="modal-title fw-bold text-dark">{{ title }}</h5>
+        <button type="button" class="btn-close" (click)="closed.emit()"></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body p-4">
+
         @if (mode === 'delete') {
-        <p class="mb-0">
-          Are you sure you want to delete
-          <strong>{{ product?.nombre ?? 'this product' }}</strong>?
+        <p class="mb-0 fs-5 text-center py-4">
+          ¿Seguro que deseas eliminar el producto
+          <strong class="text-danger">{{ product?.nombre ?? 'este producto' }}</strong>?
         </p>
-        } @else {
-        <div class="row g-3">
-          <div class="col-md-8">
-            <label class="form-label">Nombre</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombre ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Stock</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.stock ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Precio compra</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioCompra ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Precio venta</label>
-            <input class="form-control"
-                   type="number"
-                   [value]="mode === 'create' ? '' : (product?.precioVenta ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Proveedor</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreProveedor ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Categoria</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreCategoria ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Marca</label>
-            <input class="form-control"
-                   type="text"
-                   [value]="mode === 'create' ? '' : (product?.nombreMarca ?? '')"
-                   [disabled]="mode === 'view'" />
-          </div>
+
+        <div class="mt-4 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-danger px-4 shadow-sm" (click)="onSubmit()">Borrar</button>
+          <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">Cancelar</button>
         </div>
-        }
-      </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closed.emit()">Cancel</button>
+        } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        @if (mode === 'create' || mode === 'edit') {
-        <button type="button" class="btn btn-primary" (click)="submitted.emit(mode)">
-          {{ mode === 'create' ? 'Create' : 'Save changes' }}
-        </button>
+          <div class="row g-4">
+
+            <div class="col-md-8">
+              <label class="form-label fw-semibold">Producto</label>
+              <input class="form-control shadow-sm" type="text" formControlName="nombre" placeholder="Nombre del producto"/>
+              @if (Control['nombre'].hasError('required') && Control['nombre'].touched) {
+              <div class="text-danger small mt-1">* El campo nombre es obligatorio</div>
+              }
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Stock</label>
+              <input class="form-control shadow-sm" type="number" formControlName="stock" placeholder="Ej: 10" />
+              @if (Control['stock'].hasError('required') && Control['stock'].touched) {
+              <div class="text-danger small mt-1">* El campo Stock es obligatorio</div>
+              }
+              @if (Control['stock'].hasError('min') && Control['stock'].touched) {
+              <div class="text-danger small mt-1">* El stock no puede ser negativo</div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Precio compra</label>
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-light">$</span>
+                <input class="form-control" type="number" formControlName="precioCosto" placeholder="0" />
+              </div>
+              @if (Control['precioCosto'].hasError('required') && Control['precioCosto'].touched) {
+              <div class="text-danger small mt-1">* El campo precio de COSTO es obligatorio</div>
+              }
+              @if (Control['precioCosto'].hasError('min') && Control['precioCosto'].touched) {
+              <div class="text-danger small mt-1">* El precio de costo debe ser mayor a 0</div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Precio venta</label>
+              <div class="input-group shadow-sm">
+                <span class="input-group-text bg-light">$</span>
+                <input class="form-control" type="number" formControlName="precioVenta" placeholder="0" />
+              </div>
+              @if (Control['precioVenta'].hasError('required') && Control['precioVenta'].touched) {
+              <div class="text-danger small mt-1">* El campo precio de VENTA es obligatorio</div>
+              }
+              @if (Control['precioVenta'].hasError('min') && Control['precioVenta'].touched) {
+              <div class="text-danger small mt-1">* El precio de venta debe ser mayor a 0</div>
+              }
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Proveedor</label>
+              <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
+                formControlName="proveedorId" class="shadow-sm">
+              </ng-select>
+              @if (Control['proveedorId'].hasError('required') && Control['proveedorId'].touched) {
+              <div class="text-danger small mt-1">* El campo proveedor es obligatorio</div>
+              }
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Categoría</label>
+              <ng-select [items]="categorias" bindLabel="nombre" bindValue="id" placeholder="Seleccione categoría"
+                formControlName="categoriaId" class="shadow-sm">
+              </ng-select>
+              @if (Control['categoriaId'].hasError('required') && Control['categoriaId'].touched) {
+              <div class="text-danger small mt-1">* El campo categoría es obligatorio</div>
+              }
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Marca</label>
+              <ng-select [items]="marcas" bindLabel="nombre" bindValue="id" placeholder="Seleccione marca"
+                formControlName="marcaId" class="shadow-sm">
+              </ng-select>
+              @if (Control['marcaId'].hasError('required') && Control['marcaId'].touched) {
+              <div class="text-danger small mt-1">* El campo marca es obligatorio</div>
+              }
+            </div>
+
+          </div>
+
+          <div class="mt-5 d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="submit" class="btn btn-success px-4 shadow-sm">
+              {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+            </button>
+            <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">Cancelar</button>
+          </div>
+
+        </form>
         }
 
-        @if (mode === 'delete') {
-        <button type="button" class="btn btn-danger" (click)="submitted.emit(mode)">Delete</button>
-        }
       </div>
     </div>
   </div>
 </div>
-
-<div class="modal-backdrop fade show"></div>

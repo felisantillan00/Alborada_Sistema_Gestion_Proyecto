@@ -67,3 +67,26 @@
   background-color: rgba(255,255,255,0.1);
   border-radius: 10px;
 }
+
+.sidebar.mobile-sidebar {
+  width: 100% !important;
+  min-height: auto !important;
+  height: auto !important;
+  border-bottom: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra suave y moderna */
+  padding: 1rem !important; /* Un poco más despacio interno */
+}
+
+/* Cuando el usuario abre el menú hamburguesa en el celular */
+.sidebar.mobile-open {
+  position: absolute; /* Se superpone al contenido */
+  top: 0;
+  left: 0;
+  height: 100vh !important; /* Vuelve a ocupar toda la pantalla hacia abajo */
+  overflow-y: auto;
+}
+
+/* Ocultar el texto de la marca si no hay espacio, opcional para que quede más limpio */
+.mobile-sidebar .brand-text {
+  margin-left: 10px;
+}
