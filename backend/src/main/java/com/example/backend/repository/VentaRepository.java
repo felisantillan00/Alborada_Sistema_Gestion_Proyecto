@@ -18,5 +18,5 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     //Arreglo de los últimos 6 meses (Devuelve Mes y Total)
     @Query("SELECT MONTH(v.fechaVenta), SUM(v.total) FROM Venta v WHERE v.fechaVenta >= :fechaDesde GROUP BY MONTH(v.fechaVenta) ORDER BY MONTH(v.fechaVenta)")
-    List<Object[]> obtenerVentasAgrupadasPorMes(@Param("fechaDesde") java.time.LocalDate fechaDesde);
+    List<Object[]> obtenerVentasAgrupadasPorMes(@Param("fechaDesde") java.time.LocalDateTime fechaDesde);
 }
