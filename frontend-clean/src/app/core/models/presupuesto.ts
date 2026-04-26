@@ -2,8 +2,6 @@ export interface PresupuestoRequest {
     nombreCliente: string;
     estado: string;
     valorManoDeObra: number;
-    fechaCreacion: string;
-    fechaConfirmada: string | '';
     observacion: string;
     detalles: {
         id: number;

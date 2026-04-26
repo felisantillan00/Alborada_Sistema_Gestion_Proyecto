@@ -1,12 +1,15 @@
 export interface BalanceView {
-    ingresosSemestrales: number;
-    gastosSemestrales: number;
-    gananciasSemestrales: number;
-    promedioGananciasSemestrales: number;
+  ingresosMensuales: number;
+  gastosMensuales: number;
+  gananciasMensuales: number;
+  promedioGananciasMensuales: number;
 }
 
 export interface BalanceResponse {
-    content: BalanceView[];
+  ingresosMensuales: number;
+  gastosMensuales: number;
+  gananciasMensuales: number;
+  promedioGananciasMensuales: number;
 }
 
 export interface ResparacionesMensuales {

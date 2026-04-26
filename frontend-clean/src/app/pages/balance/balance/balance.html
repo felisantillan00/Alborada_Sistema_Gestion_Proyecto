@@ -18,7 +18,7 @@
           </div>
           <div *ngIf="!loadingEstadisticas; else loadingTpl">
             <h3 class="fw-bold text-success mb-1">
-              ${{ estadisticas?.ingresosSemestrales | number:'1.0-0' }}
+              ${{ estadisticas?.ingresosMensuales | number:'1.0-0' }}
             </h3>
             <small class="text-muted">Últimos 6 meses</small>
           </div>
@@ -36,7 +36,7 @@
           </div>
           <div *ngIf="!loadingEstadisticas; else loadingTpl">
             <h3 class="fw-bold text-danger mb-1">
-              ${{ estadisticas?.gastosSemestrales | number:'1.0-0' }}
+              ${{ estadisticas?.gastosMensuales | number:'1.0-0' }}
             </h3>
             <small class="text-muted">Últimos 6 meses</small>
           </div>
@@ -54,7 +54,7 @@
           </div>
           <div *ngIf="!loadingEstadisticas; else loadingTpl">
             <h3 class="fw-bold text-dark mb-1">
-              ${{ estadisticas?.gananciasSemestrales | number:'1.0-0' }}
+              ${{ estadisticas?.gananciasMensuales | number:'1.0-0' }}
             </h3>
             <small class="text-success fw-medium">
               +{{ margen }}% margen
@@ -74,7 +74,7 @@
           </div>
           <div *ngIf="!loadingEstadisticas; else loadingTpl">
             <h3 class="fw-bold text-dark mb-1">
-              ${{ estadisticas?.promedioGananciasSemestrales | number:'1.0-0' }}
+              ${{ estadisticas?.promedioGananciasMensuales | number:'1.0-0' }}
             </h3>
             <small class="text-muted">En ganancias</small>
           </div>

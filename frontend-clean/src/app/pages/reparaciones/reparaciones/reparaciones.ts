@@ -106,7 +106,7 @@ export class Reparaciones implements OnInit {
       <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
         <i class="bi bi-trash"></i>
       </button>
-      <button class="btn btn-sm btn-outline-success" data-action="aprobado">
+      <button class="btn btn-sm btn-outline-success" data-action="terminar">
             <i class="bi bi-check"></i>
           </button>
     </div>
@@ -176,7 +176,7 @@ export class Reparaciones implements OnInit {
 
   terminarReparacion(id: number): void {
     this.reparacionesService.terminar(id).subscribe(() => {
-      this.getReparaciones(); // 🔥 refresca tabla
+      this.getReparaciones(); 
     });
   }
 
