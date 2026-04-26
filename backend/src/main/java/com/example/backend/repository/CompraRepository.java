@@ -14,5 +14,5 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
    
     //Historial de los ultimos 6 meses (Devuelve mes y total gastado)
     @Query("SELECT MONTH(c.fechaCompra), SUM(c.totalCompra) FROM Compra c WHERE c.fechaCompra >= :fechaDesde GROUP BY MONTH(c.fechaCompra) ORDER BY MONTH(c.fechaCompra)")
-    List<Object[]> obtenerComprasAgrupadasPorMes(@Param("fechaDesde") java.time.LocalDate fechaDesde);   
+    List<Object[]> obtenerComprasAgrupadasPorMes(@Param("fechaDesde") java.time.LocalDateTime fechaDesde);   
 }

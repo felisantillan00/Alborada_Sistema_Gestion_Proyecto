@@ -21,7 +21,7 @@ public interface OrdenServicioRepository extends JpaRepository<OrdenServicio, Lo
 
     //Trae el historial de los ultimos 6 meses, contando solo las reparaciones "ENTREGADAS" (Devuelve mes y cantidad de reparaciones)
     @Query("SELECT MONTH(o.fechaCreacion), COUNT(o) FROM OrdenServicio o WHERE o.fechaCreacion >= :fechaDesde AND o.estado = 'Finalizado' GROUP BY MONTH(o.fechaCreacion) ORDER BY MONTH(o.fechaCreacion)")
-    List<Object[]> countReparacionesAgrupadasPorMes(@Param("fechaDesde") java.time.LocalDate fechaDesde);
+    List<Object[]> countReparacionesAgrupadasPorMes(@Param("fechaDesde") java.time.LocalDateTime fechaDesde);
 }
     
   
