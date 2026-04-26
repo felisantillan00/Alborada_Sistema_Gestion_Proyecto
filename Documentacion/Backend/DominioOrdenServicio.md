@@ -1,21 +1,24 @@
 📝 Formato del JSON (Request Body)
 Para POST y PUT, usar esta estructura:
 
-JSON
+```json
 {
+  "nombreCliente": "Maria Gomez",
   "valorManoDeObra": "30000.00",
+  "observacion": "Reparacion de bici Firebird roja",
   "detalles": [
     {
-      "idProducto": 3,
-      "cantidad":5
+      "id": 3,
+      "cantidad": 5
     },
     {
-      "idProducto": 2,
+      "id": 2,
       "cantidad": 1
     }
-  ],
-  "observacion": "Reparacion de bici Firebird roja"
+  ]
 }
+```
+*(Nota: Para la operación DELETE no es necesario enviar un JSON Body, solo basta con pasar el ID correspondiente por la URL).*
 
 📦 Módulo: Presupuesto - Base URL: http://localhost:8080/api/presupuesto
 * Listar todos los presupuestos: GET /presupuesto (Solo trae órdenes en estado Pendiente)
