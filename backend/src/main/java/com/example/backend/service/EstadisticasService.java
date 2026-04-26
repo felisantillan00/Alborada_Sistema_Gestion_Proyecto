@@ -1,26 +1,16 @@
 package com.example.backend.service;
-
-import com.example.backend.dto.response.GetEstadisticasDTO;
-import com.example.backend.dto.response.MetricaMensualDTO;
-import com.example.backend.dto.response.PieChartDTO;
-import com.example.backend.repository.CompraRepository;
-import com.example.backend.repository.OrdenServicioRepository;
-import com.example.backend.repository.VentaRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
+import com.example.backend.dto.response.*;
+import com.example.backend.repository.*;
+import lombok.RequiredArgsConstructor;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.math.*;
+import java.time.*;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class EstadisticasService {
-
     private final VentaRepository ventaRepository;
     private final OrdenServicioRepository ordenServicioRepository;
     private final CompraRepository compraRepository;
@@ -68,19 +58,19 @@ public class EstadisticasService {
     }
 
     public List<MetricaMensualDTO> getReparacionesUltimosSeisMeses() { //Para grafico de comparacion entre reparaciones de los ultimos 6 meses
-        LocalDate seisMesesAtras = LocalDate.now().minusMonths(6);
+        LocalDateTime seisMesesAtras = LocalDateTime.now().minusMonths(6);
         List<Object[]> resultados = ordenServicioRepository.countReparacionesAgrupadasPorMes(seisMesesAtras);
         return mapearResultados(resultados);
     }
 
     public List<MetricaMensualDTO> getVentasUltimosSeisMeses() { //Para grafico de comparacion entre ventas de los ultimos 6 meses
-        LocalDate seisMesesAtras = LocalDate.now().minusMonths(6);
+        LocalDateTime seisMesesAtras = LocalDateTime.now().minusMonths(6);
         List<Object[]> resultados = ventaRepository.obtenerVentasAgrupadasPorMes(seisMesesAtras);
         return mapearResultados(resultados);
     }
 
     public List<MetricaMensualDTO> getComprasUltimosSeisMeses() { //Para grafico de comparacion entre compras de los ultimos 6 meses
-        LocalDate seisMesesAtras = LocalDate.now().minusMonths(6);
+        LocalDateTime seisMesesAtras = LocalDateTime.now().minusMonths(6);
         List<Object[]> resultados = compraRepository.obtenerComprasAgrupadasPorMes(seisMesesAtras);
         return mapearResultados(resultados);
     }
