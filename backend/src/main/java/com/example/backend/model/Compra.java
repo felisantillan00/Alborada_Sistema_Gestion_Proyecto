@@ -1,4 +1,5 @@
 package com.example.backend.model;
+import com.example.backend.enums.FormaPago;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -25,6 +26,8 @@ public class Compra {
 
     @Column(name = "fecha_compra", nullable = false)
     private LocalDateTime fechaCompra;
+
+    private FormaPago formaPago;
 
     @Column(name = "total_compra", scale = 2, precision = 10)
     private BigDecimal totalCompra;
