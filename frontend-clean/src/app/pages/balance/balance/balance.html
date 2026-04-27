@@ -20,7 +20,7 @@
             <h3 class="fw-bold text-success mb-1">
               ${{ estadisticas?.ingresosMensuales | number:'1.0-0' }}
             </h3>
-            <small class="text-muted">Últimos 6 meses</small>
+            <small class="text-muted">Último mes</small>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
             <h3 class="fw-bold text-danger mb-1">
               ${{ estadisticas?.gastosMensuales | number:'1.0-0' }}
             </h3>
-            <small class="text-muted">Últimos 6 meses</small>
+            <small class="text-muted">Último mes</small>
           </div>
         </div>
       </div>
@@ -84,10 +84,10 @@
 
 
   </div>
-  <div class="row g-3 mb-4">
+  <!--<div class="row g-3 mb-4">-->
 
     <!-- Total Ventas -->
-    <div class="col-12 col-sm-6">
+    <!--<div class="col-12 col-sm-6">
       <div class="card border-0 shadow-sm h-100"
         style="border-radius: 16px; border-left: 4px solid #198754 !important;">
         <div class="card-body p-4 d-flex align-items-center gap-3">
@@ -104,10 +104,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <!-- Total Reparaciones -->
-    <div class="col-12 col-sm-6">
+    <!--<div class="col-12 col-sm-6">
       <div class="card border-0 shadow-sm h-100"
         style="border-radius: 16px; border-left: 4px solid #212529 !important;">
         <div class="card-body p-4 d-flex align-items-center gap-3">
@@ -126,14 +126,14 @@
       </div>
     </div>
 
-  </div>
+  </div>-->
 
   <div class="row g-3 mb-4">
     <div class="col-12">
       <div class="card border-0 shadow-sm" style="border-radius: 16px;">
         <div class="card-body p-4">
           <h6 class="fw-bold text-dark mb-1">Ingresos vs Gastos</h6>
-          <small class="text-muted d-block mb-3">Ventas y compras — últimos 6 meses</small>
+          <small class="text-muted d-block mb-3">Ventas y compras — Últimos meses</small>
           <div *ngIf="!loadingBar; else loadingTpl" style="height: 280px;">
             <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'">
             </canvas>
@@ -152,7 +152,7 @@
         <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
           <div class="card-body p-4">
             <h6 class="fw-bold text-dark mb-1">Ingresos por Reparaciones</h6>
-            <small class="text-muted d-block mb-3">Cantidad mensual — últimos 6 meses</small>
+            <small class="text-muted d-block mb-3">Cantidad mensual — Últimos meses</small>
             <div *ngIf="!loadingReparaciones; else loadingTpl" style="height: 260px;">
               <canvas baseChart [data]="reparacionesChartData" [options]="reparacionesChartOptions" [type]="'line'">
               </canvas>
@@ -166,7 +166,7 @@
         <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
           <div class="card-body p-4">
             <h6 class="fw-bold text-dark mb-1">Tendencia de Ventas</h6>
-            <small class="text-muted d-block mb-3">Evolución mensual — últimos 6 meses</small>
+            <small class="text-muted d-block mb-3">Evolución mensual — Últimos meses</small>
             <div *ngIf="!loadingVentas; else loadingTpl" style="height: 260px;">
               <canvas baseChart [data]="ventasLineData" [options]="ventasLineOptions" [type]="'line'">
               </canvas>

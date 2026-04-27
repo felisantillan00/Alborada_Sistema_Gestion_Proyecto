@@ -152,7 +152,6 @@ export class Balance implements OnInit {
     this.balanceService.getEstadisticas().subscribe({
       next: (resp) => {
         this.estadisticas = resp;
-        console.log('Estadísticas cargadas:', this.estadisticas);
         this.loadingEstadisticas = false;
         this.cdr.detectChanges();
       },
