@@ -13,6 +13,6 @@ public class CompraResponseDTO {
     private List<ProductoResponseCompraDTO> productos;
     private BigDecimal totalCompra;
     private String proveedorNombre;
+    private String formaPago;
     private LocalDateTime fechaCompra;
-
 }

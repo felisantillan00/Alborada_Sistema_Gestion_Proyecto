@@ -2,6 +2,7 @@ package com.example.backend.service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.backend.exception.NegocioException;
 import org.springframework.stereotype.Service;
+import com.example.backend.enums.FormaPago;
 import com.example.backend.dto.response.*;
 import org.springframework.data.domain.*;
 import com.example.backend.dto.request.*;
@@ -37,6 +38,14 @@ public class CompraService {
         Compra nuevaCompra = new Compra();
         nuevaCompra.setProveedor(proveedor);
         nuevaCompra.setFechaCompra(LocalDateTime.now());
+
+        if (request.formaPago() != null && !request.formaPago().isBlank()) {
+            try {
+                nuevaCompra.setFormaPago(FormaPago.valueOf(request.formaPago().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new NegocioException("Forma de pago no válida: " + request.formaPago());
+            }
+        }
 
         int cantidadTotal = request.detalles().stream()
                 .mapToInt(DetalleCompraRequestDTO::cantidad)
@@ -137,6 +146,14 @@ public class CompraService {
             Proveedor proveedor = proveedorRepository.findByNombre(request.proveedorNombre())
                     .orElseThrow(() -> new NegocioException("Proveedor no encontrado con nombre: " + request.proveedorNombre()));
             compra.setProveedor(proveedor);
+        }
+
+        if (request.formaPago() != null && !request.formaPago().isBlank()) {
+            try {
+                compra.setFormaPago(FormaPago.valueOf(request.formaPago().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new NegocioException("Forma de pago no válida: " + request.formaPago());
+            }
         }
 
         if (request.detalles() != null && !request.detalles().isEmpty()) {
@@ -268,6 +285,7 @@ public class CompraService {
                 .proveedorNombre(compra.getProveedor().getNombre())
                 .totalCompra(compra.getTotalCompra())
                 .fechaCompra(compra.getFechaCompra())
+                .formaPago(compra.getFormaPago() != null ? compra.getFormaPago().name() : null)
                 .productos(productosResponse)
                 .build();
     }
