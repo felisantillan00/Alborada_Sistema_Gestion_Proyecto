@@ -2,12 +2,12 @@ package com.example.backend.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import com.example.backend.service.VentaService;
-import com.example.backend.enums.EstadoOrden;
 import com.example.backend.dto.request.*;
 import jakarta.transaction.Transactional;
 import com.example.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import com.example.backend.model.*;
+import com.example.backend.enums.*;
 import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
@@ -24,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     private final OrdenServicioRepository ordenServicioRepository;
     private final VentaRepository ventaRepository;
     private final VentaService ventaService;
+    private final CompraRepository compraRepository;
 
     @Override
     @Transactional
@@ -66,8 +67,7 @@ public class DataInitializer implements CommandLineRunner {
         if (productoRepository.count() == 0) {
             log.info("Cargando productos iniciales...");
 
-            // Buscamos las dependencias (usamos orElseThrow para detectar errores de tipeo
-            // rápido)
+            // Buscamos las dependencias (usamos orElseThrow para detectar errores de tipeo rápido)
             Categoria catTransmision = categoriaRepository.findByNombre("Transmisión").orElseThrow();
             Categoria catCubiertas = categoriaRepository.findByNombre("Cubiertas").orElseThrow();
             Categoria catBicis = categoriaRepository.findByNombre("Bicicletas").orElseThrow();
@@ -179,16 +179,14 @@ public class DataInitializer implements CommandLineRunner {
                 if (ventaRepository.count() == 0) {
                     log.info("Cargando ventas iniciales de prueba...");
 
-                    // Traigo todos los productosVenta para obtener sus IDs y crear ventas de
-                    // prueba.
+                    // Traigo todos los productosVenta para obtener sus IDs y crear ventas de prueba.
                     List<Producto> productosVenta = productoRepository.findAll();
 
                     if (productosVenta.size() >= 2) {
                         Producto prod1 = productosVenta.get(0);
                         Producto prod2 = productosVenta.get(1);
 
-                        // Creo una venta de prueba con 2 productos (1 unidad del primero y 2 unidades
-                        // del segundo)
+                        // Creo una venta de prueba con 2 productos (1 unidad del primero y 2 unidades del segundo)
                         VentaRequestDTO ventaPrueba = new VentaRequestDTO(
                                 "EFECTIVO",
                                 "Prueba de venta",
@@ -196,12 +194,75 @@ public class DataInitializer implements CommandLineRunner {
                                 List.of(
                                         new DetalleVentaRequestDTO(prod1.getId(), 1),
                                         new DetalleVentaRequestDTO(prod2.getId(), 2)));
-
                         ventaService.create(ventaPrueba);
                         log.info("Ventas de prueba cargadas con éxito.");
                     }
                 }
+                // 6. Cargamos Datos Históricos para Estadísticas (Últimos 5 meses)
+                if (compraRepository.count() == 0) {
+                    log.info("Cargando datos históricos para las estadísticas...");
+                    
+                    Proveedor provEjemplo = proveedorRepository.findAll().stream().findFirst().orElse(null);
 
+                    // Bucle para retroceder en el tiempo: i = 1 (el mes pasado), i = 2 (hace 2 meses)...
+                    for (int i = 1; i <= 100; i++) {
+                        LocalDateTime fechaHist = LocalDateTime.now().minusHours(i);
+
+                        // --- A. Histórico de Compras (Gastos) ---
+                        Compra compraHist = new Compra();
+                        compraHist.setProveedor(provEjemplo);
+                        compraHist.setFechaCompra(fechaHist);
+                        compraHist.setFormaPago(FormaPago.EFECTIVO);
+                        compraHist.setTotalCompra(new BigDecimal("15000").multiply(new BigDecimal(i))); // Valores dinámicos
+                        compraHist.setCantidadTotal(i);
+
+                        DetalleCompra detCompra = new DetalleCompra();
+                        detCompra.setProducto(cubierta);
+                        detCompra.setCantidad(i);
+                        detCompra.setPrecioUnitario(new BigDecimal("15000"));
+                        detCompra.setSubtotal(compraHist.getTotalCompra());
+                        detCompra.setCompra(compraHist);
+                        compraHist.setDetalles(new java.util.ArrayList<>(List.of(detCompra)));
+                        
+                        compraRepository.save(compraHist);
+
+                        // --- B. Histórico de Ventas (Ingresos) ---
+                        Venta ventaHist = new Venta();
+                        ventaHist.setNombreCliente("Cliente Histórico " + i);
+                        ventaHist.setFechaVenta(fechaHist);
+                        ventaHist.setFormaPago(FormaPago.EFECTIVO);
+                        ventaHist.setTotal(new BigDecimal("25000").multiply(new BigDecimal(i)));
+
+                        DetalleVenta detVenta = new DetalleVenta();
+                        detVenta.setProducto(cassette);
+                        detVenta.setCantidad(i);
+                        detVenta.setPrecioUnitario(new BigDecimal("25000"));
+                        detVenta.setTotal(ventaHist.getTotal());
+                        detVenta.setVenta(ventaHist);
+                        ventaHist.setDetalles(new java.util.ArrayList<>(List.of(detVenta)));
+                        
+                        ventaRepository.save(ventaHist);
+
+                        // --- C. Histórico de Reparaciones (Ingresos) ---
+                        OrdenServicio repHist = new OrdenServicio();
+                        repHist.setNombreCliente("Reparación Histórica " + i);
+                        repHist.setObservacion("Mantenimiento hora -" + i);
+                        repHist.setIsReparacion(true);
+                        repHist.setEstado(EstadoOrden.Finalizado);
+                        repHist.setValorManoObra(new BigDecimal("10000").multiply(new BigDecimal(i)));
+                        repHist.setValorTotal(new BigDecimal("15000").multiply(new BigDecimal(i)));
+                        repHist.setFechaConfirmada(fechaHist);
+
+                        DetalleOrdenServicio detRep = new DetalleOrdenServicio();
+                        detRep.setProducto(cubierta);
+                        detRep.setCantidad(1);
+                        detRep.setValorUnitario(new BigDecimal("5000").multiply(new BigDecimal(i))); // Mano de obra + Este item = 15000
+                        repHist.addDetalle(detRep);
+                        
+                        ordenServicioRepository.save(repHist);
+                    }
+                    log.info("Datos históricos generados con éxito.");
+                }
             }
         }
     }
