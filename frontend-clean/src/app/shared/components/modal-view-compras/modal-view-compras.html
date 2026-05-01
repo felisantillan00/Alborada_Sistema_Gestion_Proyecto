@@ -33,10 +33,10 @@
 
             <!-- PROVEEDOR -->
             <div class="col-md-4">
-              <label class="form-label fw-semibold" >Proveedor</label>
+              <label class="form-label fw-semibold">Proveedor</label>
               <ng-select [items]="proveedores" bindLabel="nombre" bindValue="id" placeholder="Seleccione proveedor"
                 formControlName="nombreProveedor">
-              </ng-select> 
+              </ng-select>
               @if (form.get('nombreProveedor')?.touched && form.get('nombreProveedor')?.invalid) {
               <div class="text-danger small">*El campo proveedor es obligatorio</div>
               }
@@ -141,10 +141,14 @@
 
           <!-- BOTONES -->
           <div class="mt-4 d-flex justify-content-end gap-2">
+            @if (mode === 'create' || mode === 'edit') {
             <button type="submit" class="btn btn-success">
               {{ mode === 'create' ? 'Crear' : 'Guardar' }}
             </button>
-            <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+            }
+            <button type="button" class="btn btn-secondary" (click)="closed.emit()">
+              {{ mode === 'view' ? 'Cerrar' : 'Cancelar' }}
+            </button>
           </div>
 
         </form>

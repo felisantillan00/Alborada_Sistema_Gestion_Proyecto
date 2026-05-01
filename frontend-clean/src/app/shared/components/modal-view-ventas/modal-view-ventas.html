@@ -34,7 +34,8 @@
             <!-- CLIENTE -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Cliente</label>
-              <input class="form-control shadow-sm" type="text" formControlName="nombreCliente" placeholder="Nombre del cliente" />
+              <input class="form-control shadow-sm" type="text" formControlName="nombreCliente"
+                placeholder="Nombre del cliente" />
               @if (form.get('nombreCliente')?.touched && form.get('nombreCliente')?.invalid) {
               <div class="text-danger small">El cliente es obligatorio</div>
               }
@@ -67,7 +68,7 @@
               }
             </div>
 
-            
+
             <!-- FORMA DE PAGO -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Forma de Pago</label>
@@ -158,14 +159,17 @@
 
           </div>
 
-          <!-- BOTONES -->
-          <div class="mt-4 d-flex justify-content-end gap-2">
-            <button type="submit" class="btn btn-success">
-              {{ mode === 'create' ? 'Crear' : 'Guardar' }}
-            </button>
-            <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
-          </div>
-
+          <<!-- BOTONES -->
+            <div class="mt-4 d-flex justify-content-end gap-2">
+              @if (mode === 'create' || mode === 'edit') {
+              <button type="submit" class="btn btn-success">
+                {{ mode === 'create' ? 'Crear' : 'Guardar' }}
+              </button>
+              }
+              <button type="button" class="btn btn-secondary" (click)="closed.emit()">
+                {{ mode === 'view' ? 'Cerrar' : 'Cancelar' }}
+              </button>
+            </div>
         </form>
         }
 
