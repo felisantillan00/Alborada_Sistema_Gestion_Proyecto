@@ -19,6 +19,7 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   styleUrl: './compras.css'
 })
 export class Compras implements OnInit {
+  cantidadActual: number =100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false
@@ -84,7 +85,7 @@ export class Compras implements OnInit {
     this.loadingCompras = true;
 
     this.comprasService
-      .getPage()
+      .getPage({cantidad: this.cantidadActual})
       .pipe(
         catchError((error) => {
           console.error('Error al obtener compras:', error);
@@ -104,6 +105,11 @@ export class Compras implements OnInit {
         this.loadingCompras = false;
         this.cdr.detectChanges();
       });
+  }
+
+  cargarMas(): void {
+    this.cantidadActual += 100;
+    this.getCompras();
   }
 
   getRowId = (params: any) => {

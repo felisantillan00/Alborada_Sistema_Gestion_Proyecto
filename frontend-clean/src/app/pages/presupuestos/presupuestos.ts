@@ -21,6 +21,7 @@ type PresupuestoEstado = 'all' | 'Pendiente_Aprobacion' | 'Aprobado_Presupuesto'
   styleUrl: './presupuestos.css',
 })
 export class Presupuestos implements OnInit {
+  cantidadActual: number = 100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
@@ -134,7 +135,7 @@ export class Presupuestos implements OnInit {
 
   getPresupuestos(): void {
     this.loadingPresupuestos = true;
-    this.presupuestosService.getPage()
+    this.presupuestosService.getPage({cantidad: this.cantidadActual})
       .pipe(
         catchError((error) => {
           console.error('Error al obtener presupuestos:', error);
@@ -163,6 +164,11 @@ export class Presupuestos implements OnInit {
         this.cdr.detectChanges();
         this.loadingPresupuestos = false;
       });
+  }
+
+  cargarMas():void{
+    this.cantidadActual += 100;
+    this.getPresupuestos();
   }
 
   onGridReady(params: GridReadyEvent): void {

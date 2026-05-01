@@ -22,6 +22,7 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   styleUrl: './inventario.css',
 })
 export class Inventario implements OnInit {
+  cantidadActual: number = 100
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
@@ -79,30 +80,12 @@ export class Inventario implements OnInit {
       this.getProductos();
   }
 
-  //getProductos(): void {
-  //  this.loadingProductos = true;
-
-  //  this.productoService
-  //    .getPage()
-  //    .pipe(
-  //      catchError((error) => {
-  //        console.error('Error al obtener productos:', error);
-  //        this.loadingProductos = false;
-  //        return of([] as ProductoView[]);
-  //      })
-  //    )
-  //    .subscribe((data) => {
-  //      this.productos = data.content;
-  //      this.loadingProductos = false;
-  //      console.log("SERAN?", this.productos)
-  //    });
-  //}
-
+  
   getProductos(): void {
     this.loadingProductos = true;
 
     this.productoService
-      .getPage()
+      .getPage({cantidad: this.cantidadActual})
       .pipe(
         catchError((error) => {
           console.error('Error al obtener productos:', error);
@@ -142,6 +125,11 @@ export class Inventario implements OnInit {
     if (action === 'view' || action === 'edit' || action === 'delete') {
       this.openModal(action, event.data);
     }
+  }
+
+  cargarMas(): void {
+    this.cantidadActual += 100; // Incrementa la cantidad actual en 100
+    this.getProductos(); // Vuelve a cargar los productos con la nueva cantidad
   }
 
   closeModal(): void {

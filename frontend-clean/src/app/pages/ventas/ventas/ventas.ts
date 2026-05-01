@@ -18,6 +18,7 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   styleUrl: './ventas.css'
 })
 export class Ventas implements OnInit {
+  cantidadActual: number = 100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
@@ -89,7 +90,7 @@ export class Ventas implements OnInit {
     this.loadingVentas = true;
 
     this.ventasService
-      .getPage()
+      .getPage({cantidad: this.cantidadActual})
       .pipe(
         catchError((error) => {
           console.error('Error al obtener ventas:', error);
@@ -108,6 +109,11 @@ export class Ventas implements OnInit {
         this.loadingVentas = false;
         this.cdr.detectChanges();
       });
+  }
+
+  cargarMas(): void {
+    this.cantidadActual += 100;
+    this.getVentas();
   }
 
   //Al realizar un cambio en el producto, 

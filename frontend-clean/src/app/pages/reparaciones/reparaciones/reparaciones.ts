@@ -20,6 +20,7 @@ type ReparacionEstado = 'all' | 'Pendiente_Aprobacion' | 'Aprobado_Presupuesto' 
   styleUrl: './reparaciones.css',
 })
 export class Reparaciones implements OnInit {
+  cantidadActual: number = 100;
   searchText: string = '';
   private gridApi!: GridApi;
   isSearchExpanded = false;
@@ -125,7 +126,7 @@ export class Reparaciones implements OnInit {
     this.loadingReparaciones = true;
 
     this.reparacionesService
-      .getPage()
+      .getPage({cantidad: this.cantidadActual})
       .pipe(
         catchError((error) => {
           console.error('Error al obtener reparaciones:', error);
@@ -151,6 +152,11 @@ export class Reparaciones implements OnInit {
   }
 
   getRowId = (params: any) => params.data.id.toString();
+
+  cargarMas():void{
+    this.cantidadActual += 100;
+    this.getReparaciones();
+  }
 
   onRowClicked(event: RowClickedEvent<ReparacionView>): void {
     const target = event.event?.target as HTMLElement | null;
