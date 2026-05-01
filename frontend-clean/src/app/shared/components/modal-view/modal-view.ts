@@ -215,12 +215,8 @@ export class ModalView implements OnInit {
     this.productoService.create(payload).pipe(
       catchError(err => {
         console.error('Error al crear producto', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Ocurrió un problema al crear el producto',
-          confirmButtonText: 'Aceptar'
-        })
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
         return EMPTY;
       })
     ).subscribe(() => {
@@ -238,12 +234,8 @@ export class ModalView implements OnInit {
     this.productoService.update(this.product!.id, payload).pipe(
       catchError(err => {
         console.error('Error al editar producto', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Ocurrió un problema al editar el producto',
-          confirmButtonText: 'Aceptar'
-        })
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
         return EMPTY;
       })
     ).subscribe(() => {
@@ -257,12 +249,8 @@ export class ModalView implements OnInit {
     this.productoService.delete(this.product!.id).pipe(
       catchError(err => {
         console.error('Error al eliminar producto', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo eliminar el producto',
-          confirmButtonText: 'Aceptar'
-        });
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
         return EMPTY;
       })
     ).subscribe(() => {
@@ -270,5 +258,14 @@ export class ModalView implements OnInit {
       this.submitted.emit('delete');
       this.closed.emit();
     });
+  }
+
+  private showError(mensaje: string = 'Ocurrió un error'): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: mensaje,
+      confirmButtonText: 'Aceptar'
+      });
   }
 }

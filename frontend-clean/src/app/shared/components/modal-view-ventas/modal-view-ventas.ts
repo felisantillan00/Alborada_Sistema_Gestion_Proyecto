@@ -220,7 +220,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
       },
       error: (err) => {
         console.log('Error al crear venta:', err.error);
-        this.showError();
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
@@ -233,7 +234,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
         this.submitted.emit('edit');
         this.closed.emit();
       },
-      error: () => this.showError(),
+      error: (err) => {
+        console.log('Error al editar venta:', err.error);
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
+      }
     });
   }
 
@@ -245,7 +250,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
         this.submitted.emit('delete');
         this.closed.emit();
       },
-      error: () => this.showError(),
+      error: (err) =>{
+        console.log('Error al eliminar venta:', err.error);
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
+      } 
     });
   }
 
@@ -263,7 +272,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
     Swal.fire({ icon: 'success', title: 'OK', text: message, confirmButtonText: 'Aceptar' });
   }
 
-  showError(): void {
-    Swal.fire({ icon: 'error', title: 'Error', text: 'Ocurrió un problema', confirmButtonText: 'Aceptar' });
+  showError(mensaje : string = 'Ocurrio un error'): void {
+    Swal.fire({ icon: 'error', title: 'Error', text: mensaje, confirmButtonText: 'Aceptar' });
   }
 }
