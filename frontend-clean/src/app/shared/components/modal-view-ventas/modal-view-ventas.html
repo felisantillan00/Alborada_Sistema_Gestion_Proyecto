@@ -15,18 +15,7 @@
       <!-- BODY -->
       <div class="modal-body">
 
-        @if (mode === 'delete') {
-        <p class="mb-0 fs-5">
-          ¿Seguro que deseas eliminar la venta de
-          <strong>{{ venta?.nombreCliente ?? '' }}</strong>?
-        </p>
 
-        <div class="mt-4 d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
-        </div>
-
-        } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
           <div class="row g-3">
@@ -163,7 +152,7 @@
             </button>
           </div>
         </form>
-        }
+        
 
       </div>
     </div>

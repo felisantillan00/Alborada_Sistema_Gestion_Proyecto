@@ -14,7 +14,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { FormaPago, FORMAS_PAGO } from '../../../core/models/compra';
 
-type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+type ModalMode = 'create' | 'view' | 'edit' ;
 
 
 
@@ -207,7 +207,6 @@ export class ModalViewVentas implements OnChanges, OnInit {
     switch (this.mode) {
       case 'create': this.handleCreate(); break;
       case 'edit': this.handleEdit(); break;
-      case 'delete': this.handleDelete(); break;
     }
   }
 
@@ -254,28 +253,13 @@ export class ModalViewVentas implements OnChanges, OnInit {
     });
   }
 
-  handleDelete(): void {
-    if (!this.venta?.id) return;
-    this.ventasService.delete(this.venta.id).subscribe({
-      next: () => {
-        this.showSuccess('Venta eliminada correctamente');
-        this.submitted.emit('delete');
-        this.closed.emit();
-      },
-      error: (err) => {
-        console.log('Error al eliminar venta:', err.error);
-        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
-        this.showError(errorMensaje);
-      }
-    });
-  }
+  
 
   get title(): string {
     const titles: Record<ModalMode, string> = {
       create: 'Nueva Venta',
       view: 'Venta',
       edit: 'Editar Venta',
-      delete: 'Borrar Venta',
     };
     return titles[this.mode] ?? 'Venta';
   }

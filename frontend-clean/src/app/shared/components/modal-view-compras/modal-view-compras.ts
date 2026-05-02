@@ -10,7 +10,7 @@ import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
 import Swal from 'sweetalert2';
 
-type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+type ModalMode = 'create' | 'view' | 'edit';
 
 
 
@@ -107,9 +107,6 @@ export class ModalViewCompras implements OnChanges, OnInit {
       case 'edit':
         this.handleEdit();
         break;
-      case 'delete':
-        this.handleDelete();
-        break;
     }
   }
 
@@ -162,21 +159,7 @@ export class ModalViewCompras implements OnChanges, OnInit {
     });
   }
 
-  handleDelete(): void {
-    if (!this.compra?.id) return;
-
-    this.comprasService.delete(this.compra.id).subscribe({
-      next: () => {
-        this.showSuccess('Compra eliminada correctamente');
-        this.closed.emit();
-      },
-      error: (err) => {
-        //logica para traer el error de spring
-        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
-        this.showError(errorMensaje);
-      }
-    });
-  }
+  
 
   buildPayload(includeId: boolean = false): any {
     const raw = this.form.getRawValue();
@@ -297,8 +280,6 @@ export class ModalViewCompras implements OnChanges, OnInit {
         return 'Ver Compra';
       case 'edit':
         return 'Editar Compra';
-      case 'delete':
-        return 'Borrar Compra';
       default:
         return 'Compra';
     }

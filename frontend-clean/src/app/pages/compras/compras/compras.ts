@@ -9,7 +9,7 @@ import { CompraView } from '../../../core/models/compra';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ModalViewCompras } from '../../../shared/components/modal-view-compras/modal-view-compras';
 
-type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+type ModalMode = 'create' | 'view' | 'edit' ;
 
 @Component({
   selector: 'app-compras',
@@ -74,9 +74,6 @@ export class Compras implements OnInit {
           <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
             <i class="bi bi-pencil"></i>
           </button>
-          <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
-            <i class="bi bi-trash"></i>
-          </button>
         </div>
       `,
     },
@@ -140,7 +137,7 @@ export class Compras implements OnInit {
       return;
     }
 
-    if (action === 'view' || action === 'edit' || action === 'delete') {
+    if (action === 'view' || action === 'edit') {
       this.openModal(action, event.data);
     }
   }

@@ -8,7 +8,7 @@ import { VentaView } from '../../../core/models/venta';
 import { VentasService } from '../../../core/services/ventas/ventas-service';
 import { ModalViewVentas } from '../../../shared/components/modal-view-ventas/modal-view-ventas';
 
-type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+type ModalMode = 'create' | 'view' | 'edit' ;
 
 @Component({
   selector: 'app-ventas',
@@ -71,9 +71,6 @@ export class Ventas implements OnInit {
       </button>
       <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
         <i class="bi bi-pencil"></i>
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
-        <i class="bi bi-trash"></i>
       </button>
     </div>
       `,
@@ -138,7 +135,7 @@ export class Ventas implements OnInit {
       return;
     }
 
-    if (action === 'view' || action === 'edit' || action === 'delete') {
+    if (action === 'view' || action === 'edit') {
       this.openModal(action, event.data);
     }
   }
