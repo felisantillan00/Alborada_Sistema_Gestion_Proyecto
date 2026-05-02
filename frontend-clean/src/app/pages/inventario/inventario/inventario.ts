@@ -10,6 +10,7 @@ import { ProductoService } from '../../../core/services/producto/producto-servic
 import { ModalView } from '../../../shared/components/modal-view/modal-view';
 import { HostListener } from '@angular/core';
 import { GridApi, GridReadyEvent } from 'ag-grid-community';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
@@ -22,7 +23,6 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   styleUrl: './inventario.css',
 })
 export class Inventario implements OnInit {
-  cantidadActual: number = 100
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
@@ -35,6 +35,8 @@ export class Inventario implements OnInit {
   modalOpen = false;
   modalMode: ModalMode = 'create';
   selectedProducto: ProductoView | null = null;
+
+  paginacion = new PagHelper(() => this.getProductos());
 
   readonly defaultColDef: ColDef<ProductoView> = {
     sortable: true,
@@ -85,7 +87,7 @@ export class Inventario implements OnInit {
     this.loadingProductos = true;
 
     this.productoService
-      .getPage({cantidad: this.cantidadActual})
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener productos:', error);
@@ -101,6 +103,7 @@ export class Inventario implements OnInit {
       )
       .subscribe((data) => {
         this.productos = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
+        this.paginacion.setMetadata(data);
         this.loadingProductos = false;
         this.cdr.detectChanges();           //fuerzo la deteccion
         console.log("SERAN?", this.productos)
@@ -128,13 +131,7 @@ export class Inventario implements OnInit {
   }
 
   cargarMas(): void {
-    const LIMITE = 1000
-    if(this.cantidadActual >= LIMITE){
-      alert(`Has alcanzado el límite de ${LIMITE} items. No se pueden cargar más.`);
-      return;
-    }
-    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
-    this.getProductos(); // Vuelve a cargar los productos con la nueva cantidad
+    this.paginacion.cargarMas();
   }
 
   closeModal(): void {

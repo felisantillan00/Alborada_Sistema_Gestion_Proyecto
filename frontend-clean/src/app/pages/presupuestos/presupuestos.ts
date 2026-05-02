@@ -8,6 +8,7 @@ import { PresupuestoView } from '../../core/models/presupuesto';
 import { CommonModule } from '@angular/common';
 import { ModalViewPresupuesto } from '../../shared/components/modal-view-presupuestos/modal-view-presupuestos';
 import Swal from 'sweetalert2';
+import {PagHelper} from "../../core/utils/pagHelper";
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -21,7 +22,6 @@ type PresupuestoEstado = 'all' | 'Pendiente_Aprobacion' | 'Aprobado_Presupuesto'
   styleUrl: './presupuestos.css',
 })
 export class Presupuestos implements OnInit {
-  cantidadActual: number = 100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
@@ -37,9 +37,7 @@ export class Presupuestos implements OnInit {
   modalMode: ModalMode = 'create';
   selectedPresupuesto: PresupuestoView | null = null;
 
-  totalElements = 0;
-  totalPages = 0;
-  number = 0;
+  paginacion = new PagHelper(() => this.getPresupuestos());
 
   readonly defaultColDef: ColDef<PresupuestoView> = {
     sortable: true,
@@ -135,7 +133,7 @@ export class Presupuestos implements OnInit {
 
   getPresupuestos(): void {
     this.loadingPresupuestos = true;
-    this.presupuestosService.getPage({cantidad: this.cantidadActual})
+    this.presupuestosService.getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener presupuestos:', error);
@@ -158,22 +156,14 @@ export class Presupuestos implements OnInit {
       )
       .subscribe((data) => {
         this.presupuestos = [...data.content];
-        this.totalElements = data.totalElements;
-        this.totalPages = data.totalPages;
-        this.number = data.number;
+        this.paginacion.setMetadata(data);
         this.cdr.detectChanges();
         this.loadingPresupuestos = false;
       });
   }
 
   cargarMas(): void {
-    const LIMITE = 1000
-    if(this.cantidadActual >= LIMITE){
-      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
-      return;
-    }
-    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
-    this.getPresupuestos(); // Vuelve a cargar los productos con la nueva cantidad
+    this.paginacion.cargarMas();
   }
 
   onGridReady(params: GridReadyEvent): void {

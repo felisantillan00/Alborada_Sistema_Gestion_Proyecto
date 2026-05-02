@@ -7,6 +7,7 @@ import { ColDef, GridApi, GridReadyEvent, RowClickedEvent } from 'ag-grid-commun
 import { ModalViewReparaciones } from '../../../shared/components/modal-view-reparaciones/modal-view-reparaciones';
 import { catchError, of } from 'rxjs';
 import { Pagina } from '../../../core/models/pagina';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 type ReparacionEstado = 'all' | 'Pendiente_Aprobacion' | 'Aprobado_Presupuesto' | 'Finalizado';
@@ -20,7 +21,6 @@ type ReparacionEstado = 'all' | 'Pendiente_Aprobacion' | 'Aprobado_Presupuesto' 
   styleUrl: './reparaciones.css',
 })
 export class Reparaciones implements OnInit {
-  cantidadActual: number = 100;
   searchText: string = '';
   private gridApi!: GridApi;
   isSearchExpanded = false;
@@ -35,9 +35,7 @@ export class Reparaciones implements OnInit {
   modalMode: ModalMode = 'create';
   selectedReparacion: ReparacionView | null = null;
 
-  totalElements = 0;
-  totalPages = 0;
-  number = 0;
+  paginacion = new PagHelper(() => this.getReparaciones());
 
   readonly defaultColDef: ColDef<ReparacionView> = {
     sortable: true,
@@ -96,7 +94,7 @@ export class Reparaciones implements OnInit {
       sortable: false,
       filter: false,
       maxWidth: 180,
-      cellRenderer: () => `
+      cellRenderer: (params: any) => `
         <div class="d-flex gap-2 justify-content-center h-100 align-items-center">
       <button type="button" class="btn btn-sm btn-outline-primary" data-action="view" title="Ver">
         <i class="bi bi-eye"></i>
@@ -107,9 +105,11 @@ export class Reparaciones implements OnInit {
       <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
         <i class="bi bi-trash"></i>
       </button>
-      <button class="btn btn-sm btn-outline-success" data-action="aprobado">
-            <i class="bi bi-check"></i>
-          </button>
+      ${params.data.estado !== 'Finalizado' ? `
+      <button class="btn btn-sm btn-outline-success" data-action="terminar" title="Finalizar">
+        <i class="bi bi-check-lg"></i>
+      </button>
+      ` : ''}
     </div>
       `,
     },
@@ -126,7 +126,7 @@ export class Reparaciones implements OnInit {
     this.loadingReparaciones = true;
 
     this.reparacionesService
-      .getPage({cantidad: this.cantidadActual})
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener reparaciones:', error);
@@ -142,9 +142,7 @@ export class Reparaciones implements OnInit {
       )
       .subscribe((data) => {
         this.reparaciones = [...data.content];
-        this.totalElements = data.totalElements;
-        this.totalPages = data.totalPages;
-        this.number = data.number;
+        this.paginacion.setMetadata(data);
 
         this.loadingReparaciones = false;
         this.cdr.detectChanges();
@@ -154,13 +152,7 @@ export class Reparaciones implements OnInit {
   getRowId = (params: any) => params.data.id.toString();
 
   cargarMas(): void {
-    const LIMITE = 1000
-    if(this.cantidadActual >= LIMITE){
-      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
-      return;
-    }
-    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
-    this.getReparaciones(); // Vuelve a cargar los productos con la nueva cantidad
+    this.paginacion.cargarMas();
   }
 
   onRowClicked(event: RowClickedEvent<ReparacionView>): void {
@@ -180,7 +172,9 @@ export class Reparaciones implements OnInit {
         this.openModal('delete', event.data);
         break;
       case 'terminar':
-        this.terminarReparacion(event.data.id);
+        if (event.data.estado !== 'Finalizado') {
+          this.terminarReparacion(event.data.id);
+        }
         break;
     }
   }

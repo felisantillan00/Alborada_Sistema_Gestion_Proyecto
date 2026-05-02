@@ -8,6 +8,7 @@ import { Pagina } from '../../../core/models/pagina';
 import { CompraView } from '../../../core/models/compra';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ModalViewCompras } from '../../../shared/components/modal-view-compras/modal-view-compras';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
 type ModalMode = 'create' | 'view' | 'edit' ;
 
@@ -19,12 +20,12 @@ type ModalMode = 'create' | 'view' | 'edit' ;
   styleUrl: './compras.css'
 })
 export class Compras implements OnInit {
-  cantidadActual: number = 100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false
   @ViewChild('searchInput') searchInput!: ElementRef;
   currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
+  paginacion = new PagHelper(() => this.getCompras());
 
   compras: CompraView[] = [];
   loadingCompras = false;
@@ -89,7 +90,7 @@ export class Compras implements OnInit {
     this.loadingCompras = true;
 
     this.comprasService
-      .getPage({ cantidad: this.cantidadActual })
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener compras:', error);
@@ -105,6 +106,7 @@ export class Compras implements OnInit {
       )
       .subscribe((data) => {
         this.compras = data.content;
+        this.paginacion.setMetadata(data);  
         console.log('Compras obtenidas:', this.compras);
         this.loadingCompras = false;
         this.cdr.detectChanges();
@@ -112,13 +114,7 @@ export class Compras implements OnInit {
   }
 
   cargarMas(): void {
-    const LIMITE = 1000
-    if (this.cantidadActual >= LIMITE) {
-      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
-      return;
-    }
-    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
-    this.getCompras(); // Vuelve a cargar los productos con la nueva cantidad
+    this.paginacion.cargarMas();
   }
 
   getRowId = (params: any) => {

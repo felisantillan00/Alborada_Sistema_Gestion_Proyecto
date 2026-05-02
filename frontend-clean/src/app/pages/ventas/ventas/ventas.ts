@@ -7,6 +7,7 @@ import { Pagina } from '../../../core/models/pagina';
 import { VentaView } from '../../../core/models/venta';
 import { VentasService } from '../../../core/services/ventas/ventas-service';
 import { ModalViewVentas } from '../../../shared/components/modal-view-ventas/modal-view-ventas';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
 type ModalMode = 'create' | 'view' | 'edit' ;
 
@@ -18,12 +19,12 @@ type ModalMode = 'create' | 'view' | 'edit' ;
   styleUrl: './ventas.css'
 })
 export class Ventas implements OnInit {
-  cantidadActual: number = 100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false;
   @ViewChild('searchInput') searchInput!: ElementRef;
   currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
+  paginacion = new PagHelper(() => this.getVentas());
 
 
   ventas: VentaView[] = [];
@@ -87,7 +88,7 @@ export class Ventas implements OnInit {
     this.loadingVentas = true;
 
     this.ventasService
-      .getPage({cantidad: this.cantidadActual})
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener ventas:', error);
@@ -103,19 +104,14 @@ export class Ventas implements OnInit {
       )
       .subscribe((data) => {
         this.ventas = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
+        this.paginacion.setMetadata(data);
         this.loadingVentas = false;
         this.cdr.detectChanges();
       });
   }
 
   cargarMas(): void {
-    const LIMITE = 1000
-    if(this.cantidadActual >= LIMITE){
-      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
-      return;
-    }
-    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
-    this.getVentas(); // Vuelve a cargar los productos con la nueva cantidad
+    this.paginacion.cargarMas();
   }
 
   //Al realizar un cambio en el producto, 
