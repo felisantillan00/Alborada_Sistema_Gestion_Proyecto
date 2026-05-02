@@ -15,12 +15,6 @@
       <!-- BODY -->
       <div class="modal-body">
 
-
-        <div class="mt-4 d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
-        </div>
-
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
           <div class="row g-3">
