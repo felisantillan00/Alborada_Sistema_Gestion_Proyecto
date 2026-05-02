@@ -1,4 +1,7 @@
 package com.example.backend.model;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.*;
@@ -9,36 +12,45 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+// 1. CORREGIDO: "producto" en singular y seteando "activo"
+@SQLDelete(sql = "UPDATE producto SET activo = false WHERE id = ?") 
+@SQLRestriction("activo = true")
 public class Producto {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String nombre;
+    
     private String descripcion;
-    @Column(name = "precio_venta",precision = 10, scale = 2) // scale 2 permite 10.50
+    
+    @Column(name = "precio_venta", precision = 10, scale = 2)
     private BigDecimal precioVenta;
-    @Column(name = "precio_costo", precision = 10, scale = 2) // scale 2 permite 10.50
+    
+    @Column(name = "precio_costo", precision = 10, scale = 2)
     private BigDecimal precioCosto;
 
     private BigDecimal stock;
+
+    // 2. CORREGIDO: La variable ahora se llama "activo" y por defecto es true
+    @Column(nullable = false)
+    private boolean activo = true; 
 
     @Column(name = "stock_minimo")
     private BigDecimal stockMinimo;
 
     @Column(name = "margen_ganancia")
-    private BigDecimal margenGanancia; // Porcentaje de ganancia sobre el costo. Usado para calcular precioVenta.
+    private BigDecimal margenGanancia;
 
-    // Muchos Productos -> Una Categoria
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
     
-    // Muchos Productos -> Una Marca
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_marca", nullable = false)
     private Marca marca;
     
-    // Muchos Productos -> Un Proveedor
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_proveedor", nullable = true)
     private Proveedor proveedor;

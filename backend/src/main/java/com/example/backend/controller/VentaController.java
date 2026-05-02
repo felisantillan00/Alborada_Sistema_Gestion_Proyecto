@@ -27,7 +27,7 @@ public class VentaController {
     // --- 2. GET: OBTENER TODAS LAS VENTAS PAGINADAS ---
     @GetMapping
     public ResponseEntity<Page<VentaResponseDTO>> getAll(
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<VentaResponseDTO> ventas = ventaService.findAll(pageable);
         return ResponseEntity.ok(ventas);
     }

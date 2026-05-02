@@ -210,7 +210,7 @@ public class DataInitializer implements CommandLineRunner {
 
                         // --- A. Histórico de Compras (Gastos) ---
                         Compra compraHist = new Compra();
-                        compraHist.setProveedor(provEjemplo);
+                        compraHist.setProveedorId((long) 1);
                         compraHist.setFechaCompra(fechaHist);
                         compraHist.setFormaPago(FormaPago.EFECTIVO);
                         compraHist.setTotalCompra(new BigDecimal("15000").multiply(new BigDecimal(i))); // Valores dinámicos

@@ -29,7 +29,7 @@ public class PresupuestoController {
     // --- 2. GET: OBTENER TODOS LOS PRESUPUESTOS ---
     @GetMapping
     public ResponseEntity<Page<OrdenServicioResponseDTO>> getAll(
-            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         
         // Pasamos el pageable al servicio
         Page<OrdenServicioResponseDTO> presupuestos = service.obtenerTodosPorTipo(false, pageable);
