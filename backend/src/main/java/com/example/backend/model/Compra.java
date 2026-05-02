@@ -35,16 +35,6 @@ public class Compra {
     @Column(name = "cantidad_total", nullable = false)
     private Integer cantidadTotal;
 
-    public void setProveedorId(Long id) {
-        if (id != null) {
-            proveedor.setId(id);
-        }
-    }
-
-    public Long getProveedorId() {
-        return proveedor != null ? proveedor.getId() : null;
-    }
-
     public LocalDateTime getFechaCompra() {
         return fechaCompra;
     }
