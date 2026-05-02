@@ -16,15 +16,7 @@ import { FormaPago, FORMAS_PAGO } from '../../../core/models/compra';
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
-export function noFechaFutura(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) return null;
-    const hoy = new Date();
-    hoy.setHours(23, 59, 59, 999);
-    const fechaIngresada = new Date(control.value);
-    return fechaIngresada > hoy ? { fechaFutura: true } : null;
-  };
-}
+
 
 // Validator: rechaza strings que sean solo espacios en blanco
 export function noSoloEspacios(): ValidatorFn {
@@ -47,6 +39,7 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   productos: ProductoView[] = [];
   productosLoaded = false;
+  totalCalculado: number = 0;
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
@@ -56,12 +49,10 @@ export class ModalViewVentas implements OnChanges, OnInit {
   private ventasService = inject(VentasService);
   private cdr = inject(ChangeDetectorRef);
 
-  today: string = new Date().toISOString().split('T')[0];
+
 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
-    total: [null as number | null, [Validators.required, Validators.min(1)]],
-    fechaVenta: ['', [Validators.required, noFechaFutura()]],
     formaPago: [null as FormaPago | null, Validators.required],
     observacion: ['', [Validators.minLength(3), Validators.maxLength(255), noSoloEspacios()]],
     detalles: this.fb.array<FormGroup>([]),
@@ -69,6 +60,9 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.getProductos();
+    this.form.valueChanges.subscribe(() => {
+      this.recalcularTotal();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -88,6 +82,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
     return this.detallesFormArray.controls as FormGroup[];
   }
 
+
+
   addDetalle(): void {
     this.detallesFormArray.push(this.createDetalleGroup());
   }
@@ -106,20 +102,17 @@ export class ModalViewVentas implements OnChanges, OnInit {
     });
   }
 
+
+
   private loadForm(): void {
-    // fecha ISO del backend → YYYY-MM-DD para el input date
-    const fechaFormateada = this.venta?.fechaVenta
-      ? this.venta.fechaVenta.substring(0, 10)  // toma solo "YYYY-MM-DD"
-      : '';
+
 
     const formaPagoNormalizada = this.venta?.formaPago
-    ? (this.venta.formaPago.trim().toUpperCase() as FormaPago)
-    : null; // 👈
+      ? (this.venta.formaPago.trim().toUpperCase() as FormaPago)
+      : null; // 👈
 
     this.form.patchValue({
       nombreCliente: this.venta?.nombreCliente ?? '',
-      total: this.venta?.total ?? null,
-      fechaVenta: fechaFormateada,
       formaPago: formaPagoNormalizada,
       observacion: this.venta?.observacion ?? '',
     });
@@ -135,6 +128,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
     } else {
       this.form.enable();
     }
+
+
   }
 
   private setDetallesEnFormArray(): void {
@@ -163,6 +158,16 @@ export class ModalViewVentas implements OnChanges, OnInit {
     }
 
     this.cdr.detectChanges();
+    this.recalcularTotal();
+
+  }
+
+  private recalcularTotal(): void {
+    this.totalCalculado = this.detallesFormArray.controls.reduce((sum, group) => {
+      const cantidad = Number(group.get('cantidad')?.value) || 0;
+      const precio = Number(group.get('precioUnitario')?.value) || 0;
+      return sum + cantidad * precio;
+    }, 0);
   }
 
   private createDetalleGroup(
@@ -181,11 +186,8 @@ export class ModalViewVentas implements OnChanges, OnInit {
 
   private buildPayload(includeId = false): VentaRequest {
     const v = this.form.getRawValue();
-    const fechaISO = v.fechaVenta ? `${v.fechaVenta}T00:00:00` : '';
     const payload: VentaRequest = {
       nombreCliente: v.nombreCliente!,
-      total: v.total!,
-      fechaVenta: fechaISO,
       formaPago: v.formaPago!,
       observacion: v.observacion ?? '',
       detalles: (v.detalles ?? []).map((d: any) => ({
@@ -209,9 +211,19 @@ export class ModalViewVentas implements OnChanges, OnInit {
     }
   }
 
+  onProductoChange(index: number): void {
+    const detalle = this.detallesFormArray.at(index);
+    const id = detalle.get('idProducto')?.value;
+    const producto = this.productos.find(p => p.id === id);
+    if (producto) {
+      detalle.patchValue({ precioUnitario: producto.precioVenta });
+      this.recalcularTotal();
+    }
+  }
+
   handleCreate(): void {
     const payload = this.buildPayload();
-     console.log('PAYLOAD ENVIADO:', JSON.stringify(payload, null, 2));
+    console.log('PAYLOAD ENVIADO:', JSON.stringify(payload, null, 2));
     this.ventasService.create(payload).subscribe({
       next: () => {
         this.showSuccess('Venta creada correctamente');
@@ -250,11 +262,11 @@ export class ModalViewVentas implements OnChanges, OnInit {
         this.submitted.emit('delete');
         this.closed.emit();
       },
-      error: (err) =>{
+      error: (err) => {
         console.log('Error al eliminar venta:', err.error);
         const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
         this.showError(errorMensaje);
-      } 
+      }
     });
   }
 
@@ -272,7 +284,9 @@ export class ModalViewVentas implements OnChanges, OnInit {
     Swal.fire({ icon: 'success', title: 'OK', text: message, confirmButtonText: 'Aceptar' });
   }
 
-  showError(mensaje : string = 'Ocurrio un error'): void {
+  showError(mensaje: string = 'Ocurrio un error'): void {
     Swal.fire({ icon: 'error', title: 'Error', text: mensaje, confirmButtonText: 'Aceptar' });
   }
+
+
 }

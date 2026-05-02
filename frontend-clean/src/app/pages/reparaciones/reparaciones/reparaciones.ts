@@ -153,9 +153,14 @@ export class Reparaciones implements OnInit {
 
   getRowId = (params: any) => params.data.id.toString();
 
-  cargarMas():void{
-    this.cantidadActual += 100;
-    this.getReparaciones();
+  cargarMas(): void {
+    const LIMITE = 1000
+    if(this.cantidadActual >= LIMITE){
+      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
+      return;
+    }
+    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
+    this.getReparaciones(); // Vuelve a cargar los productos con la nueva cantidad
   }
 
   onRowClicked(event: RowClickedEvent<ReparacionView>): void {

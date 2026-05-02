@@ -15,14 +15,4 @@ export class ProductoService extends Api<ProductoView, ProductoRequest> {
     super(http, 'producto');
   }
 
-
- getProductosPaginados(pagina: number, cantidad: number): Observable<ProductoView[]> {
-    
-    const params = {
-      _page: pagina,
-      _limit: cantidad
-    };
-
-    return this.getAll(params);
-  }
 }

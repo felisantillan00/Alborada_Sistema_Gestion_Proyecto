@@ -166,9 +166,14 @@ export class Presupuestos implements OnInit {
       });
   }
 
-  cargarMas():void{
-    this.cantidadActual += 100;
-    this.getPresupuestos();
+  cargarMas(): void {
+    const LIMITE = 1000
+    if(this.cantidadActual >= LIMITE){
+      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
+      return;
+    }
+    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
+    this.getPresupuestos(); // Vuelve a cargar los productos con la nueva cantidad
   }
 
   onGridReady(params: GridReadyEvent): void {

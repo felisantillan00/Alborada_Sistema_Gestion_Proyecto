@@ -128,7 +128,12 @@ export class Inventario implements OnInit {
   }
 
   cargarMas(): void {
-    this.cantidadActual += 100; // Incrementa la cantidad actual en 100
+    const LIMITE = 1000
+    if(this.cantidadActual >= LIMITE){
+      alert(`Has alcanzado el límite de ${LIMITE} items. No se pueden cargar más.`);
+      return;
+    }
+    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
     this.getProductos(); // Vuelve a cargar los productos con la nueva cantidad
   }
 

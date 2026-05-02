@@ -19,7 +19,7 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   styleUrl: './compras.css'
 })
 export class Compras implements OnInit {
-  cantidadActual: number =100;
+  cantidadActual: number = 100;
   private gridApi!: GridApi;
   searchText: string = '';
   isSearchExpanded = false
@@ -49,9 +49,16 @@ export class Compras implements OnInit {
       valueFormatter: (params) => {
         return params.value != null ? '$ ' + params.value : '';
       }
-    }, 
+    },
     { field: 'proveedorNombre', headerName: 'Proveedor', minWidth: 200 },
-    { field: 'fecha', headerName: 'Fecha' },
+    {
+      field: 'fechaCompra',
+      headerName: 'Fecha',
+      valueFormatter: (params) => {
+        if (!params.value) return '';
+        return params.value.substring(0, 10); // muestra YYYY-MM-DD
+      }
+    },
     { field: 'formaPago', headerName: 'Forma de Pago' },
     {
       headerName: 'Actions',
@@ -85,7 +92,7 @@ export class Compras implements OnInit {
     this.loadingCompras = true;
 
     this.comprasService
-      .getPage({cantidad: this.cantidadActual})
+      .getPage({ cantidad: this.cantidadActual })
       .pipe(
         catchError((error) => {
           console.error('Error al obtener compras:', error);
@@ -108,8 +115,13 @@ export class Compras implements OnInit {
   }
 
   cargarMas(): void {
-    this.cantidadActual += 100;
-    this.getCompras();
+    const LIMITE = 1000
+    if (this.cantidadActual >= LIMITE) {
+      alert(`Has alcanzado el límite de ${LIMITE} de items. No se pueden cargar más.`);
+      return;
+    }
+    this.cantidadActual = Math.min(this.cantidadActual + 100, LIMITE); // Incrementa la cantidad actual en 100
+    this.getCompras(); // Vuelve a cargar los productos con la nueva cantidad
   }
 
   getRowId = (params: any) => {
@@ -142,6 +154,7 @@ export class Compras implements OnInit {
   onModalSubmit(mode: ModalMode): void {
     // Placeholder for create/edit/delete integration.
     console.log(`Modal submit action: ${mode}`);
+    this.getCompras();
     this.closeModal();
   }
 

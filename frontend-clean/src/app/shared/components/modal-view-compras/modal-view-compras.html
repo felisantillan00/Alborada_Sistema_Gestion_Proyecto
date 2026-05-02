@@ -42,25 +42,9 @@
               }
             </div>
 
-            <!-- PRECIO TOTAL -->
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Precio Total</label>
-              <div class="input-group shadow-sm">
-                <span class="input-group-text">$</span>
-                <input class="form-control" type="number" formControlName="total" />
-              </div>
-              @if (form.get('total')?.touched && form.get('total')?.invalid) {
-              <div class="text-danger small mt-1">El precio total debe ser mayor a 0</div>
-              }
-            </div>
 
-            <!-- FECHA -->
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Fecha</label>
-              <input type="date" class="form-control" formControlName="fecha"
-                [class.is-invalid]="form.get('fecha')?.invalid && form.get('fecha')?.touched" />
-              <div class="invalid-feedback">La fecha es requerida.</div>
-            </div>
+
+
 
             <!-- FORMA DE PAGO -->
             <div class="col-md-4">
@@ -75,8 +59,17 @@
               }
             </div>
 
+            @if (mode === 'view' && compra?.fechaCompra) {
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Fecha</label>
+              <p class="form-control-plaintext fw-medium">
+                {{ compra!.fechaCompra | date: 'dd/MM/yyyy' }}
+              </p>
+            </div>
+            }
+
             <!-- PRODUCTOS -->
-            <div formArrayName="Productos">
+            <div class='col-12' formArrayName="Productos">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="form-label mb-0 fw-semibold">Productos</label>
                 @if (mode !== 'view') {
@@ -93,7 +86,7 @@
                   <div class="col-md-4">
                     <label class="form-label">Producto</label>
                     <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
-                      placeholder="Seleccioná un producto...">
+                      placeholder="Seleccioná un producto..." (change)="onProductoChange($index)">
                     </ng-select>
                     @if (producto.get('idProducto')?.touched && producto.get('idProducto')?.invalid) {
                     <div class="text-danger small mt-1">Debe seleccionar un producto</div>
@@ -112,16 +105,16 @@
                     }
                   </div>
 
-                  @if (compra !== null || mode === 'view') {
+
                   <div class="col-md-3">
-                    <label class="form-label">{{ precioLabel }}</label>
+                    <label class="form-label">Precio Unitario</label>
                     <div class="input-group">
                       <span class="input-group-text">$</span>
                       <input class="form-control bg-light" type="number" formControlName="precioCompra"
                         [readonly]="true" />
                     </div>
                   </div>
-                  }
+
 
                   @if (mode !== 'view') {
                   <div class="col-md-2">
@@ -137,6 +130,13 @@
               }
             </div>
 
+          </div>
+
+          <div class="bg-light rounded p-4 mt-4 border-start border-4 border-success shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-uppercase fw-bold text-muted">Total</span>
+              <h2 class="fw-bold text-success mb-0">$ {{ totalCalculado | number: '1.2-2' }}</h2>
+            </div>
           </div>
 
           <!-- BOTONES -->

@@ -1,17 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ProveedoresService } from '../../../core/services/proveedores/proveedores-service';
+import { Proveedor } from '../../../core/models/proveedor';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CompraView, FORMAS_PAGO, FormaPago } from '../../../core/models/compra';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ProductoView } from '../../../core/models/producto';
 import Swal from 'sweetalert2';
-import { ProveedoresService } from '../../../core/services/proveedores/proveedores-service';
-import { Proveedor } from '../../../core/models/proveedor';
-
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+
+
 
 @Component({
   selector: 'app-modal-view-compras',
@@ -19,14 +20,18 @@ type ModalMode = 'create' | 'view' | 'edit' | 'delete';
   imports: [CommonModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './modal-view-compras.html',
 })
-export class ModalViewCompras implements OnChanges {
+export class ModalViewCompras implements OnChanges, OnInit {
   @Input() mode: ModalMode = 'create';
   @Input() compra: CompraView | null = null;
 
   productos: ProductoView[] = [];
-  proveedores: Proveedor[] = [];
   productosLoaded = false;
   formasPago = FORMAS_PAGO;
+  totalCalculado: number = 0;
+
+  proveedores: Proveedor[] = [];
+  private proveedoresService = inject(ProveedoresService);
+
 
   @Output() closed = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<ModalMode>();
@@ -36,23 +41,17 @@ export class ModalViewCompras implements OnChanges {
   private comprasService = inject(ComprasService);
   private cdr = inject(ChangeDetectorRef);
 
-  constructor(
-    private proveedoresService: ProveedoresService,
-    private productoService: ProductoService
-  ) { }
 
   ngOnInit(): void {
     this.getProductos();
+    this.form.valueChanges.subscribe(() => {
+      this.recalcularTotal();
+    })
     this.getProveedores();
-
-    setTimeout(() => {
-      this.cdr.detectChanges();
-    });
   }
 
   form = this.fb.group({
-    total: [null as number | null, [Validators.required, Validators.min(1)]],
-    nombreProveedor: [null as number | null, Validators.required], fecha: ['', Validators.required],
+    nombreProveedor: ['', Validators.required],
     formaPago: [null as FormaPago | null, Validators.required],
     Productos: this.fb.array<FormGroup>([]),
   });
@@ -66,25 +65,6 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
-  getProveedores(): void {
-    this.proveedoresService.getAll().subscribe(data => {
-      this.proveedores = Array.isArray(data)
-        ? data
-        : (data as any).content || [];
-
-      // 👇 Parcheamos SOLO el proveedor si tenemos una compra cargada (modo edición/vista)
-      if (this.compra?.proveedorNombre) {
-        const proveedor = this.proveedores.find(
-          p => p.nombre === this.compra?.proveedorNombre
-        );
-
-        if (proveedor) {
-          this.form.patchValue({ nombreProveedor: proveedor.id });
-        }
-      }
-    });
-  }
-
   get productoFormArray(): FormArray<FormGroup> {
     return this.form.get('Productos') as FormArray<FormGroup>;
   }
@@ -92,6 +72,8 @@ export class ModalViewCompras implements OnChanges {
   get precioLabel(): string {
     return this.compra ? 'Precio' : 'PrecioCompra';
   }
+
+
 
   addProducto(): void {
     this.productoFormArray.push(this.createProductoGroup());
@@ -131,21 +113,34 @@ export class ModalViewCompras implements OnChanges {
     }
   }
 
+  onProductoChange(index: number): void {
+    const grupo = this.productoFormArray.at(index);
+    const id = grupo.get('idProducto')?.value;
+    const producto = this.productos.find(p => p.id === id);
+    if (producto) {
+      grupo.patchValue({ precioCompra: producto.precioCosto });
+      this.recalcularTotal();
+    }
+  }
+
   handleCreate(): void {
     const payload = this.buildPayload();
     console.log('PAYLOAD COMPRA:', JSON.stringify(payload, null, 2)); // 👈
 
     this.comprasService.create(payload).subscribe({
       next: () => {
+        this.submitted.emit('create');
         this.showSuccess('Compra creada correctamente');
         this.closed.emit();
       },
       error: (err) => {
         console.log('ERROR STATUS:', err.status);
-        console.log('ERROR BODY:', err.error);
-        console.log('ERROR COMPLETO:', JSON.stringify(err.error, null, 2)); // 👈
+        console.log('ERROR COMPLETO:', JSON.stringify(err.error, null, 2));
 
-        this.showError();
+        //logica para traer el error de spring
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+
+        this.showError(errorMensaje);
       }
     });
   }
@@ -155,11 +150,14 @@ export class ModalViewCompras implements OnChanges {
 
     this.comprasService.update(this.compra!.id, payload).subscribe({
       next: () => {
+        this.submitted.emit('edit');
         this.showSuccess('Compra editada correctamente');
         this.closed.emit();
       },
-      error: () => {
-        this.showError();
+      error: (err) => {
+        //logica para traer el error de spring
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
@@ -172,28 +170,22 @@ export class ModalViewCompras implements OnChanges {
         this.showSuccess('Compra eliminada correctamente');
         this.closed.emit();
       },
-      error: () => {
-        this.showError();
+      error: (err) => {
+        //logica para traer el error de spring
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
 
   buildPayload(includeId: boolean = false): any {
     const raw = this.form.getRawValue();
-
-    const proveedorSeleccionado = this.proveedores.find(
-      p => p.id === raw.nombreProveedor
-    );
-
     const payload: any = {
-      proveedorNombre: proveedorSeleccionado ? proveedorSeleccionado.nombre : null,
-      totalCompra: raw.total,
-      fecha: raw.fecha,
+      nombreProveedor: raw.nombreProveedor,  // 👈 
       formaPago: raw.formaPago,
-      detalles: raw.Productos.map((p: any) => ({
-        producto: { id: p.idProducto },
+      detalles: raw.Productos.map((p: any) => ({  // 👈 era 
+        idProducto: p.idProducto,                // 👈 era 
         cantidad: p.cantidad,
-        precioCompra: p.precioCompra
       }))
     };
 
@@ -219,6 +211,20 @@ export class ModalViewCompras implements OnChanges {
     return this.productoFormArray.controls as FormGroup[];
   }
 
+  getProveedores(): void {
+    this.proveedoresService.getAll().subscribe(data => {
+      this.proveedores = Array.isArray(data) ? data : (data as any).content || [];
+    });
+  }
+
+  private recalcularTotal(): void {
+    this.totalCalculado = this.productoFormArray.controls.reduce((sum, group) => {
+      const cantidad = Number(group.get('cantidad')?.value) || 0;
+      const precio = Number(group.get('precioCompra')?.value) || 0;
+      return sum + cantidad * precio;
+    }, 0);
+  }
+
   private setProductosEnFormArray(): void {
     if (!this.compra?.productos) return;
 
@@ -242,20 +248,15 @@ export class ModalViewCompras implements OnChanges {
     }
 
     this.cdr.detectChanges();
+    this.recalcularTotal();
+
   }
 
   private loadForm(): void {
     //normalizo
     const formaPagoNormalizada = this.compra?.formaPago ? (this.compra.formaPago.trim().toLocaleUpperCase() as FormaPago) : null
-
-    const proveedor = this.proveedores.find(
-      p => p.nombre === this.compra?.proveedorNombre
-    );
-
     this.form.patchValue({
-      total: this.compra?.totalCompra ?? null,
-      nombreProveedor: proveedor?.id ?? null, // ✅ ahora sí coincide con bindValue="id"
-      fecha: this.compra?.fecha ?? '',
+      nombreProveedor: this.compra?.proveedorNombre ?? '',
       formaPago: formaPagoNormalizada,
     });
 
@@ -270,6 +271,8 @@ export class ModalViewCompras implements OnChanges {
     } else {
       this.form.enable();
     }
+
+
   }
 
   private createProductoGroup(
@@ -308,11 +311,11 @@ export class ModalViewCompras implements OnChanges {
       text: message
     });
   }
-  showError(): void {
+  showError(mensaje: string = "Ocurrio un error"): void {
     Swal.fire({
       icon: 'error',
       title: 'Error',
-      text: 'Ocurrió un problema'
+      text: mensaje,
     });
   }
 }
