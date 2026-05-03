@@ -1,7 +1,5 @@
 package com.example.backend.model;
-
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.*;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.*;
@@ -33,7 +31,7 @@ public class Producto {
 
     private BigDecimal stock;
 
-    // 2. CORREGIDO: La variable ahora se llama "activo" y por defecto es true
+    @Builder.Default
     @Column(nullable = false)
     private boolean activo = true; 
 

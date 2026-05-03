@@ -43,8 +43,6 @@ public class ProductoService {
         }
         // 4. Mapear y EMBELLECER
         Producto producto = new Producto();
-        // APLICAMOS LA MAGIA ACÁ:
-        producto.setActivo(true);
         producto.setNombre(capitalizarTexto(request.nombre())); 
         producto.setDescripcion(request.descripcion());
         producto.setStock(request.stock());
