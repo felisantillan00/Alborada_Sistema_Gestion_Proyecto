@@ -24,6 +24,9 @@ public class OrdenServicio {
     @Column(name = "nombre_cliente", nullable = false) 
     private String nombreCliente;
 
+    @Column(name = "contacto")
+    private Long contacto;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 

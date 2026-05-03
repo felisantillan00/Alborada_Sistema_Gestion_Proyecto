@@ -10,6 +10,7 @@ import lombok.*;
 public class OrdenServicioResponseDTO {
     private Long id;
     private String nombreCliente;
+    private Long contacto;
     private String estado;
     private BigDecimal valorTotal;
     private BigDecimal valorManoDeObra;

@@ -134,6 +134,13 @@ public class ProductoService {
         return mapToDTO(producto);
     }
 
+    // --- 7. ALERTA DE STOCK BAJO ---
+    public List<ProductoResponseDTO> obtenerProductosConBajoStock() {
+        return productoRepository.findProductosConBajoStock().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     // Funcion para calcular el precio de venta
     private void calcularPrecio(Producto producto, ProductoRequestDTO request) {
         // 1. Lógica de "Fusión": Si el request trae el valor lo usamos, sino mantenemos el del producto
