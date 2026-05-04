@@ -34,6 +34,11 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.findAll(pageable));
     }
 
+    @GetMapping("/stock-bajo")
+    public ResponseEntity<List<ProductoResponseDTO>> getProductosConBajoStock() {
+        return ResponseEntity.ok(productoService.obtenerProductosConBajoStock());
+    }
+
     @PostMapping
     public ResponseEntity<ProductoResponseDTO> create(@RequestBody ProductoRequestDTO request) {
         log.info("Recibida solicitud de creación de producto: {}", request.nombre());
