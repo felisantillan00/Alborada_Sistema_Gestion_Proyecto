@@ -60,6 +60,10 @@ public class CompraService {
             Producto producto = productoRepository.findById(detalleDTO.idProducto())
                     .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + detalleDTO.idProducto()));
 
+            if (!producto.isActivo()) {
+                throw new NegocioException("El producto '" + producto.getNombre() + "' está inactivo. Para registrar una compra, primero debe reactivarlo en el catálogo.");
+            }
+
             if (detalleDTO.cantidad() <= 0) {
                 throw new NegocioException("La cantidad a comprar debe ser mayor a cero.");
             }

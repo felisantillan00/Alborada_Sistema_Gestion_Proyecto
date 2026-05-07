@@ -38,6 +38,9 @@ public class OrdenServicioService {
             for (DetalleOrdenServicioRequestDTO detDto : request.detalles()) {
                 
                 DetalleOrdenServicio detalle = mapearDetalle(detDto);
+                if (!detalle.getProducto().isActivo()) {
+                    throw new NegocioException("No se puede agregar el producto '" + detalle.getProducto().getNombre() + "' porque se encuentra inactivo o discontinuado.");
+                }
                 orden.addDetalle(detalle);
                 // 3. Calculamos el subtotal usando el precio que sacamos de la BD
                 BigDecimal subtotal = detalle.getValorUnitario().multiply(new BigDecimal(detDto.cantidad()));

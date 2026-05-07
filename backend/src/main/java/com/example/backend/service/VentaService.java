@@ -58,6 +58,10 @@ public class VentaService {
             Producto producto = productosMap.get(detalleRequest.idProducto());
             BigDecimal cantidadBD = BigDecimal.valueOf(detalleRequest.cantidad());
 
+            if (!producto.isActivo()) {
+                throw new NegocioException("No se puede vender el producto '" + producto.getNombre() + "' porque se encuentra inactivo o discontinuado.");
+            }
+            
             if (cantidadBD.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new NegocioException("La cantidad a vender debe ser mayor a cero.");
             }
