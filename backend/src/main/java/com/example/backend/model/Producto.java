@@ -10,11 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-// 1. CORREGIDO: "producto" en singular y seteando "activo"
 @SQLDelete(sql = "UPDATE producto SET activo = false WHERE id = ?") 
-@SQLRestriction("activo = true")
 public class Producto {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
