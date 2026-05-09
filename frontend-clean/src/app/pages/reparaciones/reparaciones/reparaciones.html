@@ -77,6 +77,19 @@
           </ul>
         </div>
 
+        <button
+          class="btn btn-outline-primary rounded-pill shadow-sm px-3 py-2 d-flex align-items-center gap-2 transition-all text-nowrap"
+          type="button" (click)="cargarMas()" [disabled]="loadingReparaciones">
+          <ng-container *ngIf="loadingReparaciones; else showIcon">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Cargando...</span>
+          </ng-container>
+          <ng-template #showIcon>
+            <i class="bi bi-arrow-clockwise"></i>
+            <span class="d-none d-sm-inline fw-medium">Ver más</span>
+          </ng-template>
+        </button>
+
         <!-- Botón crear -->
         <button
           class="btn btn-success rounded-pill shadown-sm px-3 py-2 d-flex aling-items-center gap-2 transition-all text-nowrap"

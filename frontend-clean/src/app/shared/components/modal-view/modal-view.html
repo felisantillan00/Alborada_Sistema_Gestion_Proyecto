@@ -29,7 +29,8 @@
 
             <div class="col-md-8">
               <label class="form-label fw-semibold">Producto</label>
-              <input class="form-control shadow-sm" type="text" formControlName="nombre" placeholder="Nombre del producto"/>
+              <input class="form-control shadow-sm" type="text" formControlName="nombre"
+                placeholder="Nombre del producto" />
               @if (Control['nombre'].hasError('required') && Control['nombre'].touched) {
               <div class="text-danger small mt-1">* El campo nombre es obligatorio</div>
               }
@@ -107,10 +108,14 @@
           </div>
 
           <div class="mt-5 d-flex justify-content-end gap-2 border-top pt-3">
+            @if (mode === 'create' || mode === 'edit') {
             <button type="submit" class="btn btn-success px-4 shadow-sm">
               {{ mode === 'create' ? 'Crear' : 'Guardar' }}
             </button>
-            <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">Cancelar</button>
+            }
+            <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">
+              {{ mode === 'view' ? 'Cerrar' : 'Cancelar' }}
+            </button>
           </div>
 
         </form>

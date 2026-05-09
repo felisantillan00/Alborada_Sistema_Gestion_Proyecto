@@ -8,8 +8,9 @@ import { Pagina } from '../../../core/models/pagina';
 import { CompraView } from '../../../core/models/compra';
 import { ComprasService } from '../../../core/services/compras/compras-service';
 import { ModalViewCompras } from '../../../shared/components/modal-view-compras/modal-view-compras';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
-type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+type ModalMode = 'create' | 'view' | 'edit' ;
 
 @Component({
   selector: 'app-compras',
@@ -24,6 +25,7 @@ export class Compras implements OnInit {
   isSearchExpanded = false
   @ViewChild('searchInput') searchInput!: ElementRef;
   currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
+  paginacion = new PagHelper(() => this.getCompras());
 
   compras: CompraView[] = [];
   loadingCompras = false;
@@ -48,9 +50,16 @@ export class Compras implements OnInit {
       valueFormatter: (params) => {
         return params.value != null ? '$ ' + params.value : '';
       }
-    }, 
+    },
     { field: 'proveedorNombre', headerName: 'Proveedor', minWidth: 200 },
-    { field: 'fecha', headerName: 'Fecha' },
+    {
+      field: 'fechaCompra',
+      headerName: 'Fecha',
+      valueFormatter: (params) => {
+        if (!params.value) return '';
+        return params.value.substring(0, 10); // muestra YYYY-MM-DD
+      }
+    },
     { field: 'formaPago', headerName: 'Forma de Pago' },
     {
       headerName: 'Actions',
@@ -65,9 +74,6 @@ export class Compras implements OnInit {
           </button>
           <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
             <i class="bi bi-pencil"></i>
-          </button>
-          <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
-            <i class="bi bi-trash"></i>
           </button>
         </div>
       `,
@@ -84,7 +90,7 @@ export class Compras implements OnInit {
     this.loadingCompras = true;
 
     this.comprasService
-      .getPage()
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener compras:', error);
@@ -100,10 +106,15 @@ export class Compras implements OnInit {
       )
       .subscribe((data) => {
         this.compras = data.content;
+        this.paginacion.setMetadata(data);  
         console.log('Compras obtenidas:', this.compras);
         this.loadingCompras = false;
         this.cdr.detectChanges();
       });
+  }
+
+  cargarMas(): void {
+    this.paginacion.cargarMas();
   }
 
   getRowId = (params: any) => {
@@ -122,7 +133,7 @@ export class Compras implements OnInit {
       return;
     }
 
-    if (action === 'view' || action === 'edit' || action === 'delete') {
+    if (action === 'view' || action === 'edit') {
       this.openModal(action, event.data);
     }
   }
@@ -136,6 +147,7 @@ export class Compras implements OnInit {
   onModalSubmit(mode: ModalMode): void {
     // Placeholder for create/edit/delete integration.
     console.log(`Modal submit action: ${mode}`);
+    this.getCompras();
     this.closeModal();
   }
 
@@ -227,7 +239,6 @@ export class Compras implements OnInit {
   isExternalFilterPresent = (): boolean => {
     return this.currentFilter !== 'all';
   };
-
 
 
 

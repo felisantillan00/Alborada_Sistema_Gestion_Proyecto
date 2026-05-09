@@ -184,13 +184,8 @@ export class ModalViewPresupuesto {
       },
       error: (err) => {
         console.error('ERROR BACK >>>', err);
-        console.error('ERRORS >>>', err.error?.errors);
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Error backend',
-          text: JSON.stringify(err.error?.errors)
-        });
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       },
     });
   }
@@ -203,7 +198,10 @@ export class ModalViewPresupuesto {
         this.submitted.emit('edit');
         this.closed.emit();
       },
-      error: () => this.showError(),
+      error: (err) => {
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
+      }
     });
   }
 
@@ -215,7 +213,10 @@ export class ModalViewPresupuesto {
         this.submitted.emit('delete');
         this.closed.emit();
       },
-      error: () => this.showError(),
+      error: (err) => {
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
+      }
     });
   }
 
@@ -269,8 +270,12 @@ export class ModalViewPresupuesto {
     Swal.fire({ icon: 'success', title: 'OK', text: message, confirmButtonText: 'Aceptar' });
   }
 
-  showError(): void {
-    Swal.fire({ icon: 'error', title: 'Error', text: 'Ocurrió un problema', confirmButtonText: 'Aceptar' });
+  private showError(mensaje: string = 'ocurrió un error'): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: mensaje
+    });
   }
 
   get title(): string {
@@ -287,4 +292,5 @@ export class ModalViewPresupuesto {
     return this.form.get('detalles') as FormArray<FormGroup>;
   }
 
+  
 }

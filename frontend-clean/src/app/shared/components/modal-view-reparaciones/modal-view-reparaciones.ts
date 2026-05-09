@@ -159,12 +159,10 @@ export class ModalViewReparaciones implements OnInit {
         this.submitted.emit(payload);
         this.closed.emit();
       },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo crear'
-        });
+      error: (err) => {
+        console.log('Error al crear reparación:', err.error);
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
@@ -183,12 +181,10 @@ export class ModalViewReparaciones implements OnInit {
         this.submitted.emit(payload);
         this.closed.emit();
       },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo actualizar'
-        });
+      error: (err) => {
+        console.log('Error al editar reparación:', err.error);
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
@@ -205,12 +201,10 @@ export class ModalViewReparaciones implements OnInit {
 
         this.closed.emit();
       },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo eliminar'
-        });
+      error: (err) => {
+        console.log('Error al eliminar reparación:', err.error);
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
@@ -227,12 +221,10 @@ export class ModalViewReparaciones implements OnInit {
 
         this.closed.emit();
       },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo terminar'
-        });
+      error: (err) => {
+        console.log('Error al terminar reparación:', err.error);
+        const errorMensaje = err?.error?.message || (typeof err.error === 'string' ? err.error : 'null') || 'Ocurrio un error';
+        this.showError(errorMensaje);
       }
     });
   }
@@ -282,6 +274,14 @@ export class ModalViewReparaciones implements OnInit {
       default:
         return 'Reparacion';
     }
+  }
+
+  private showError(mensaje: string = 'ocurrió un error'): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: mensaje
+    });
   }
 
 }

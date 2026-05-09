@@ -2,7 +2,7 @@ export interface CompraView {
   id: string;
   totalCompra: number;
   proveedorNombre: string;
-  fecha: string;
+  fechaCompra: string;
   formaPago: FormaPago;
   productos: {
     id: string;

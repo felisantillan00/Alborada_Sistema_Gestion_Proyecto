@@ -8,6 +8,7 @@ import { PresupuestoView } from '../../core/models/presupuesto';
 import { CommonModule } from '@angular/common';
 import { ModalViewPresupuesto } from '../../shared/components/modal-view-presupuestos/modal-view-presupuestos';
 import Swal from 'sweetalert2';
+import {PagHelper} from "../../core/utils/pagHelper";
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
 
@@ -36,9 +37,7 @@ export class Presupuestos implements OnInit {
   modalMode: ModalMode = 'create';
   selectedPresupuesto: PresupuestoView | null = null;
 
-  totalElements = 0;
-  totalPages = 0;
-  number = 0;
+  paginacion = new PagHelper(() => this.getPresupuestos());
 
   readonly defaultColDef: ColDef<PresupuestoView> = {
     sortable: true,
@@ -134,7 +133,7 @@ export class Presupuestos implements OnInit {
 
   getPresupuestos(): void {
     this.loadingPresupuestos = true;
-    this.presupuestosService.getPage()
+    this.presupuestosService.getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener presupuestos:', error);
@@ -157,12 +156,14 @@ export class Presupuestos implements OnInit {
       )
       .subscribe((data) => {
         this.presupuestos = [...data.content];
-        this.totalElements = data.totalElements;
-        this.totalPages = data.totalPages;
-        this.number = data.number;
+        this.paginacion.setMetadata(data);
         this.cdr.detectChanges();
         this.loadingPresupuestos = false;
       });
+  }
+
+  cargarMas(): void {
+    this.paginacion.cargarMas();
   }
 
   onGridReady(params: GridReadyEvent): void {

@@ -10,6 +10,7 @@ import { ProductoService } from '../../../core/services/producto/producto-servic
 import { ModalView } from '../../../shared/components/modal-view/modal-view';
 import { HostListener } from '@angular/core';
 import { GridApi, GridReadyEvent } from 'ag-grid-community';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
 
 type ModalMode = 'create' | 'view' | 'edit' | 'delete';
@@ -34,6 +35,8 @@ export class Inventario implements OnInit {
   modalOpen = false;
   modalMode: ModalMode = 'create';
   selectedProducto: ProductoView | null = null;
+
+  paginacion = new PagHelper(() => this.getProductos());
 
   readonly defaultColDef: ColDef<ProductoView> = {
     sortable: true,
@@ -79,30 +82,12 @@ export class Inventario implements OnInit {
       this.getProductos();
   }
 
-  //getProductos(): void {
-  //  this.loadingProductos = true;
-
-  //  this.productoService
-  //    .getPage()
-  //    .pipe(
-  //      catchError((error) => {
-  //        console.error('Error al obtener productos:', error);
-  //        this.loadingProductos = false;
-  //        return of([] as ProductoView[]);
-  //      })
-  //    )
-  //    .subscribe((data) => {
-  //      this.productos = data.content;
-  //      this.loadingProductos = false;
-  //      console.log("SERAN?", this.productos)
-  //    });
-  //}
-
+  
   getProductos(): void {
     this.loadingProductos = true;
 
     this.productoService
-      .getPage()
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener productos:', error);
@@ -118,6 +103,7 @@ export class Inventario implements OnInit {
       )
       .subscribe((data) => {
         this.productos = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
+        this.paginacion.setMetadata(data);
         this.loadingProductos = false;
         this.cdr.detectChanges();           //fuerzo la deteccion
         console.log("SERAN?", this.productos)
@@ -142,6 +128,10 @@ export class Inventario implements OnInit {
     if (action === 'view' || action === 'edit' || action === 'delete') {
       this.openModal(action, event.data);
     }
+  }
+
+  cargarMas(): void {
+    this.paginacion.cargarMas();
   }
 
   closeModal(): void {
