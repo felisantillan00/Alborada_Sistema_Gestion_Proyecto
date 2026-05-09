@@ -159,16 +159,17 @@ export class ModalViewCompras implements OnChanges, OnInit {
     });
   }
 
-  
+
 
   buildPayload(includeId: boolean = false): any {
     const raw = this.form.getRawValue();
     const payload: any = {
-      nombreProveedor: raw.nombreProveedor,  // 👈 
+      idProveedor: raw.nombreProveedor,   // el form guarda el id del proveedor
       formaPago: raw.formaPago,
-      detalles: raw.Productos.map((p: any) => ({  // 👈 era 
-        idProducto: p.idProducto,                // 👈 era 
+      detalles: raw.Productos.map((p: any) => ({
+        idProducto: p.idProducto,
         cantidad: p.cantidad,
+        precioCompra: p.precioCompra,     // incluir el precio
       }))
     };
 
