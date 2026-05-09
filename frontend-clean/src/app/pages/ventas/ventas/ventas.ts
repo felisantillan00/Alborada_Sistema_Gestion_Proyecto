@@ -7,8 +7,9 @@ import { Pagina } from '../../../core/models/pagina';
 import { VentaView } from '../../../core/models/venta';
 import { VentasService } from '../../../core/services/ventas/ventas-service';
 import { ModalViewVentas } from '../../../shared/components/modal-view-ventas/modal-view-ventas';
+import { PagHelper } from '../../../core/utils/pagHelper';
 
-type ModalMode = 'create' | 'view' | 'edit' | 'delete';
+type ModalMode = 'create' | 'view' | 'edit' ;
 
 @Component({
   selector: 'app-ventas',
@@ -23,6 +24,7 @@ export class Ventas implements OnInit {
   isSearchExpanded = false;
   @ViewChild('searchInput') searchInput!: ElementRef;
   currentFilter: 'all' | 'lowStock' | 'noStock' = 'all';
+  paginacion = new PagHelper(() => this.getVentas());
 
 
   ventas: VentaView[] = [];
@@ -71,9 +73,6 @@ export class Ventas implements OnInit {
       <button type="button" class="btn btn-sm btn-outline-secondary" data-action="edit" title="Editar">
         <i class="bi bi-pencil"></i>
       </button>
-      <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" title="Eliminar">
-        <i class="bi bi-trash"></i>
-      </button>
     </div>
       `,
     },
@@ -89,7 +88,7 @@ export class Ventas implements OnInit {
     this.loadingVentas = true;
 
     this.ventasService
-      .getPage()
+      .getPage(this.paginacion.getParams())
       .pipe(
         catchError((error) => {
           console.error('Error al obtener ventas:', error);
@@ -105,9 +104,14 @@ export class Ventas implements OnInit {
       )
       .subscribe((data) => {
         this.ventas = [...data.content]; //para dectectar cambios en el array y refrescar la tabla
+        this.paginacion.setMetadata(data);
         this.loadingVentas = false;
         this.cdr.detectChanges();
       });
+  }
+
+  cargarMas(): void {
+    this.paginacion.cargarMas();
   }
 
   //Al realizar un cambio en el producto, 
@@ -127,7 +131,7 @@ export class Ventas implements OnInit {
       return;
     }
 
-    if (action === 'view' || action === 'edit' || action === 'delete') {
+    if (action === 'view' || action === 'edit') {
       this.openModal(action, event.data);
     }
   }

@@ -17,7 +17,7 @@ export class PresupuestosService extends Api<PresupuestoView, PresupuestoRequest
 
     aprobar(id: number): Observable<PresupuestoView> {
       return this.http.put<PresupuestoView>(
-        `${this.baseUrl}/${id}/terminar`,
+        `${this.baseUrl}/${id}/estado`,
         {},
         { headers: this.getHeaders() }
       );

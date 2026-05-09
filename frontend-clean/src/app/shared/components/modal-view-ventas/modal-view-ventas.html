@@ -15,18 +15,7 @@
       <!-- BODY -->
       <div class="modal-body">
 
-        @if (mode === 'delete') {
-        <p class="mb-0 fs-5">
-          ¿Seguro que deseas eliminar la venta de
-          <strong>{{ venta?.nombreCliente ?? '' }}</strong>?
-        </p>
 
-        <div class="mt-4 d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-danger" (click)="onSubmit()">Borrar</button>
-          <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
-        </div>
-
-        } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
           <div class="row g-3">
@@ -34,50 +23,36 @@
             <!-- CLIENTE -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Cliente</label>
-              <input class="form-control shadow-sm" type="text" formControlName="nombreCliente" placeholder="Nombre del cliente" />
+              <input class="form-control shadow-sm" type="text" formControlName="nombreCliente"
+                placeholder="Nombre del cliente" />
               @if (form.get('nombreCliente')?.touched && form.get('nombreCliente')?.invalid) {
               <div class="text-danger small">El cliente es obligatorio</div>
               }
             </div>
 
-            <!-- PRECIO TOTAL -->
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Precio Total</label>
-              <div class="input-group shadow-sm">
-                <span class="input-group-text">$</span>
-                <input class="form-control" type="number" formControlName="total" placeholder="Ej: 15000" min="1" />
-              </div>
-              @if (form.get('total')?.touched && form.get('total')?.errors?.['required']) {
-              <div class="text-danger small mt-1">El precio es obligatorio</div>
-              }
-              @if (form.get('total')?.touched && form.get('total')?.errors?.['min']) {
-              <div class="text-danger small mt-1">El precio debe ser mayor a 0</div>
-              }
-            </div>
 
-            <!-- FECHA -->
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Fecha</label>
-              <input class="form-control shadow-sm" type="date" formControlName="fechaVenta" [max]="today" />
-              @if (form.get('fechaVenta')?.touched && form.get('fechaVenta')?.errors?.['required']) {
-              <div class="text-danger small mt-1">La fecha es obligatoria</div>
-              }
-              @if (form.get('fechaVenta')?.touched && form.get('fechaVenta')?.errors?.['fechaFutura']) {
-              <div class="text-danger small mt-1">La fecha no puede ser futura</div>
-              }
-            </div>
 
-            
+
+
             <!-- FORMA DE PAGO -->
             <div class="col-md-6">
               <label class="form-label fw-semibold">Forma de Pago</label>
               <ng-select formControlName="formaPago" [items]="formasPago" bindLabel="label" bindValue="value"
-                placeholder="Seleccionar forma de pago" [readonly]="mode === 'view'">
+                placeholder="Seleccionar forma de pago" [readonly]="mode === 'view'" >
               </ng-select>
               @if (form.get('formaPago')?.touched && form.get('formaPago')?.invalid) {
               <div class="text-danger small">La forma de pago es obligatoria</div>
               }
             </div>
+
+            @if (mode === 'view' && venta?.fechaVenta) {
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Fecha</label>
+              <p class="form-control-plaintext fw-medium">
+                {{ venta!.fechaVenta | date: 'dd/MM/yyyy' }}
+              </p>
+            </div>
+            }
 
             <!-- OBSERVACIÓN -->
             <div class="col-12">
@@ -112,7 +87,7 @@
                   <div class="col-md-4">
                     <label class="form-label">Producto</label>
                     <ng-select [items]="productos" bindLabel="nombre" bindValue="id" formControlName="idProducto"
-                      [clearable]="false" placeholder="Seleccioná un producto...">
+                      [clearable]="false" placeholder="Seleccioná un producto..." (change)="onProductoChange($index)">
                     </ng-select>
                     @if (detalle.get('idProducto')?.touched && detalle.get('idProducto')?.invalid) {
                     <div class="text-danger small mt-1">Debe seleccionar un producto</div>
@@ -158,16 +133,26 @@
 
           </div>
 
+          <div class="bg-light rounded p-4 mt-4 border-start border-4 border-success shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-uppercase fw-bold text-muted">Total</span>
+              <h2 class="fw-bold text-success mb-0">$ {{ totalCalculado | number: '1.2-2' }}</h2>
+            </div>
+          </div>
+
           <!-- BOTONES -->
           <div class="mt-4 d-flex justify-content-end gap-2">
+            @if (mode === 'create' || mode === 'edit') {
             <button type="submit" class="btn btn-success">
               {{ mode === 'create' ? 'Crear' : 'Guardar' }}
             </button>
-            <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+            }
+            <button type="button" class="btn btn-secondary" (click)="closed.emit()">
+              {{ mode === 'view' ? 'Cerrar' : 'Cancelar' }}
+            </button>
           </div>
-
         </form>
-        }
+        
 
       </div>
     </div>

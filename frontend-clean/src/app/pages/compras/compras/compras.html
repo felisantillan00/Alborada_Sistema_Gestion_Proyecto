@@ -30,35 +30,49 @@
             </span>
           </button>
 
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px; min-width: 220px;">
-          <li>
-            <h6 class="dropdown-header text-success fw-bold">Ordenar por</h6>
-          </li>
-          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('total', 'asc')"><i
-                class="bi bi-sort-numeric-down me-2"></i>Menor Precio</a></li>
-          <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('total', 'desc')"><i
-                class="bi bi-sort-numeric-up-alt me-2"></i>Mayor Precio</a></li>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2"
+            style="border-radius:12px; min-width: 220px;">
+            <li>
+              <h6 class="dropdown-header text-success fw-bold">Ordenar por</h6>
+            </li>
+            <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('total', 'asc')"><i
+                  class="bi bi-sort-numeric-down me-2"></i>Menor Precio</a></li>
+            <li><a class="dropdown-item py-2" href="javascript:void(0)" (click)="applySort('total', 'desc')"><i
+                  class="bi bi-sort-numeric-up-alt me-2"></i>Mayor Precio</a></li>
 
-          <li>
-            <hr class="dropdown-divider">
-          </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
 
-          <li><a class="dropdown-item py-2 text-danger fw-medium" href="javascript:void(0)"
-              (click)="clearFiltersAndSort()">
-              <i class="bi bi-eraser-fill me-2"></i>Limpiar filtros y orden
-            </a></li>
-        </ul>
+            <li><a class="dropdown-item py-2 text-danger fw-medium" href="javascript:void(0)"
+                (click)="clearFiltersAndSort()">
+                <i class="bi bi-eraser-fill me-2"></i>Limpiar filtros y orden
+              </a></li>
+          </ul>
+        </div>
+
+        <button
+          class="btn btn-outline-primary rounded-pill shadow-sm px-3 py-2 d-flex align-items-center gap-2 transition-all text-nowrap"
+          type="button" (click)="cargarMas()" [disabled]="loadingCompras">
+          <ng-container *ngIf="loadingCompras; else showIcon">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Cargando...</span>
+          </ng-container>
+          <ng-template #showIcon>
+            <i class="bi bi-arrow-clockwise"></i>
+            <span class="d-none d-sm-inline fw-medium">Ver más</span>
+          </ng-template>
+        </button>
+
+        <button
+          class="btn btn-success rounded-pill shadown-sm px-3 py-2 d-flex aling-items-center gap-2 transition-all text-nowrap"
+          type="button" (click)="onNewCompra()">
+
+          <i class="bi bi-plus-lg"></i>
+          <span class="d-none d-sm-inline fw-medium">Nueva Compra</span>
+
+        </button>
       </div>
-
-      <button
-        class="btn btn-success rounded-pill shadown-sm px-3 py-2 d-flex aling-items-center gap-2 transition-all text-nowrap"
-        type="button" (click)="onNewCompra()">
-
-        <i class="bi bi-plus-lg"></i>
-        <span class="d-none d-sm-inline fw-medium">Nueva Compra</span>
-
-      </button>
-    </div>
     </div>
 
     <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 16px">
@@ -71,7 +85,7 @@
 
       <ag-grid-angular style="width: 100%; height: 60vh" min-height="400px" class="ag-theme-alpine border-0"
         [rowData]="compras" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [getRowId]="getRowId"
-        [pagination]="true" [paginationPageSize]="10" [animateRows]="true" [suppressCellFocus]="true" 
+        [pagination]="true" [paginationPageSize]="10" [animateRows]="true" [suppressCellFocus]="true"
         (gridReady)="onGridReady($event)" (rowClicked)="onRowClicked($event)">
       </ag-grid-angular>
     </div>
@@ -79,9 +93,7 @@
 </section>
 
 @if (modalOpen) {
-<app-modal-view-compras [mode]="modalMode"
-                        [compra]="selectedCompra"
-                        (closed)="closeModal()"
-                        (submitted)="onModalSubmit($event)">
+<app-modal-view-compras [mode]="modalMode" [compra]="selectedCompra" (closed)="closeModal()"
+  (submitted)="onModalSubmit($event)">
 </app-modal-view-compras>
 }
