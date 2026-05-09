@@ -181,7 +181,7 @@ export class Reparaciones implements OnInit {
 
   terminarReparacion(id: number): void {
     this.reparacionesService.terminar(id).subscribe(() => {
-      this.getReparaciones(); // 🔥 refresca tabla
+      this.getReparaciones(); 
     });
   }
 

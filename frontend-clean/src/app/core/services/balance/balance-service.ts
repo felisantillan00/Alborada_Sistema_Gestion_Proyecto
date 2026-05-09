@@ -22,8 +22,8 @@ export class BalanceService {
     }
 
     getEstadisticas() : Observable<BalanceView>{
-        return this.http.get<BalanceResponse>(`${this.baseUrl}estadisticas`, {headers: this.getHeaders()})
-        .pipe(map(res => res.content[0]));
+      return this.http.get<BalanceResponse>(`${this.baseUrl}estadisticas`, {headers: this.getHeaders()})
+        .pipe(map(res => res));
     }
 
     getReparacionesMensuales(): Observable<ResparacionesMensuales[]> {

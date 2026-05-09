@@ -41,8 +41,6 @@ export class ModalViewPresupuesto {
     nombreCliente: ['', Validators.required],
     estado: ['Pendiente_Aprobacion', Validators.required],
     valorManoDeObra: [0, [Validators.required, Validators.min(0)]],
-    fechaCreacion: ['', Validators.required],
-    fechaConfirmada: [''],
     observacion: ['', Validators.required],
     total: [{ value: 0, disabled: true }],
     detalles: this.fb.array<FormGroup>([]),
@@ -72,7 +70,6 @@ export class ModalViewPresupuesto {
 
     this.form.patchValue({
       nombreCliente: this.presupuesto?.nombreCliente ?? '',
-      fechaCreacion: fechaFormateada,
       valorManoDeObra: this.presupuesto?.valorManoDeObra ?? null,
       observacion: this.presupuesto?.observacion ?? '',
     });
@@ -253,17 +250,9 @@ export class ModalViewPresupuesto {
   private buildPayload(includeId = false): PresupuestoRequest {
     const v = this.form.getRawValue();
 
-    //porque el back maneja la hora tambien
-    let fechaCreacionEnvio = v.fechaCreacion!;
-    if (fechaCreacionEnvio.length === 10) {
-      fechaCreacionEnvio += 'T00:00:00';
-    }
-
     const payload: PresupuestoRequest = {
       nombreCliente: v.nombreCliente!,
       estado: v.estado!,
-      fechaCreacion: fechaCreacionEnvio,
-      fechaConfirmada: v.fechaConfirmada || '',
       valorManoDeObra: v.valorManoDeObra!,
       observacion: v.observacion ?? '',
 

@@ -283,7 +283,7 @@ export class Balance implements OnInit {
   }
 
   get margen(): number {
-    if (!this.estadisticas || this.estadisticas.ingresosSemestrales === 0) return 0;
-    return Math.round((this.estadisticas.gananciasSemestrales / this.estadisticas.ingresosSemestrales) * 100);
+    if (!this.estadisticas || this.estadisticas.ingresosMensuales === 0) return 0;
+    return Math.round((this.estadisticas.gananciasMensuales / this.estadisticas.ingresosMensuales) * 100);
   }
 }
