@@ -4,6 +4,8 @@ import com.example.backend.dto.request.ProductoRequestDTO;
 import com.example.backend.service.ProductoService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +29,14 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductoResponseDTO>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<ProductoResponseDTO>> getAll(
+        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(productoService.findAll(pageable));
+    }
+
+    @GetMapping("/stock-bajo")
+    public ResponseEntity<List<ProductoResponseDTO>> getProductosConBajoStock() {
+        return ResponseEntity.ok(productoService.obtenerProductosConBajoStock());
     }
 
     @PostMapping

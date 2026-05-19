@@ -27,6 +27,7 @@ public class OrdenServicioService {
     public OrdenServicioResponseDTO create(OrdenServicioRequestDTO request, Integer flagReparacion) {
         OrdenServicio orden = new OrdenServicio();
         orden.setNombreCliente(request.nombreCliente());
+        orden.setContacto(request.contacto());
         orden.setObservacion(request.observacion());
         BigDecimal manoObra = request.valorManoDeObra() != null ? request.valorManoDeObra() : BigDecimal.ZERO;
         orden.setValorManoObra(manoObra);
@@ -141,6 +142,7 @@ public class OrdenServicioService {
 
         // 3. ACTUALIZAR DATOS BÁSICOS (Con validación de nulos)
         orden.setNombreCliente(request.nombreCliente());
+        orden.setContacto(request.contacto());
         orden.setObservacion(request.observacion());
         BigDecimal manoObra = request.valorManoDeObra() != null ? request.valorManoDeObra() : BigDecimal.ZERO;
         orden.setValorManoObra(manoObra);
@@ -261,6 +263,7 @@ public class OrdenServicioService {
         return OrdenServicioResponseDTO.builder()
                 .id(o.getId())
                 .nombreCliente(o.getNombreCliente())
+                .contacto(o.getContacto())
                 .estado(o.getEstado().name())
                 .valorTotal(o.getValorTotal())
                 .valorManoDeObra(o.getValorManoObra())

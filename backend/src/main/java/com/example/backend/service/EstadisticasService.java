@@ -86,7 +86,7 @@ public class EstadisticasService {
             
             // Obtiene el nombre del mes en español
             String nombreMes = java.time.Month.of(numeroMes)
-                    .getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+                    .getDisplayName(TextStyle.FULL, Locale.of("es", "ES"));
             
             listaFinal.add(new MetricaMensualDTO(nombreMes, total));
         }

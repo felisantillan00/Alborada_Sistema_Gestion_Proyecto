@@ -35,16 +35,6 @@ public class Compra {
     @Column(name = "cantidad_total", nullable = false)
     private Integer cantidadTotal;
 
-    public void setProveedorNombre(String nombre) {
-        if (nombre != null) {
-            proveedor.setNombre(nombre);
-        }
-    }
-
-    public String getProveedorNombre() {
-        return proveedor != null ? proveedor.getNombre() : null;
-    }
-
     public LocalDateTime getFechaCompra() {
         return fechaCompra;
     }
