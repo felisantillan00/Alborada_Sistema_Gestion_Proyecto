@@ -37,6 +37,18 @@
             </div>
 
             <div class="col-md-6">
+              <label class="form-label fw-semibold">Contacto</label>
+
+              <input type="number" class="form-control shadow-sm" formControlName="contacto" placeholder="2302XXXXXX" />
+
+              <div class="text-danger small mt-1"
+                *ngIf="form.get('contacto')?.touched && form.get('contacto')?.invalid">
+
+                * Ingrese un contacto válido
+              </div>
+            </div>
+
+            <div class="col-md-6">
               <label class="form-label fw-semibold">Mano de obra</label>
               <div class="input-group shadow-sm">
                 <span class="input-group-text bg-light">$</span>
@@ -60,7 +72,7 @@
 
 
           <div class="col-12" formArrayName="detalles">
-            
+
             <div class="d-flex justify-content-between align-items-center mb-2">
               <label class="form-label mb-0 fw-semibold">Productos</label>
               @if (mode !== 'view') {
@@ -102,7 +114,7 @@
                   <label class="form-label">Valor Unit.</label>
                   <div class="input-group shadow-sm">
                     <span class="input-group-text bg-light">$</span>
-                    <input type="number" class="form-control" formControlName="valorVenta" min="1" readonly/>
+                    <input type="number" class="form-control" formControlName="valorVenta" min="1" readonly />
                   </div>
 
                   <div class="text-danger small mt-1"

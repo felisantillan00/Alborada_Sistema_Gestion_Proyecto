@@ -173,16 +173,32 @@ export class Reparaciones implements OnInit {
         break;
       case 'terminar':
         if (event.data.estado !== 'Finalizado') {
-          this.terminarReparacion(event.data.id);
+          this.terminarReparacion(event.data.id, event.data.contacto, event.data.nombreCliente);
         }
         break;
     }
   }
 
-  terminarReparacion(id: number): void {
-    this.reparacionesService.terminar(id).subscribe(() => {
-      this.getReparaciones(); 
+  terminarReparacion(id: number, contacto: number, nombreCliente: string): void {
+
+    this.reparacionesService.terminar(id).subscribe((resp) => {
+
+      if (resp.estado === 'Finalizado') {
+        this.enviarWhatsapp(
+          nombreCliente,
+          contacto
+        );
+      } this.getReparaciones();
     });
+  }
+
+
+  enviarWhatsapp(nombre: string, contacto: number): void {
+    const numero = `549${contacto}`;
+    const mensaje = `Hola ${nombre}, tu reparación fue finalizada, ya puedes retirar. Gracias por confiar. ¡Que tengas un excelente día!`;
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+
+    window.open(url, '_blank');
   }
 
   // ==================== FILTRO ====================

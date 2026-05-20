@@ -1,5 +1,6 @@
 export interface ReparacionRequest {
     nombreCliente: string;
+    contacto: number;
     estado: string;
     valorManoDeObra: number;
     fechaConfirmada?: string;
@@ -13,6 +14,7 @@ export interface ReparacionRequest {
 export interface ReparacionView {
     id: number;
     nombreCliente: string;
+    contacto: number;
     estado: string;
     valorTotal: number;
     valorManoDeObra: number;
