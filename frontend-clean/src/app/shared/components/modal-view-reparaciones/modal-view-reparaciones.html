@@ -39,11 +39,9 @@
             <div class="col-md-6">
               <label class="form-label fw-semibold">Contacto</label>
 
-              <input type="number" class="form-control shadow-sm" formControlName="contacto" placeholder="2302XXXXXX" />
-
+              <input type="tel" class="form-control shadow-sm" formControlName="contacto" placeholder="2302XXXXXX" [readonly]="mode === 'view'" />
               <div class="text-danger small mt-1"
                 *ngIf="form.get('contacto')?.touched && form.get('contacto')?.invalid">
-
                 * Ingrese un contacto válido
               </div>
             </div>
