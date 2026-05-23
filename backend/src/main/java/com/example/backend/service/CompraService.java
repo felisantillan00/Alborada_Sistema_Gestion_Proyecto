@@ -26,14 +26,14 @@ public class CompraService {
 
     // --- 1. CREATE ---
     public CompraResponseDTO create(CompraRequestDTO request) {
-        log.info("Iniciando registro de compra para el proveedor: {}", request.proveedorNombre());
+        log.info("Iniciando registro de compra para el proveedor: {}", request.idProveedor());
 
         if (request.detalles() == null || request.detalles().isEmpty()) {
             throw new NegocioException("La compra debe tener al menos un producto detallado.");
         }
 
-        Proveedor proveedor = proveedorRepository.findByNombre(request.proveedorNombre())
-                .orElseThrow(() -> new NegocioException("Proveedor no encontrado con nombre: " + request.proveedorNombre()));
+        Proveedor proveedor = proveedorRepository.findById(request.idProveedor())
+                .orElseThrow(() -> new NegocioException("Proveedor no encontrado con ID: " + request.idProveedor()));
 
         Compra nuevaCompra = new Compra();
         nuevaCompra.setProveedor(proveedor);
@@ -57,8 +57,8 @@ public class CompraService {
 
         for (DetalleCompraRequestDTO detalleDTO : request.detalles()) {
             
-            Producto producto = productoRepository.findById(detalleDTO.producto().id())
-                    .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + detalleDTO.producto().id()));
+            Producto producto = productoRepository.findById(detalleDTO.idProducto())
+                    .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + detalleDTO.idProducto()));
 
             if (detalleDTO.cantidad() <= 0) {
                 throw new NegocioException("La cantidad a comprar debe ser mayor a cero.");
@@ -105,15 +105,6 @@ public class CompraService {
             detallesEntidad.add(nuevoDetalle);
         }
 
-        if (request.totalCompra() != null) {
-            if (totalCalculado.compareTo(request.totalCompra()) != 0) {
-                throw new NegocioException(
-                    String.format("El total enviado (%s) no coincide con la suma real de los subtotales (%s)", 
-                    request.totalCompra(), totalCalculado)
-                );
-            }
-        }
-
         nuevaCompra.setDetalles(detallesEntidad);
         nuevaCompra.setTotalCompra(totalCalculado);
 
@@ -125,7 +116,7 @@ public class CompraService {
 
     // --- 2. LISTAR ---
     public List<CompraResponseDTO> listAll() {
-        return compraRepository.findAll().stream()
+        return compraRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -142,9 +133,9 @@ public class CompraService {
         Compra compra = compraRepository.findById(id)
                 .orElseThrow(() -> new NegocioException("Compra no encontrada con ID: " + id));
 
-        if (request.proveedorNombre() != null && !request.proveedorNombre().isBlank()) {
-            Proveedor proveedor = proveedorRepository.findByNombre(request.proveedorNombre())
-                    .orElseThrow(() -> new NegocioException("Proveedor no encontrado con nombre: " + request.proveedorNombre()));
+        if (request.idProveedor() != null) {
+            Proveedor proveedor = proveedorRepository.findById(request.idProveedor())
+                    .orElseThrow(() -> new NegocioException("Proveedor no encontrado con ID: " + request.idProveedor()));
             compra.setProveedor(proveedor);
         }
 
@@ -169,7 +160,6 @@ public class CompraService {
             compra.getDetalles().clear();
             compraRepository.flush();
 
-            // CORRECCIÓN: Inicializamos en BigDecimal.ZERO
             BigDecimal nuevoTotalCalculado = BigDecimal.ZERO;
             
             int nuevaCantidadTotal = request.detalles().stream()
@@ -180,8 +170,8 @@ public class CompraService {
             Proveedor proveedorActual = compra.getProveedor(); 
             
             for (DetalleCompraRequestDTO detalleNuevoDTO : request.detalles()) {
-                Producto productoNuevo = productoRepository.findById(detalleNuevoDTO.producto().id())
-                        .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + detalleNuevoDTO.producto().id()));
+                Producto productoNuevo = productoRepository.findById(detalleNuevoDTO.idProducto())
+                        .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + detalleNuevoDTO.idProducto()));
 
                 if (detalleNuevoDTO.cantidad() <= 0) {
                     throw new NegocioException("La cantidad debe ser mayor a cero.");
@@ -224,17 +214,7 @@ public class CompraService {
                 nuevoDetalle.setCompra(compra);
 
                 compra.getDetalles().add(nuevoDetalle);
-            }
-
-            // CORRECCIÓN: Reemplazamos el Math.abs por compareTo
-            if (request.totalCompra() != null) {
-                if (nuevoTotalCalculado.compareTo(request.totalCompra()) != 0) {
-                    throw new NegocioException(
-                    String.format("El total enviado (%s) no coincide con la suma real de los subtotales (%s)", 
-                    request.totalCompra(), nuevoTotalCalculado)
-                    );
-                }
-            }       
+            }     
             compra.setTotalCompra(nuevoTotalCalculado);
         }
 

@@ -43,7 +43,6 @@ public class ProductoService {
         }
         // 4. Mapear y EMBELLECER
         Producto producto = new Producto();
-        // APLICAMOS LA MAGIA ACÁ:
         producto.setNombre(capitalizarTexto(request.nombre())); 
         producto.setDescripcion(request.descripcion());
         producto.setStock(request.stock());
@@ -60,7 +59,7 @@ public class ProductoService {
 
     // --- 2. LISTAR ---
     public List<ProductoResponseDTO> listAll() {
-        return productoRepository.findAll().stream()
+        return productoRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -133,6 +132,13 @@ public class ProductoService {
                 .orElseThrow(() -> new NegocioException("Producto no encontrado con ID: " + id));
         productoRepository.delete(producto);
         return mapToDTO(producto);
+    }
+
+    // --- 7. ALERTA DE STOCK BAJO ---
+    public List<ProductoResponseDTO> obtenerProductosConBajoStock() {
+        return productoRepository.findProductosConBajoStock().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     // Funcion para calcular el precio de venta

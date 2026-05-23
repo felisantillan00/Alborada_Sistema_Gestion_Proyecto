@@ -34,6 +34,7 @@ export class ModalViewReparaciones implements OnInit {
   // 🔹 FORMULARIO 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
+    contacto: [null as number | null, Validators.required],
     estado: ['EN_REPARACION', Validators.required],
     valorManoDeObra: [0, [Validators.required, Validators.min(1)]],
     fechaConfirmada: [''],
@@ -65,6 +66,7 @@ export class ModalViewReparaciones implements OnInit {
 
       this.form.patchValue({
         nombreCliente: this.reparacion.nombreCliente,
+        contacto: this.reparacion.contacto,
         valorManoDeObra: this.reparacion.valorManoDeObra,
         fechaConfirmada: this.reparacion.fechaConfirmada,
         observacion: this.reparacion.observacion
@@ -233,6 +235,7 @@ export class ModalViewReparaciones implements OnInit {
     const formValue = this.form.value;
     const payload: any = {
       nombreCliente: formValue.nombreCliente,
+      contacto: formValue.contacto,
       valorManoDeObra: formValue.valorManoDeObra,
       observacion: formValue.observacion,
       detalles: this.detalleFormArray.value.map((d: any) => ({
