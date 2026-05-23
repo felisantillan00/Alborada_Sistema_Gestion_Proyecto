@@ -46,8 +46,8 @@ export class Reparaciones implements OnInit {
   };
 
   readonly columnDefs: ColDef<ReparacionView>[] = [
-    // { field: 'id', headerName: 'ID', maxWidth: 100 },
     { field: 'nombreCliente', headerName: 'Cliente' },
+    { field: 'contacto', headerName: 'Contacto' },
     {
       field: 'valorTotal',
       headerName: 'Precio Total',
