@@ -60,16 +60,19 @@ public class ProductoService {
     // --- 2. LISTAR ---
     public List<ProductoResponseDTO> listAll() {
         return productoRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
+                .filter(Producto::isActivo) // descarte de inactivos
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
     // --- 3. BUSCAR POR ID, Codigo de barras, nombre, etc --
     public List<ProductoResponseDTO> findProducts(String termino) {
-        List<Producto> resultados = productoRepository.buscarPorNombre(termino);
+        // usamos el query que solo trae activos
+        List<Producto> resultados = productoRepository.searchActiveProducts(termino);
 
         if (termino.matches("\\d+") && resultados.isEmpty()) {
             productoRepository.findById(Long.valueOf(termino))
+                    .filter(Producto::isActivo) 
                     .ifPresent(resultados::add);
         }
 
@@ -196,9 +199,9 @@ public class ProductoService {
     }
 
     public Page<ProductoResponseDTO> findAll(Pageable pageable) {
-        // El repository ya sabe recibir un pageable y devolver un Page<Entity>
-        return productoRepository.findAll(pageable)
-            .map(this::mapToDTO); // Convertimos cada Producto del Page a DTO
+        //Ahora findAll filtra directamente
+        return productoRepository.findAllByActivoTrue(pageable)
+            .map(this::mapToDTO); 
     }
 
     // Método auxiliar para no repetir código en el GetById o GetAll
