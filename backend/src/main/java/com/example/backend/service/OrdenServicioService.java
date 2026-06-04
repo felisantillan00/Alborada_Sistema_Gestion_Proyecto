@@ -27,6 +27,7 @@ public class OrdenServicioService {
     public OrdenServicioResponseDTO create(OrdenServicioRequestDTO request, Integer flagReparacion) {
         OrdenServicio orden = new OrdenServicio();
         orden.setNombreCliente(request.nombreCliente());
+        orden.setContacto(request.contacto());
         orden.setObservacion(request.observacion());
         BigDecimal manoObra = request.valorManoDeObra() != null ? request.valorManoDeObra() : BigDecimal.ZERO;
         orden.setValorManoObra(manoObra);
@@ -37,6 +38,9 @@ public class OrdenServicioService {
             for (DetalleOrdenServicioRequestDTO detDto : request.detalles()) {
                 
                 DetalleOrdenServicio detalle = mapearDetalle(detDto);
+                if (!detalle.getProducto().isActivo()) {
+                    throw new NegocioException("No se puede agregar el producto '" + detalle.getProducto().getNombre() + "' porque se encuentra inactivo o discontinuado.");
+                }
                 orden.addDetalle(detalle);
                 // 3. Calculamos el subtotal usando el precio que sacamos de la BD
                 BigDecimal subtotal = detalle.getValorUnitario().multiply(new BigDecimal(detDto.cantidad()));
@@ -141,6 +145,7 @@ public class OrdenServicioService {
 
         // 3. ACTUALIZAR DATOS BÁSICOS (Con validación de nulos)
         orden.setNombreCliente(request.nombreCliente());
+        orden.setContacto(request.contacto());
         orden.setObservacion(request.observacion());
         BigDecimal manoObra = request.valorManoDeObra() != null ? request.valorManoDeObra() : BigDecimal.ZERO;
         orden.setValorManoObra(manoObra);
@@ -261,6 +266,7 @@ public class OrdenServicioService {
         return OrdenServicioResponseDTO.builder()
                 .id(o.getId())
                 .nombreCliente(o.getNombreCliente())
+                .contacto(o.getContacto())
                 .estado(o.getEstado().name())
                 .valorTotal(o.getValorTotal())
                 .valorManoDeObra(o.getValorManoObra())

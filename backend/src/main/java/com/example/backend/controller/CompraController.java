@@ -4,6 +4,8 @@ import com.example.backend.dto.request.CompraRequestDTO;
 import com.example.backend.service.CompraService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +20,8 @@ public class CompraController {
 
     // --- 1. LISTAR TODAS LAS COMPRAS (AHORA CON PAGINACIÓN) ---
     @GetMapping
-    public ResponseEntity<Page<CompraResponseDTO>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<CompraResponseDTO>> getAll(
+        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         
         log.info("Recibiendo petición GET para listar compras (Página: {}, Tamaño: {})", 
                  pageable.getPageNumber(), pageable.getPageSize());
@@ -36,7 +39,7 @@ public class CompraController {
     // --- 3. CREAR NUEVA COMPRA ---
     @PostMapping
     public ResponseEntity<CompraResponseDTO> create(@Valid @RequestBody CompraRequestDTO request) {
-        log.info("Recibiendo petición POST para crear compra del proveedor: {}", request.proveedorNombre());
+        log.info("Recibiendo petición POST para crear compra del proveedor: {}", request.idProveedor());
         CompraResponseDTO response = compraService.create(request);
         
         // Retornamos 201 CREATED

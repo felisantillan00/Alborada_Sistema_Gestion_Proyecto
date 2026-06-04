@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 public record OrdenServicioRequestDTO( 
     @NotBlank(message = "El nombre del cliente es obligatorio")
     String nombreCliente,
+    Long contacto,
     String observacion,
     
     @NotNull(message = "El valor de la mano de obra es obligatorio")
