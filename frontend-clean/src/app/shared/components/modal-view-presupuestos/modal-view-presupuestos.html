@@ -148,6 +148,12 @@
                     {{ mode === 'create' ? 'Crear' : 'Guardar' }}
                 </button>
                 }
+                @if (mode === 'view') {
+                <button type="button" class="btn btn-outline-dark px-4 shadow-sm" (click)="generarComprobante()">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Descargar
+                </button>
+                }
 
                 <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closed.emit()">
                     {{ mode === 'view' ? 'Cerrar' : 'Cancelar' }}

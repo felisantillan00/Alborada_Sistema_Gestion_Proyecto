@@ -7,6 +7,8 @@ import { ReparacionesService } from '../../../core/services/reparaciones/reparac
 import { ProductoView } from '../../../core/models/producto';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-modal-reparacion',
@@ -34,6 +36,7 @@ export class ModalViewReparaciones implements OnInit {
   // 🔹 FORMULARIO 
   form = this.fb.group({
     nombreCliente: ['', Validators.required],
+    contacto: [null as number | null, Validators.required],
     estado: ['EN_REPARACION', Validators.required],
     valorManoDeObra: [0, [Validators.required, Validators.min(1)]],
     fechaConfirmada: [''],
@@ -65,6 +68,7 @@ export class ModalViewReparaciones implements OnInit {
 
       this.form.patchValue({
         nombreCliente: this.reparacion.nombreCliente,
+        contacto: this.reparacion.contacto,
         valorManoDeObra: this.reparacion.valorManoDeObra,
         fechaConfirmada: this.reparacion.fechaConfirmada,
         observacion: this.reparacion.observacion
@@ -233,6 +237,7 @@ export class ModalViewReparaciones implements OnInit {
     const formValue = this.form.value;
     const payload: any = {
       nombreCliente: formValue.nombreCliente,
+      contacto: formValue.contacto,
       valorManoDeObra: formValue.valorManoDeObra,
       observacion: formValue.observacion,
       detalles: this.detalleFormArray.value.map((d: any) => ({
@@ -284,4 +289,75 @@ export class ModalViewReparaciones implements OnInit {
     });
   }
 
+  generarComprobante(): void {
+
+
+    if (!this.reparacion) return;
+    const doc = new jsPDF();
+
+    // TITULO
+    doc.setFontSize(22);
+    doc.text('COMPROBANTE DE REPARACIÓN', 105, 20, { align: 'center' });
+
+    // Línea decorativa
+    doc.line(10, 28, 200, 28);
+
+    // DATOS CLIENTE
+    const contacto = this.reparacion.contacto
+      ? this.reparacion.contacto.toString()
+      : 'No registrado';
+
+    const fecha = this.reparacion.fechaConfirmada
+      ? new Date(this.reparacion.fechaConfirmada).toLocaleDateString('es-AR')
+      : new Date().toLocaleDateString('es-AR');
+
+    doc.setFontSize(12);
+    doc.text(`Cliente: ${this.reparacion.nombreCliente}`, 14, 40);
+    doc.text(
+      `Contacto: ${contacto}`,
+      14,
+      48
+    );
+    doc.text(
+      `Fecha: ${fecha}`,
+      14,
+      64
+    );
+
+    // TABLA PRODUCTOS
+    autoTable(doc, {
+      startY: 68,
+      head: [['Producto', 'Cantidad', 'Precio Unit.', 'Subtotal']],
+      body: this.reparacion.detalles.map(d => [
+        d.nombreProducto,
+        d.cantidad,
+        `$${d.valorVenta}`,
+        `$${d.valorVenta * d.cantidad}`
+      ])
+    });
+
+    // TOTALES
+    const finalY = (doc as any).lastAutoTable.finalY + 15;
+    doc.text(
+      `Mano de obra: $${this.reparacion.valorManoDeObra}`,
+      14,
+      finalY
+    );
+
+    doc.setFontSize(16);
+
+    doc.text(
+      `TOTAL: $${this.reparacion.valorTotal}`,
+      14,
+      finalY + 12
+    );
+
+    // FIRMA
+    doc.setFontSize(11);
+    doc.text('Firma:', 14, finalY + 35);
+    doc.line(35, finalY + 35, 100, finalY + 35);
+
+    // DESCARGA
+    doc.save(`reparacion-${this.reparacion.id}.pdf`);
+  }
 }

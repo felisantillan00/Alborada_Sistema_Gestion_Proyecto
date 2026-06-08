@@ -5,6 +5,9 @@ import { ProductoView } from '../../../core/models/producto';
 import { ProductoService } from '../../../core/services/producto/producto-service';
 import { PresupuestosService } from '../../../core/services/presupuestos/presupuesto-service';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 import {
   Component, EventEmitter, inject, Input,
   OnChanges, Output, SimpleChanges, OnInit,
@@ -293,4 +296,102 @@ export class ModalViewPresupuesto {
   }
 
   
+  generarComprobante(): void {
+
+  if (!this.presupuesto) return;
+
+  const doc = new jsPDF();
+
+  // FECHA FORMATEADA
+  const fecha = this.presupuesto.fechaCreacion
+    ? new Date(this.presupuesto.fechaCreacion).toLocaleDateString('es-AR')
+    : new Date().toLocaleDateString('es-AR');
+
+  // TITULO
+  doc.setFontSize(22);
+  doc.text('COMPROBANTE DE PRESUPUESTO', 105, 20, { align: 'center' });
+
+  // Línea decorativa
+  doc.line(10, 28, 200, 28);
+
+  // DATOS CLIENTE
+  doc.setFontSize(12);
+
+  doc.text(
+    `Cliente: ${this.presupuesto.nombreCliente}`,
+    14,
+    40
+  );
+
+  doc.text(
+    `Fecha: ${fecha}`,
+    14,
+    48
+  );
+
+  // TABLA PRODUCTOS
+  autoTable(doc, {
+    startY: 60,
+    head: [['Producto', 'Cantidad', 'Precio Unit.', 'Subtotal']],
+
+    body: this.presupuesto.detalles.map((d: any) => [
+      d.nombreProducto || d.Nombre || 'Producto',
+      d.cantidad || d.Cantidad,
+      `$${d.valorVenta || d.ValorVenta}`,
+      `$${(d.valorVenta || d.ValorVenta) * (d.cantidad || d.Cantidad)}`
+    ])
+  });
+
+  // POSICION FINAL TABLA
+  const finalY = (doc as any).lastAutoTable.finalY + 15;
+
+  // MANO DE OBRA
+  doc.setFontSize(12);
+
+  doc.text(
+    `Mano de obra: $${this.presupuesto.valorManoDeObra}`,
+    14,
+    finalY
+  );
+
+  // TOTAL
+  doc.setFontSize(16);
+
+  doc.text(
+    `TOTAL: $${this.totalCalculado}`,
+    14,
+    finalY + 12
+  );
+
+  // OBSERVACION
+  if (this.presupuesto.observacion) {
+
+    doc.setFontSize(11);
+
+    doc.text(
+      `Observación: ${this.presupuesto.observacion}`,
+      14,
+      finalY + 28
+    );
+  }
+
+  // FIRMA
+  doc.setFontSize(11);
+
+  doc.text(
+    'Firma:',
+    14,
+    finalY + 50
+  );
+
+  doc.line(
+    35,
+    finalY + 50,
+    100,
+    finalY + 50
+  );
+
+  // DESCARGA
+  doc.save(`presupuesto-${this.presupuesto.id}.pdf`);
+}
 }
